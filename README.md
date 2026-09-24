@@ -1,4 +1,4 @@
-# Abaqus File Creator
+# Bayesian optimisation for beams with triangular OR elliptic perforations
 
 Python package for finding the most optimal arrangement of holes.
 The objective function is to minimise compliance. The holes can either be
