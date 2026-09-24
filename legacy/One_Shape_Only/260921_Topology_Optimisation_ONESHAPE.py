@@ -32,7 +32,7 @@ tkwargs = {
 
 SHAPE = "Triangle"
 
-dir_save = "C:/Users/eleno/OneDrive - Nexus365/Documents/POSTDOC/Code/Topology_Optimisation/Bayesian_Optimisation_Part2/Outputs/One_Shape/"
+dir_save = "/home/eleno/projects/one_shape_bo/outputs"
 fol_save = SHAPE + "/260923/"
 #fil_name = "260923"
 # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #

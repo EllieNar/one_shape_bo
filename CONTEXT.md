@@ -1,4 +1,21 @@
-22/09/26
+## CONTEXT.md
+
+# This file is intended to record:
+- A concise summary of what solutions/approaches were explored in latest query
+- Durable project decisions
+- Accepted engineering assumptions
+- Validation results
+- Unresolved issues
+
+# Every entry should begin with the following formatting:
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+ 		            DD / MM / YY  - TIME
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                                            22/09/26    at    14:52
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 New One_Shape_Only folder with 260921_Topology_Optimisation_ONESHAPE.py
 
@@ -8,8 +25,9 @@ In comparison to 260820_Topology_Optimisation_MAIN, this has the following chang
 
 2. Changed fixed_features in sampling so that it handles 'htype' which dictates whether **all** holes are triangular or whether **all** holes are elliptical (rather than a random combination of triangle/ellipse). This is because of previous issues with improper sampling of the design space (trying to move to LHS rather than a feasibility-driven sampler). The change from a feasibility-driven sampler to something LHS-based is an investigation required to ensure fair examination of the design space when both triangular and elliptic holes are present.
 
-
-23/09/26
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                                            23/09/26     at      16:32
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 In random_shape_candidate, weights are changed so that all areas have similar areas rather than randomly picking weights that can vary between 0 and 1.
 
