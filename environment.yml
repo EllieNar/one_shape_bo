@@ -1,0 +1,9 @@
+name: one-shape-bo
+channels:
+  - conda-forge
+
+dependencies:
+  - python = 3.12
+  - numpy >=2.0
+  - pytest
+  - pip
