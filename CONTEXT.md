@@ -48,3 +48,53 @@ Folder 2 (using the one_shape_only code, which could accommodate either all tria
 The results are again stuck in a local optima. Either:
 1. Not exploring domain enough - try with n global restarts outnumbering n local?
 2. Ask Codex to improve exploration around midway through the iterations?
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                                            25/09/26     at      08:06
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+See legacy --> 260924_Fewer_Local and 260924_Larger_Area_Variation
+These contain the output log (so far!) of members with triangular hole optimisation. This starts to addresss Issues 01 and 02 (see ISSUES.md).
+
+260924_Fewer_Local --> ng_rst = 10 and nl_rst = 5, with the weights within sample_random_candidate as:
+
+if stage == "BO_Eval":
+        # Exponentially distributed random weights
+        weights             = -torch.log(torch.rand(nholes, **tkwargs).clamp_min(1e-12))
+    elif stage == "Burn_In":
+        # Random similar weights = similar area
+        weights             = 0.9 + 0.2 * torch.rand(nholes, **tkwargs)
+
+260924_Larger_Area_Variation --> ng_rst = 8 and nl_rst = 8, with the weights within sample_random_candidate as:
+
+if stage == "BO_Eval":
+        # Exponentially distributed random weights
+        weights             = -torch.log(torch.rand(nholes, **tkwargs).clamp_min(1e-12))
+    elif stage == "Burn_In":
+        # Random similar weights = similar area
+        weights             = 0.5 + torch.rand(nholes, **tkwargs)
+
+From results so far, both are better than the output found when conduct the following (see 260924_Area_Prior):
+
+ng_rst = 8 and nl_rst = 8, with the weights within sample_random_candidate as:
+
+if stage == "BO_Eval":
+        # Exponentially distributed random weights
+        weights             = -torch.log(torch.rand(nholes, **tkwargs).clamp_min(1e-12))
+    elif stage == "Burn_In":
+        # Random similar weights = similar area
+        weights             = 0.9 + 0.2 * torch.rand(nholes, **tkwargs)
+
+260924_Fewer_Local is the most superior so far, but 260924_Larger_Area_Variation also outperforms 260924_Area_Prior.
+This suggests that a modification might benefit from:
+
+ng_rst = 10 and nl_rst = 5, with the weights within sample_random_candidate as:
+
+if stage == "BO_Eval":
+        # Exponentially distributed random weights
+        weights             = -torch.log(torch.rand(nholes, **tkwargs).clamp_min(1e-12))
+    elif stage == "Burn_In":
+        # Random similar weights = similar area
+        weights             = 0.5 + torch.rand(nholes, **tkwargs)
+
+But why??
