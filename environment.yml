@@ -10,9 +10,7 @@ dependencies:
   - pytorch
   - matplotlib
   - pandas
-  - itertools
   - scipy
   - gpytorch
   - botorch
   - shapely
-  - sys

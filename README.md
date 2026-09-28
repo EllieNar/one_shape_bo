@@ -50,11 +50,14 @@ result = run_optimization(
 )
 ```
 
-Unless `output_dir` is supplied, run artifacts are written below a dated
-`outputs/YYMMDD_<Shape>/` directory. Each run records its configuration, a
-compact output log, per-iteration GP and restart diagnostics in CSV, a diagnostic
-plot, the best geometry, and (for the standard triangle case) a read-only audit
-of the stored reference PNG.
+Unless `output_dir` is supplied, run artifacts are written below a dated,
+time-stamped `outputs/YYMMDD_HHMMSS_<Shape>/` directory. Each run records its
+configuration, a compact output log, per-iteration GP and restart diagnostics in
+CSV, a diagnostic plot, the best geometry, and (for the standard triangle case)
+a read-only audit of the stored reference PNG.
+
+The reported posterior standard deviation is uncertainty in the GP's
+standardized negative-log-compliance score space, not in compliance units.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's

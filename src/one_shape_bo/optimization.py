@@ -122,7 +122,7 @@ def _output_directory(config: OptimizationConfig):
     if config.output_dir is not None:
         return Path(config.output_dir)
     shape = "Triangle" if config.htype == 0 else "Ellipse"
-    return Path("outputs") / f"{datetime.now():%y%m%d}_{shape}"
+    return Path("outputs") / f"{datetime.now():%y%m%d_%H%M%S}_{shape}"
 
 
 def _flatten_diagnostics(diagnostics):
@@ -186,10 +186,13 @@ def _plot_diagnostics(output_dir: Path, best_history, records):
         iterations = [record["iteration"] for record in records]
         axes[0, 1].plot(
             iterations,
-            [record["posterior_std"] for record in records],
+            [record["posterior_score_std"] for record in records],
             color="tab:orange",
         )
-        axes[0, 1].set(title="Winning-candidate posterior uncertainty", xlabel="BO iteration")
+        axes[0, 1].set(
+            title="Posterior uncertainty in transformed score space",
+            xlabel="BO iteration",
+        )
         sources = [record["winner_source"] for record in records]
         source_codes = [0 if source == "local" else 1 for source in sources]
         axes[1, 0].scatter(iterations, source_codes, s=14)
@@ -425,7 +428,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "raster_solid_fraction": float(raster_new.item()),
                 "winner_source": winner["source"],
                 "winner_acquisition": float(winner["acquisition_value"].item()),
-                "posterior_std": posterior_std,
+                "posterior_score_std": posterior_std,
                 "noise": gp_diagnostics.noise,
                 "outputscale_mean": float(np.mean(outputscales)) if outputscales else math.nan,
                 "lengthscale_min": min(lengthscales, default=math.nan),
@@ -446,7 +449,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                 f"new={record['new_compliance']:.6f} best={current_best:.6f} "
                 f"solid={record['raster_solid_fraction']:.4f} "
                 f"winner={winner['source']} restarts={global_count}G/{local_count}L "
-                f"std={posterior_std:.3g} noise={gp_diagnostics.noise:.3g} "
+                f"score_std={posterior_std:.3g} noise={gp_diagnostics.noise:.3g} "
                 f"ls={record['lengthscale_min']:.3g}/"
                 f"{record['lengthscale_median']:.3g}/"
                 f"{record['lengthscale_max']:.3g}"

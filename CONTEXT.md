@@ -110,3 +110,103 @@ Does this suggest that less area variation in the burn-in, with more global expl
 
 
 Why? One would have expected that 260925_Proposed_Modification, which combines the benefits of 260924_Fewer_Local with 260924_Larger_Area_Variation to be most superior.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            28/09/26     at      12:51
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Issues 01 and 02 implementation sequence
+
+1. Package foundations and preserved models
+
+The seven-variable hole encoding, canonicalisation, separating-axis calculations,
+binary rasterisation, MBB finite-element compliance calculation, and existing
+geometric/volume constraints were moved into self-contained modules under
+`src/one_shape_bo`. This removes production dependence on the historical import
+layout without changing the engineering model. A regression test confirms that
+the source package produces exactly the same raster and compliance as the legacy
+implementation for a mixed triangle/ellipse design.
+
+2. Global candidate area sampling
+
+`random_shape_candidate` now receives an explicit area-allocation strategy.
+Near-equal weights and broad exponential weights are separate named policies.
+Burn-in is quota-stratified over both policies, while BO global restart pools use
+the broad policy. This prevents the burn-in prior from silently becoming the BO
+exploration policy and preserves some broad-area coverage in the initial GP data.
+
+3. Local feasible sampling
+
+`sample_local_feasible` now uses several diverse high-quality observations as
+anchors and always applies the user-configured `local_radius`; the previous hidden
+attempt-dependent radius contraction was removed. Raster duplicates are rejected.
+The configured-radius behaviour is covered by a deterministic test.
+
+4. Restart ranking and batching
+
+`rank_initial_condition_pool` retains global/local provenance, rejects repeated
+raster geometries, filters starts close to observations or prior attempts, and
+uses acquisition plus novelty when ranking global starts. `take_restart_batch`
+selects spatially diverse starts while honouring the requested source allocation.
+Shape identity is represented by arbitrary canonical tuples, so mixed tuples such
+as `(0, 0, 1)` remain supported even though current runs fix all holes to one type.
+
+5. Acquisition optimisation
+
+`Acquisition` accepts labelled restart entries, keeps source and shape metadata,
+records compact timing/warning/failure information, and removes duplicate optimized
+raster geometries. Per-restart geometry tensors are no longer printed.
+
+6. Gaussian-process fitting
+
+`Pred_Objective_Multi_Task` remains a `MixedSingleTaskGP` with a Matérn-1.5
+continuous kernel and standardized negative-log-compliance response. Mean,
+covariance, and likelihood state are warm-started from the preceding iteration.
+Lengthscales, outputscales, and likelihood noise are exposed for diagnostics.
+
+7. Main Bayesian optimisation loop and reporting
+
+The source-package driver keeps the total restart allocation fixed. It uses the
+configured baseline global/local split until the record-improvement patience is
+exceeded, then assigns 75% of starts to global exploration; a new record restores
+the baseline split. The local radius is not adapted. Each iteration writes a
+compact log line plus CSV diagnostics for restart source, GP hyperparameters, and
+posterior standard deviation. The latter is explicitly labelled as uncertainty in
+the transformed GP score space. Default output directories now include date and
+time so same-day runs do not overwrite one another.
+
+8. Read-only expected-output audit
+
+The stored reference PNG was audited without executing or modifying
+`260928_MBB_Beam_Basic.py`. Resampling the rendered topology to a 50 by 100 binary
+grid gives solid fraction 0.5332, exceeding the BO allowance of 0.505, with three
+void components and recomputed binary compliance 76.7532. The reference log's
+96.8918 compliance belongs to the filtered continuous-density field. Therefore
+the rendered reference is a qualitative topology target, not a feasible or
+numerically equivalent target for the volume-constrained binary three-hole model.
+The machine-readable report is in
+`outputs/260928_Benchmark_Audit/benchmark_audit.json`.
+
+9. Validation and repository hygiene
+
+Invalid `itertools` and `sys` Conda entries were removed, allowing the declared
+Python 3.12 environment to resolve. Python caches are ignored and previously
+tracked cache files are removed. Fourteen focused tests cover area-policy quotas,
+explicit area allocation, fixed-radius local sampling, source-aware ranking,
+mixed-tuple restart selection, adaptive restart allocation, acquisition metadata,
+GP warm-starting and real model diagnostics, physical-model regression, benchmark
+read-only behaviour, the actual reference audit, and a mocked one-iteration BO
+driver. The combined targeted run passed all 14 tests in 4.06 seconds; the only
+warnings were upstream PyTorch notices that `torch.jit.script` is deprecated. No
+full BO run or convergence benchmark was performed.
+
+Overall summary
+
+The changes address the identified mechanisms behind burn-in sensitivity and
+late loss of exploration while preserving constrained GP Bayesian optimisation
+and the existing physical assumptions. They make sampling policies explicit,
+prevent silent local-radius collapse, preserve global diversity and restart
+provenance, warm-start and diagnose the GP, and adapt exploration in response to
+observed stagnation rather than absolute iteration count. Whether these changes
+improve final compliance and topology across seeds remains unresolved until
+separately approved multi-seed BO benchmarks are run.
