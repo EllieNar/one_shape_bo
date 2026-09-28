@@ -7,3 +7,12 @@ dependencies:
   - numpy >=2.0
   - pytest
   - pip
+  - pytorch
+  - matplotlib
+  - pandas
+  - itertools
+  - scipy
+  - gpytorch
+  - botorch
+  - shapely
+  - sys
