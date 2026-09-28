@@ -53,7 +53,7 @@ The results are again stuck in a local optima. Either:
                                             25/09/26     at      08:06
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-See legacy --> 260924_Fewer_Local and 260924_Larger_Area_Variation
+See outputs --> 260924_Fewer_Local and 260924_Larger_Area_Variation
 These contain the output log (so far!) of members with triangular hole optimisation. This starts to addresss Issues 01 and 02 (see ISSUES.md).
 
 260924_Fewer_Local --> ng_rst = 10 and nl_rst = 5, with the weights within sample_random_candidate as:
@@ -98,3 +98,15 @@ if stage == "BO_Eval":
         weights             = 0.5 + torch.rand(nholes, **tkwargs)
 
 But why??
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                                            27/09/26     at      19:16
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+The results are in, see outputs --> 260925_Proposed_Modification
+This output is worse than the output given in 260924_Fewer_Local.
+
+Does this suggest that less area variation in the burn-in, with more global exploration is most superior?
+
+
+Why? One would have expected that 260925_Proposed_Modification, which combines the benefits of 260924_Fewer_Local with 260924_Larger_Area_Variation to be most superior.

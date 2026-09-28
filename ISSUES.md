@@ -2,6 +2,8 @@
 
 Problems with the legacy code. Not in any particular order.
 Each issue should be explored in isolation unless specifically dirceted otherwise.
+The expected output for three triangular holes, when the code `260928_MBB_Beam_Basic.py' is
+run is within the `outputs/Expected_Output_TRIANGLE' folder of this repo.
 
 ## ISSUE 01
 ### Whether the (near) global optimum is found heavily depends on the burn-in.
@@ -11,18 +13,19 @@ In the current legacy code, (see Sampling > random_shape_candidate), a prior is 
 This distributes the area roughly equivalently during burn-in, but allows area exploration during optimisation.
 However, the latter does not appear to be happening, and the solution exhibits even worse convergence
 to the global optimum. Perhaps lack of diversity in the initial dataset was too extreme.
+In CONTEXT.md read the entry on 25/09/26 and 27/09/26, compare to the expected output.
 
 Possible solutions:
-- The weighting associated with Burn_In might be too strict.
-Perhaps try permitting a slightly greater area variation, or even
-weights very similar to BO_Eval, but so that very extreme hole areas are avoided.
+- Re-evaluate the balance between global exploration (ng_rst), local exploitation (nl_rst),
+and the area prior. Is the area prior necessary/correct?
 
 ## ISSUE 02
 ### Exploration drops after ~ 20 * design_dimension iterations.
 Perhaps the local optima become too strong, is the local radius search too small?
 
 Possible solutions:
-- Increase ng_rst and reduce nl_rst; perhaps the local optimum becomes too dominant?
+- Increase ng_rst and reduce nl_rst; perhaps the local optimum becomes too dominant? (Explored, see CONTEXT.md)
+- Variation in ng_rst and nl_rst after n number of evaluations?
 
 ## ISSUE 03
 ### Improper coverage of the design space at burn-in
