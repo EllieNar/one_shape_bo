@@ -2,8 +2,8 @@
 
 Problems with the legacy code. Not in any particular order.
 Each issue should be explored in isolation unless specifically dirceted otherwise.
-The expected output for three triangular holes, when the code `260928_MBB_Beam_Basic.py' is
-run is within the `outputs/Expected_Output_TRIANGLE' folder of this repo.
+The expected output for three triangular holes, when the code 260928_MBB_Beam_Basic.py is
+run is within the outputs/Expected_Output_TRIANGLE folder of this repo.
 
 ## ISSUE 01
 ### Whether the (near) global optimum is found heavily depends on the burn-in.

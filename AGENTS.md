@@ -11,8 +11,8 @@ This file applies to the entire repository:
 Do not modify, delete, move, or rename existing repository files without
 explicit user approval.
 
-Never modify  the code `260928_MBB_Beam_Basic.py' within the
-`outputs/Expected_Output_TRIANGLE' folder of this repo.
+Never modify  the code 260928_MBB_Beam_Basic.py within the
+outputs/Expected_Output_TRIANGLE folder of this repo.
 
 Codex may create and remove temporary files/directories required for its own
 work (for example under `/tmp`) provided they are created by Codex for the
