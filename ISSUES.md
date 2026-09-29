@@ -52,7 +52,6 @@ not guarantee a large feasible, well-spaced burn-in set.
 2. Are the hyperparameters certainly taken as a warm-start? I would have expected less variation in uncertainty as evaluations progress, if this were the case.
 3. In the output log, from iterations 140 to 271 (260928_Implemented_Corrections), the compliance of each resulting geometry is significantly greater than the current best. It seems that exploration occurs at the detriment of exploitation.
 
-
 In each iteration, the pool of local restarts is too small. Why? Is this related to the number of local restarts, and how can it be increased?
 
 Ensure that Codex is NOT simply using the expected output to guide optimisation.

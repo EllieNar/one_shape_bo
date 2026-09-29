@@ -389,9 +389,23 @@ def sample_local_feasible(
     max_attempts: int = 5000,
     anchor_count: int = 10,
     generator=None,
+    diagnostics=None,
 ):
-    """Sample the configured-radius neighbourhood of diverse good observations."""
+    """Sample near good observations, contracting within the bounded attempt loop."""
+    attempts_used = 0
+    minimum_radius = None
+
+    def update_diagnostics(accepted_count):
+        if diagnostics is not None:
+            diagnostics.update(
+                requested=number,
+                attempts=attempts_used,
+                accepted=accepted_count,
+                minimum_radius=minimum_radius,
+            )
+
     if number <= 0 or len(x_train) == 0:
+        update_diagnostics(0)
         return torch.empty((0, x_train.shape[-1]), **TENSOR_KWARGS)
     top_count = min(max(anchor_count * 3, anchor_count), len(x_train))
     good_indices = torch.topk(
@@ -413,8 +427,14 @@ def sample_local_feasible(
 
     lower, upper = constraints.box_bounds
     accepted, signatures = [], set()
+    attempts_per_radius = max(1, 2 * len(anchors))
+    radius_factors = (1.0, 0.5, 0.25, 0.125)
     for attempt in range(max_attempts):
+        attempts_used = attempt + 1
         base = anchors[attempt % len(anchors)]
+        radius_index = min(attempt // attempts_per_radius, len(radius_factors) - 1)
+        proposal_radius = radius * radius_factors[radius_index]
+        minimum_radius = proposal_radius
         output = []
         for hole_index in range(constraints.nholes):
             offset = 7 * hole_index
@@ -425,7 +445,8 @@ def sample_local_feasible(
                     active.shape, generator=generator, **TENSOR_KWARGS
                 )
                 proposal = torch.clamp(
-                    active + radius * scale[offset + 1 : offset + 7] * noise,
+                    active
+                    + proposal_radius * scale[offset + 1 : offset + 7] * noise,
                     lower[offset + 1 : offset + 7],
                     upper[offset + 1 : offset + 7],
                 )
@@ -436,7 +457,7 @@ def sample_local_feasible(
                     active.shape, generator=generator, **TENSOR_KWARGS
                 )
                 proposal = torch.clamp(
-                    active + radius * scale[offset + 1 : offset + 6] * noise,
+                    active + proposal_radius * scale[offset + 1 : offset + 6] * noise,
                     lower[offset + 1 : offset + 6],
                     upper[offset + 1 : offset + 6],
                 )
@@ -458,6 +479,7 @@ def sample_local_feasible(
         accepted.append(candidate)
         if len(accepted) >= number:
             break
+    update_diagnostics(len(accepted))
     if not accepted:
         return torch.empty((0, x_train.shape[-1]), **TENSOR_KWARGS)
     return torch.stack(accepted)

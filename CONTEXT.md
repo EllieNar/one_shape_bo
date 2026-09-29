@@ -137,10 +137,12 @@ exploration policy and preserves some broad-area coverage in the initial GP data
 
 3. Local feasible sampling
 
-`sample_local_feasible` now uses several diverse high-quality observations as
-anchors and always applies the user-configured `local_radius`; the previous hidden
-attempt-dependent radius contraction was removed. Raster duplicates are rejected.
-The configured-radius behaviour is covered by a deterministic test.
+`sample_local_feasible` uses several diverse high-quality observations as anchors.
+It first applies the user-configured `local_radius`, then explicitly falls back to
+0.5, 0.25, and 0.125 times that radius after unsuccessful anchor sweeps. Raster
+duplicates are rejected, the existing attempt cap is retained, and an unfilled
+request returns a partial pool. Deterministic tests cover the initial radius,
+contraction, early stopping, and partial return.
 
 4. Restart ranking and batching
 
@@ -169,11 +171,13 @@ Lengthscales, outputscales, and likelihood noise are exposed for diagnostics.
 The source-package driver keeps the total restart allocation fixed. It uses the
 configured baseline global/local split until the record-improvement patience is
 exceeded, then assigns 75% of starts to global exploration; a new record restores
-the baseline split. The local radius is not adapted. Each iteration writes a
+the baseline split. The configured local radius is not adapted between iterations.
+Each iteration writes a
 compact log line plus CSV diagnostics for restart source, GP hyperparameters, and
-posterior standard deviation. The latter is explicitly labelled as uncertainty in
-the transformed GP score space. Default output directories now include date and
-time so same-day runs do not overwrite one another.
+posterior standard deviation at the selected candidate, incumbent at model-fitting
+time, and fixed best burn-in design. These are explicitly labelled as uncertainty
+in the transformed GP score space. Default output directories now include date
+and time so same-day runs do not overwrite one another.
 
 8. Read-only expected-output audit
 
@@ -205,8 +209,50 @@ Overall summary
 The changes address the identified mechanisms behind burn-in sensitivity and
 late loss of exploration while preserving constrained GP Bayesian optimisation
 and the existing physical assumptions. They make sampling policies explicit,
-prevent silent local-radius collapse, preserve global diversity and restart
-provenance, warm-start and diagnose the GP, and adapt exploration in response to
-observed stagnation rather than absolute iteration count. Whether these changes
-improve final compliance and topology across seeds remains unresolved until
-separately approved multi-seed BO benchmarks are run.
+use explicit bounded local-radius contraction, preserve global diversity and
+restart provenance, warm-start and diagnose the GP, and adapt exploration in
+response to observed stagnation rather than absolute iteration count. Whether
+these changes improve final compliance and topology across seeds remains
+unresolved until separately approved multi-seed BO benchmarks are run.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+                                            29/09/26     at      10:20
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+Issue 04 approved correction
+
+The `260928_Implemented_Corrections` run requested 15 raw local candidates in
+most BO iterations but produced a median of zero. The local sampler perturbed
+all active coordinates at the full configured radius for as many as 5000
+attempts, so designs near the geometric and volume boundaries were usually
+rejected before entering the restart pool. The user wants local sampling to aim
+for `raw_pool_multiplier * nl_rst` candidates without increasing expensive
+objective evaluations or preventing BO from proceeding when that target cannot
+be filled.
+
+The approved correction restores only the useful within-call radius contraction:
+`local_radius` is the initial and maximum radius, followed after unsuccessful
+anchor sweeps by factors 0.5, 0.25, and 0.125. The existing attempt ceiling and
+partial-pool return are retained, and sampling still stops immediately when the
+requested count is reached. The legacy iteration-to-iteration expansion or
+contraction of `local_radius` will not be restored; restart allocation, LogEI,
+GP fitting, physical constraints, and the number of objective evaluations remain
+unchanged. Cheap diagnostics will distinguish requested from generated local
+candidates, while posterior uncertainty will additionally be measured at the
+current incumbent and at a fixed best burn-in design so that it can be compared
+across iterations. Validation is limited to targeted unit and smoke tests rather
+than a full BO or benchmark run.
+
+Implementation outcome
+
+The local sampler now advances through the approved four radius factors after two
+complete sweeps of its available anchors, within the unchanged 5000-attempt cap.
+It stops as soon as the requested count is filled and otherwise returns its partial
+accepted set. The BO loop records the requested local count, generated count,
+attempts used, and smallest radius reached. Its existing posterior query is batched
+over the selected candidate, incumbent at model-fitting time, and fixed best
+burn-in design, so the additional uncertainty diagnostics require no extra GP fit
+or physical evaluation. The restart controller, LogEI, physical constraints, and
+iteration-level radius remain unchanged. Thirteen targeted sampling, restart,
+acquisition, GP, and one-iteration smoke tests passed in 3.84 seconds; no full BO
+or benchmark run was performed.

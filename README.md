@@ -9,10 +9,12 @@ enforced.
 
 Feasible burn-in samples are split between a near-equal hole-area policy and a
 broad area-allocation policy. BO global pools use the broad policy. The local
-sampler keeps the configured radius and uses several diverse good observations
-as anchors. After a configurable period without a record improvement, a fixed
-restart budget shifts toward global starts; an improvement restores the baseline
-global/local split.
+sampler uses several diverse good observations as anchors. It starts at the
+configured `local_radius`, then falls back to 0.5, 0.25, and 0.125 times that
+radius if complete anchor sweeps do not fill the requested local pool. It stops
+at the existing attempt limit and returns a partial pool when necessary. After a
+configurable period without a record improvement, a fixed restart budget shifts
+toward global starts; an improvement restores the baseline global/local split.
 
 ## Development environment
 
@@ -56,8 +58,12 @@ configuration, a compact output log, per-iteration GP and restart diagnostics in
 CSV, a diagnostic plot, the best geometry, and (for the standard triangle case)
 a read-only audit of the stored reference PNG.
 
-The reported posterior standard deviation is uncertainty in the GP's
-standardized negative-log-compliance score space, not in compliance units.
+The CSV distinguishes requested and generated local-pool sizes and records the
+attempt count and smallest local radius reached. Reported posterior standard
+deviations are uncertainties in the GP's standardized negative-log-compliance
+score space, not in compliance units. They are recorded for the selected
+candidate, the incumbent at model-fitting time, and the fixed best burn-in design;
+the latter two make iteration-to-iteration comparisons more meaningful.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's
