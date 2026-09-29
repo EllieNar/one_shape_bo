@@ -45,4 +45,14 @@ many rows are subsequently lost to containment and later, geometric constraints
 non-sequential, so simply filtering or hoping that LHS rows are feasible does
 not guarantee a large feasible, well-spaced burn-in set.
 
+## ISSUE 04
+### Local exploitation is suppressed
 
+1. In 260928_Implemented_Corrections, raw_local is typically much less than raw_global. Why? Surely with a raw_pool_multiplier of 3, it should be around 15 each time.
+2. Are the hyperparameters certainly taken as a warm-start? I would have expected less variation in uncertainty as evaluations progress, if this were the case.
+3. In the output log, from iterations 140 to 271 (260928_Implemented_Corrections), the compliance of each resulting geometry is significantly greater than the current best. It seems that exploration occurs at the detriment of exploitation.
+
+
+In each iteration, the pool of local restarts is too small. Why? Is this related to the number of local restarts, and how can it be increased?
+
+Ensure that Codex is NOT simply using the expected output to guide optimisation.
