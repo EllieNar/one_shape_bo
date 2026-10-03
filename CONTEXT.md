@@ -256,3 +256,60 @@ or physical evaluation. The restart controller, LogEI, physical constraints, and
 iteration-level radius remain unchanged. Thirteen targeted sampling, restart,
 acquisition, GP, and one-iteration smoke tests passed in 3.84 seconds; no full BO
 or benchmark run was performed.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                            01/10/26
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Issue 04 follow-up and acceptance criterion
+
+The full local pool in `260929_104907_Triangle` changed the effective acquisition
+allocation from mostly global starts to the intended global/local split, but it
+also made 353 of 525 winners local and stalled at compliance 95.0638 from
+iteration 93 to 379. Every local sampling call reached 0.125 times
+`local_radius`. A shared random generator also meant that changing the number of
+local attempts changed every later global candidate, so equal seeds did not give
+a controlled comparison with `260928_Implemented_Corrections`.
+
+The approved revision will use independent global and local random streams and a
+quota-stratified local pool over radius factors 1.0, 0.5, 0.25, and 0.125. Failed
+broad-radius quotas will remain unfilled rather than all transferring to the
+smallest radius; the existing batch fallback can then use additional global
+starts. Radius and anchor provenance will be retained through ranking,
+acquisition optimisation, and diagnostics. The GP, LogEI, physical model,
+feasibility constraints, total acquisition restart budget, and objective
+evaluation count remain unchanged.
+
+The user requires the revision to match or improve the seed-0 result of 83.6612.
+A full 525-iteration run takes about nine hours, so the initial regression gate is
+the real problem truncated at iteration 150: the revision must reach at most
+94.0635, the accepted run's best value by iteration 139, and must not reproduce
+the excessive local-winner concentration. This checkpoint detects the known
+regression (`260929_104907_Triangle` remained at 95.0638) while avoiding the final
+375 increasingly expensive GP fits. Deterministic tests will additionally prove
+that local sampling cannot perturb the global random stream. Behavioural edits
+will not be retained if this gate fails.
+
+Acceptance-gate outcome and rollback
+
+The proposed independent random streams and quota-stratified local-radius pool
+passed 15 targeted tests, but failed the real seed-0 objective gate. A staged
+checkpoint was added at iteration 50 because the accepted 260928 trajectory had
+already reached 101.4588 there. The revised policy reached only 115.4623, also
+worse than the 98.0742 reached by the already-rejected 260929 policy at the same
+checkpoint, and local winners again dominated the observed acquisition choices.
+The run was stopped at that point instead of spending several more hours on the
+remaining iterations. It used the real constraints, GP, acquisition optimiser,
+and physical evaluation; only plotting and the read-only benchmark audit were
+disabled, so this was a direct early-trajectory regression check rather than a
+synthetic unit proxy.
+
+Because the user required the result to match or improve on the accepted seed-0
+run, the proposed behavioural revision was rejected. The package source, public
+documentation, and tests were restored exactly to commit `9536665`, the code
+state that produced `260928_Implemented_Corrections` and its final compliance of
+83.6612. This restores the former fixed-radius, partial local-pool behaviour and
+shared random stream; it also removes the Issue 04 contraction diagnostics added
+after that commit. No output directory or stored benchmark result was changed.
+The earlier Issue 04 implementation sections above are therefore historical
+records of experiments, not descriptions of the current package behaviour.

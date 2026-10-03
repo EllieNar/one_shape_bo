@@ -37,9 +37,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             self.best_f = torch.tensor(0.0)
 
         def posterior(self, X):
-            return SimpleNamespace(
-                variance=torch.full((len(X), 1), 0.04, dtype=torch.double)
-            )
+            return SimpleNamespace(variance=torch.tensor([[0.04]]))
 
         def diagnostics(self):
             return GPDiagnostics({"kernel": [0.3]}, {"kernel": 1.2}, 0.01)
@@ -72,13 +70,11 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     monkeypatch.setattr(
         optimization, "sample_stratified_feasible", lambda *args, **kwargs: initial_x
     )
-    def fake_restart_pool(*args, **kwargs):
-        diagnostics = kwargs.get("local_sampling_diagnostics")
-        if diagnostics is not None:
-            diagnostics.update(attempts=7, minimum_radius=0.025)
-        return start.unsqueeze(0), torch.empty((0, 7))
-
-    monkeypatch.setattr(optimization, "_sample_restart_pool", fake_restart_pool)
+    monkeypatch.setattr(
+        optimization,
+        "_sample_restart_pool",
+        lambda *args, **kwargs: (start.unsqueeze(0), torch.empty((0, 7))),
+    )
     monkeypatch.setattr(
         optimization,
         "rank_initial_condition_pool",
@@ -131,11 +127,6 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     output_log = (tmp_path / "output_log.txt").read_text()
     assert result["best_source"] == "global"
     assert "posterior_score_std" in diagnostics
-    assert "posterior_incumbent_score_std" in diagnostics
-    assert "posterior_fixed_burnin_score_std" in diagnostics
-    assert "requested_raw_local" in diagnostics
-    assert "local_sampling_attempts" in diagnostics
-    assert ",15,7,0.025," in diagnostics
     assert "winner_source" in diagnostics
     assert "winner=global" in output_log
     assert "tensor([" not in output_log

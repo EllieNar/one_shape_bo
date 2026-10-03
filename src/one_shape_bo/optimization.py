@@ -141,7 +141,6 @@ def _sample_restart_pool(
     global_count,
     local_count,
     generator,
-    local_sampling_diagnostics=None,
 ):
     try:
         global_conditions = sample_stratified_feasible(
@@ -163,7 +162,6 @@ def _sample_restart_pool(
         constraints,
         radius=config.local_radius,
         generator=generator,
-        diagnostics=local_sampling_diagnostics,
     )
     return global_conditions, local_conditions
 
@@ -190,23 +188,11 @@ def _plot_diagnostics(output_dir: Path, best_history, records):
             iterations,
             [record["posterior_score_std"] for record in records],
             color="tab:orange",
-            label="selected candidate",
-        )
-        axes[0, 1].plot(
-            iterations,
-            [record["posterior_incumbent_score_std"] for record in records],
-            label="incumbent at model fit",
-        )
-        axes[0, 1].plot(
-            iterations,
-            [record["posterior_fixed_burnin_score_std"] for record in records],
-            label="fixed best burn-in",
         )
         axes[0, 1].set(
             title="Posterior uncertainty in transformed score space",
             xlabel="BO iteration",
         )
-        axes[0, 1].legend(fontsize=8)
         sources = [record["winner_source"] for record in records]
         source_codes = [0 if source == "local" else 1 for source in sources]
         axes[1, 0].scatter(iterations, source_codes, s=14)
@@ -293,7 +279,6 @@ def run_optimization(config: OptimizationConfig | None = None):
             return_solid_fractions=True,
         )
         initial_best = float(y_train.min().item())
-        fixed_burnin_point = x_train[int(y_train.argmin().item())].detach().clone()
         best_history = [initial_best]
         observed_signatures = {
             geometry_signature(design, constraints) for design in x_train
@@ -327,7 +312,6 @@ def run_optimization(config: OptimizationConfig | None = None):
             x_new = None
             winner = None
 
-            local_sampling_diagnostics = {}
             global_conditions, local_conditions = _sample_restart_pool(
                 config,
                 constraints,
@@ -336,7 +320,6 @@ def run_optimization(config: OptimizationConfig | None = None):
                 global_count,
                 local_count,
                 generator,
-                local_sampling_diagnostics=local_sampling_diagnostics,
             )
             ranked_pool = rank_initial_condition_pool(
                 acquisition_function,
@@ -408,24 +391,10 @@ def run_optimization(config: OptimizationConfig | None = None):
                 )
                 break
 
-            incumbent_point = x_train[int(y_train.argmin().item())]
-            diagnostic_points = torch.cat(
-                (
-                    x_new,
-                    incumbent_point.unsqueeze(0),
-                    fixed_burnin_point.unsqueeze(0),
-                )
-            )
             with torch.no_grad():
-                posterior_stds = (
-                    model.posterior(diagnostic_points)
-                    .variance.clamp_min(0)
-                    .sqrt()
-                    .reshape(-1)
+                posterior_std = float(
+                    model.posterior(x_new).variance.clamp_min(0).sqrt().item()
                 )
-            posterior_std = float(posterior_stds[0].item())
-            posterior_incumbent_std = float(posterior_stds[1].item())
-            posterior_fixed_burnin_std = float(posterior_stds[2].item())
             y_new, raster_new = evaluate_designs(
                 x_new,
                 config.xsize,
@@ -452,9 +421,6 @@ def run_optimization(config: OptimizationConfig | None = None):
 
             gp_diagnostics = model.diagnostics()
             lengthscales, outputscales = _flatten_diagnostics(gp_diagnostics)
-            local_sampling_min_radius = local_sampling_diagnostics.get(
-                "minimum_radius"
-            )
             record = {
                 "iteration": iteration,
                 "new_compliance": float(y_new.item()),
@@ -463,8 +429,6 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "winner_source": winner["source"],
                 "winner_acquisition": float(winner["acquisition_value"].item()),
                 "posterior_score_std": posterior_std,
-                "posterior_incumbent_score_std": posterior_incumbent_std,
-                "posterior_fixed_burnin_score_std": posterior_fixed_burnin_std,
                 "noise": gp_diagnostics.noise,
                 "outputscale_mean": float(np.mean(outputscales)) if outputscales else math.nan,
                 "lengthscale_min": min(lengthscales, default=math.nan),
@@ -476,13 +440,6 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "local_restarts": local_count,
                 "raw_global": raw_global,
                 "raw_local": raw_local,
-                "requested_raw_local": local_count * config.raw_pool_multiplier,
-                "local_sampling_attempts": local_sampling_diagnostics.get("attempts", 0),
-                "local_sampling_min_radius": (
-                    local_sampling_min_radius
-                    if local_sampling_min_radius is not None
-                    else math.nan
-                ),
                 "optimizer_failures": optimizer_failures,
                 "stagnation": controller.stagnation,
             }
