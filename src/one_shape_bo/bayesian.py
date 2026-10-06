@@ -386,20 +386,36 @@ class Acquisition:
                 )
                 if not in_bounds or not feasible_mask(candidate_row, constraints).all():
                     raise CandidateGenerationError("infeasible optimizer result")
-                self.successful_results.append(
-                    {
-                        "restart_index": restart_index,
-                        "source": entry["source"],
-                        "shape_tuple": tuple(
-                            int(initial_point[7 * hole].item())
-                            for hole in range(constraints.nholes)
-                        ),
-                        "candidate": candidate_row,
-                        "acquisition_value": value.reshape(-1)[0].detach(),
-                        "elapsed_seconds": time.perf_counter() - started,
-                        "warning_count": len(caught),
-                    }
-                )
+                scale = (
+                    constraints.box_bounds[1] - constraints.box_bounds[0]
+                ).clamp_min(1e-12)
+                result = {
+                    "restart_index": restart_index,
+                    "source": entry["source"],
+                    "shape_tuple": tuple(
+                        int(initial_point[7 * hole].item())
+                        for hole in range(constraints.nholes)
+                    ),
+                    "start_point": initial_point.detach().clone(),
+                    "start_distance": float(
+                        torch.linalg.vector_norm(
+                            (candidate_row.reshape(-1) - initial_point) / scale
+                        ).item()
+                    ),
+                    "candidate": candidate_row,
+                    "acquisition_value": value.reshape(-1)[0].detach(),
+                    "elapsed_seconds": time.perf_counter() - started,
+                    "warning_count": len(caught),
+                }
+                for key in (
+                    "anchor_index",
+                    "archive_rank",
+                    "start_method",
+                    "raw_acquisition_value",
+                ):
+                    if key in entry:
+                        result[key] = entry[key]
+                self.successful_results.append(result)
             except (
                 BotorchError,
                 ValueError,
@@ -436,13 +452,12 @@ class Acquisition:
                 {"point": point, "source": "unspecified"}
                 for point in initial_conditions
             ]
-        return [
-            {
-                "point": entry["point"],
-                "source": entry.get("source", "unspecified"),
-            }
-            for entry in initial_conditions
-        ]
+        entries = []
+        for entry in initial_conditions:
+            copied = dict(entry)
+            copied["source"] = entry.get("source", "unspecified")
+            entries.append(copied)
+        return entries
 
     @staticmethod
     def _initial_failure(point, constraints):

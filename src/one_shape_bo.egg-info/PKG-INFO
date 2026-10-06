@@ -19,10 +19,13 @@ enforced.
 
 Feasible burn-in samples are split between a near-equal hole-area policy and a
 broad area-allocation policy. BO global pools use the broad policy. The local
-sampler keeps the configured radius and uses several diverse good observations
-as anchors. After a configurable period without a record improvement, a fixed
-restart budget shifts toward global starts; an improvement restores the baseline
-global/local split.
+restart policy defaults to radius-based feasible perturbations around several
+good observations. The opt-in `archive` policy instead uses the incumbent and
+GP-kernel-diverse members of the feasible observation archive as local
+acquisition-optimizer starts; these observed starts are not physically evaluated
+again, and optimized endpoints must remain feasible and novel. After a
+configurable period without a record improvement, a fixed restart budget shifts
+toward global starts; an improvement restores the baseline global/local split.
 
 ## Development environment
 
@@ -48,17 +51,28 @@ The default three-hole triangle problem can be run with:
 python -m one_shape_bo --seed 0
 ```
 
-Use `--shape ellipse`, `--burn-in`, `--iterations`, or `--output-dir` to
-override the common command-line settings. For full control, construct
-`OptimizationConfig` and call `run_optimization`:
+Use `--shape ellipse`, `--burn-in`, `--iterations`,
+`--local-start-strategy archive`, or `--output-dir` to override the common
+command-line settings. For full control, construct `OptimizationConfig` and call
+`run_optimization`:
 
 ```python
 from one_shape_bo import OptimizationConfig, run_optimization
 
 result = run_optimization(
-    OptimizationConfig(seed=7, ng_rst=10, nl_rst=5, local_radius=0.05)
+    OptimizationConfig(
+        seed=7,
+        ng_rst=10,
+        nl_rst=5,
+        local_start_strategy="archive",
+    )
 )
 ```
+
+`local_start_strategy="radius"` remains the default. The archive strategy is
+experimental pending a separately run multi-seed comparison; selecting it does
+not alter the GP, LogEI acquisition policy, or physical model, and does not add
+extra physical evaluations to a successful BO iteration.
 
 Unless `output_dir` is supplied, run artifacts are written below a dated,
 time-stamped `outputs/YYMMDD_HHMMSS_<Shape>/` directory. Each run records its
@@ -66,8 +80,11 @@ configuration, a compact output log, per-iteration GP and restart diagnostics in
 CSV, a diagnostic plot, the best geometry, and (for the standard triangle case)
 a read-only audit of the stored reference PNG.
 
-The reported posterior standard deviation is uncertainty in the GP's
-standardized negative-log-compliance score space, not in compliance units.
+The CSV reports requested and generated local starts, acquisition improvement,
+start-to-end movement, optimizer failures, and posterior uncertainty at the
+selected candidate, current incumbent, and fixed best burn-in design. Posterior
+standard deviation is in the GP's negative-log-compliance score units, not
+standardized units or compliance units.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's

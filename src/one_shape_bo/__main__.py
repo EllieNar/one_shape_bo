@@ -13,6 +13,11 @@ def main():
     parser.add_argument("--seed", type=int, default=0)
     parser.add_argument("--burn-in", type=int)
     parser.add_argument("--iterations", type=int)
+    parser.add_argument(
+        "--local-start-strategy",
+        choices=("radius", "archive"),
+        default="radius",
+    )
     parser.add_argument("--output-dir")
     arguments = parser.parse_args()
     run_optimization(
@@ -21,6 +26,7 @@ def main():
             seed=arguments.seed,
             burn_in=arguments.burn_in,
             iterations=arguments.iterations,
+            local_start_strategy=arguments.local_start_strategy,
             output_dir=arguments.output_dir,
         )
     )

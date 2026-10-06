@@ -37,13 +37,27 @@ def test_acquisition_preserves_mixed_tuple_source_without_geometry_output(
     result = bayesian.Acquisition(
         acq_function=object(),
         constraints=SimpleConstraints(),
-        initial_conditions=[{"point": point, "source": "global"}],
+        initial_conditions=[
+            {
+                "point": point,
+                "source": "local",
+                "anchor_index": 7,
+                "archive_rank": 0,
+                "start_method": "archive",
+                "raw_acquisition_value": torch.tensor(1.25),
+            }
+        ],
     )
 
     assert not result.failed_restarts
     assert len(result.successful_results) == 1
-    assert result.successful_results[0]["source"] == "global"
+    assert result.successful_results[0]["source"] == "local"
     assert result.successful_results[0]["shape_tuple"] == (0, 0, 1)
+    assert result.successful_results[0]["anchor_index"] == 7
+    assert result.successful_results[0]["archive_rank"] == 0
+    assert result.successful_results[0]["start_method"] == "archive"
+    assert result.successful_results[0]["start_distance"] == 0.0
+    assert result.successful_results[0]["raw_acquisition_value"].item() == 1.25
     assert captured["fixed_features"] == {
         0: 0.0,
         7: 0.0,

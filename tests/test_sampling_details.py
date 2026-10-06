@@ -24,6 +24,24 @@ class CandidateConstraints:
     box = (bx, xsize - bx, by, ysize - by)
 
 
+class DenseKernelResult:
+    def __init__(self, matrix):
+        self.matrix = matrix
+
+    def to_dense(self):
+        return self.matrix
+
+
+class RBFKernel:
+    def __call__(self, points):
+        distances = torch.cdist(points, points)
+        return DenseKernelResult(torch.exp(-(distances**2)))
+
+
+class KernelModel:
+    covar_module = RBFKernel()
+
+
 def test_random_candidate_applies_both_explicit_area_policies(monkeypatch):
     recorded = []
 
@@ -106,6 +124,40 @@ def test_local_sampler_uses_configured_radius_without_contraction(monkeypatch):
     assert torch.allclose(result[0, 1:], base[0, 1:] + 0.05)
 
 
+def test_archive_local_conditions_are_best_first_kernel_diverse_and_mixed(monkeypatch):
+    constraints = type("Constraints", (), {"nholes": 2})()
+    x_train = torch.tensor(
+        [
+            [0, .10, .10, .10, .10, .10, .10, 0, .20, .20, .20, .20, .20, .20],
+            [0, .15, .15, .15, .15, .15, .15, 1, .25, .25, .25, .25, .25, .00],
+            [1, .80, .80, .80, .80, .80, .00, 1, .70, .70, .70, .70, .70, .00],
+            [0, .12, .12, .12, .12, .12, .12, 0, .22, .22, .22, .22, .22, .22],
+        ],
+        dtype=torch.double,
+    )
+    y_train = torch.tensor([[12.0], [8.0], [10.0], [9.0]], dtype=torch.double)
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+
+    conditions, metadata = sampling.select_archive_local_conditions(
+        3, x_train, y_train, constraints, KernelModel()
+    )
+
+    assert conditions.shape == (3, 14)
+    assert torch.equal(conditions[0], x_train[1])
+    assert {tuple(row[[0, 7]].int().tolist()) for row in conditions} == {
+        (0, 0),
+        (0, 1),
+        (1, 1),
+    }
+    assert all(entry["allow_observed_start"] for entry in metadata)
+    assert all(entry["start_method"] == "archive" for entry in metadata)
+    assert [entry["anchor_index"] for entry in metadata][0] == 1
+
+
 def test_rank_pool_keeps_sources_and_filters_near_observations(monkeypatch):
     constraints = SimpleConstraints()
     global_points = torch.tensor(
@@ -144,3 +196,38 @@ def test_rank_pool_keeps_sources_and_filters_near_observations(monkeypatch):
     assert {entry["source"] for entry in ranked} == {"global", "local"}
     assert all(not torch.equal(entry["point"], global_points[1]) for entry in ranked)
     assert all("rank_score" in entry for entry in ranked)
+
+
+def test_rank_pool_allows_observed_archive_start_but_not_observed_global(monkeypatch):
+    constraints = SimpleConstraints()
+    observed = torch.tensor(
+        [[0.0, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30]], dtype=torch.double
+    )
+    signature = observed.detach().cpu().numpy().tobytes()
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+
+    ranked = sampling.rank_initial_condition_pool(
+        lambda X: X[..., 1:].sum(dim=-1),
+        observed.clone(),
+        observed.clone(),
+        constraints,
+        excluded_signatures={signature},
+        attempted_starts=[],
+        minimum_distance=0.05,
+        observed_points=observed,
+        local_metadata=[
+            {
+                "allow_observed_start": True,
+                "anchor_index": 0,
+                "start_method": "archive",
+            }
+        ],
+    )
+
+    assert len(ranked) == 1
+    assert ranked[0]["source"] == "local"
+    assert ranked[0]["anchor_index"] == 0

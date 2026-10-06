@@ -380,6 +380,110 @@ def sample_stratified_feasible(
     return torch.cat(batches)
 
 
+def _model_kernel_distance_matrix(model, points):
+    """Return GP-correlation distances between normalized design points."""
+    count = len(points)
+    if count == 0:
+        return points.new_empty((0, 0))
+    if count == 1:
+        return points.new_zeros((1, 1))
+    gp = getattr(model, "gp", model)
+    if not hasattr(gp, "covar_module"):
+        raise ValueError("The model does not expose a covariance module.")
+    with torch.no_grad():
+        covariance = gp.covar_module(points).to_dense().reshape(count, count)
+    diagonal = covariance.diagonal().clamp_min(1e-12)
+    denominator = torch.sqrt(diagonal[:, None] * diagonal[None, :])
+    correlation = (covariance / denominator).clamp(-1.0, 1.0)
+    return torch.sqrt((2.0 - 2.0 * correlation).clamp_min(0.0))
+
+
+def model_kernel_distance(model, first, second):
+    """Return the fitted GP kernel distance between two designs."""
+    gp = getattr(model, "gp", model)
+    if not hasattr(gp, "covar_module"):
+        return float("nan")
+    points = torch.stack((first.detach().reshape(-1), second.detach().reshape(-1)))
+    return float(_model_kernel_distance_matrix(model, points)[0, 1].item())
+
+
+def select_archive_local_conditions(
+    number: int,
+    x_train,
+    y_train,
+    constraints,
+    model,
+    elite_multiplier: int = 3,
+):
+    """Select good, GP-diverse feasible observations as local optimizer starts."""
+    if number <= 0 or len(x_train) == 0:
+        return (
+            torch.empty((0, x_train.shape[-1]), **TENSOR_KWARGS),
+            [],
+        )
+
+    target = min(int(number), len(x_train))
+    elite_limit = min(len(x_train), max(target, elite_multiplier * target))
+    ordered_indices = torch.argsort(y_train.reshape(-1))
+    elite_indices, signatures = [], set()
+    for index_tensor in ordered_indices:
+        index = int(index_tensor.item())
+        signature = geometry_signature(x_train[index], constraints)
+        if signature in signatures:
+            continue
+        signatures.add(signature)
+        elite_indices.append(index)
+        if len(elite_indices) >= elite_limit:
+            break
+    if not elite_indices:
+        return (
+            torch.empty((0, x_train.shape[-1]), **TENSOR_KWARGS),
+            [],
+        )
+
+    elite = x_train[elite_indices]
+    target = min(target, len(elite))
+    distances = _model_kernel_distance_matrix(model, elite)
+    shape_tuples = [
+        tuple(
+            int(elite[position, 7 * hole].item())
+            for hole in range(constraints.nholes)
+        )
+        for position in range(len(elite))
+    ]
+    selected = [0]
+    represented_shapes = {shape_tuples[0]}
+    while len(selected) < target:
+        available = [index for index in range(len(elite)) if index not in selected]
+        unseen_shapes = [
+            index
+            for index in available
+            if shape_tuples[index] not in represented_shapes
+        ]
+        candidates = unseen_shapes or available
+        chosen = max(
+            candidates,
+            key=lambda index: (
+                float(distances[index, selected].min().item()),
+                -index,
+            ),
+        )
+        selected.append(chosen)
+        represented_shapes.add(shape_tuples[chosen])
+
+    conditions = elite[selected].detach().clone()
+    metadata = [
+        {
+            "allow_observed_start": True,
+            "anchor_index": elite_indices[position],
+            "archive_rank": position,
+            "start_method": "archive",
+        }
+        for position in selected
+    ]
+    return conditions, metadata
+
+
 def sample_local_feasible(
     number: int,
     x_train,
@@ -482,9 +586,10 @@ def rank_initial_condition_pool(
     attempted_starts,
     minimum_distance: float,
     observed_points=None,
+    local_metadata=None,
 ):
     """Rank valid starts by acquisition and source-appropriate coverage."""
-    batches, sources = [], []
+    batches, sources, metadata = [], [], []
     for source, conditions in (
         ("global", global_conditions),
         ("local", local_conditions),
@@ -492,6 +597,12 @@ def rank_initial_condition_pool(
         if conditions.numel():
             batches.append(conditions)
             sources.extend([source] * conditions.shape[0])
+            if source == "local" and local_metadata is not None:
+                if len(local_metadata) != conditions.shape[0]:
+                    raise ValueError("local metadata must align with local conditions")
+                metadata.extend(local_metadata)
+            else:
+                metadata.extend({} for _ in range(conditions.shape[0]))
     if not batches:
         return []
     conditions = torch.cat(batches)
@@ -509,23 +620,44 @@ def rank_initial_condition_pool(
         return []
     conditions = conditions[valid_indices]
     sources = [sources[index] for index in valid_indices]
+    metadata = [metadata[index] for index in valid_indices]
     with torch.no_grad():
         acquisition = acq_function(conditions.unsqueeze(1)).reshape(-1)
 
     lower, upper = constraints.box_bounds
     scale = (upper - lower).clamp_min(1e-12)
-    reference = list(attempted_starts)
-    if observed_points is not None:
-        reference.extend(point for point in observed_points)
-    reference_normalized = [
-        (point.detach().reshape(-1) - lower) / scale for point in reference
+    attempted_normalized = [
+        (point.detach().reshape(-1) - lower) / scale for point in attempted_starts
     ]
+    observed_normalized = []
+    if observed_points is not None:
+        observed_normalized = [
+            (point.detach().reshape(-1) - lower) / scale
+            for point in observed_points
+        ]
     normalized = (conditions - lower) / scale
-    if reference_normalized:
-        references = torch.stack(reference_normalized)
-        novelty = torch.cdist(normalized, references).min(dim=1).values
+    if observed_normalized:
+        observed_distance = torch.cdist(
+            normalized, torch.stack(observed_normalized)
+        ).min(dim=1).values
     else:
-        novelty = torch.ones(len(conditions), **TENSOR_KWARGS)
+        observed_distance = torch.full(
+            (len(conditions),), float("inf"), **TENSOR_KWARGS
+        )
+    observed_start = [
+        metadata[index].get("allow_observed_start", False)
+        and bool(observed_distance[index] <= 1e-12)
+        for index in range(len(conditions))
+    ]
+    novelty = torch.ones(len(conditions), **TENSOR_KWARGS)
+    for index in range(len(conditions)):
+        references = list(attempted_normalized)
+        if not observed_start[index]:
+            references.extend(observed_normalized)
+        if references:
+            novelty[index] = torch.cdist(
+                normalized[index : index + 1], torch.stack(references)
+            ).min()
     acquisition_score = _unit(acquisition)
     novelty_score = _unit(novelty)
     score = torch.stack(
@@ -537,7 +669,7 @@ def rank_initial_condition_pool(
         ]
     )
 
-    accepted_signatures = set(excluded_signatures)
+    accepted_start_signatures = set()
     ranked = []
     for index_tensor in torch.argsort(score, descending=True):
         index = int(index_tensor.item())
@@ -545,23 +677,29 @@ def rank_initial_condition_pool(
             continue
         point = conditions[index].detach().reshape(-1)
         signature = geometry_signature(point, constraints)
-        if signature in accepted_signatures:
+        allow_observed = observed_start[index]
+        if signature in accepted_start_signatures:
             continue
-        if reference_normalized and novelty[index] < minimum_distance:
+        if signature in excluded_signatures and not allow_observed:
             continue
-        ranked.append(
-            {
-                "point": point,
-                "source": sources[index],
-                "shape_tuple": tuple(
-                    int(point[7 * hole].item()) for hole in range(constraints.nholes)
-                ),
-                "raw_acquisition_value": acquisition[index].detach(),
-                "rank_score": score[index].detach(),
-                "signature": signature,
-            }
+        has_references = bool(attempted_normalized) or (
+            bool(observed_normalized) and not allow_observed
         )
-        accepted_signatures.add(signature)
+        if has_references and novelty[index] < minimum_distance:
+            continue
+        entry = {
+            "point": point,
+            "source": sources[index],
+            "shape_tuple": tuple(
+                int(point[7 * hole].item()) for hole in range(constraints.nholes)
+            ),
+            "raw_acquisition_value": acquisition[index].detach(),
+            "rank_score": score[index].detach(),
+            "signature": signature,
+        }
+        entry.update(metadata[index])
+        ranked.append(entry)
+        accepted_start_signatures.add(signature)
     return ranked
 
 

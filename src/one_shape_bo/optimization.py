@@ -29,9 +29,11 @@ from .sampling import (
     AREA_BROAD,
     AREA_NEAR_EQUAL,
     feasible_mask,
+    model_kernel_distance,
     rank_initial_condition_pool,
     sample_local_feasible,
     sample_stratified_feasible,
+    select_archive_local_conditions,
     take_restart_batch,
 )
 
@@ -54,6 +56,7 @@ class OptimizationConfig:
     max_restart_batches: int = 6
     minimum_restart_distance: float = 0.02
     local_radius: float = 0.05
+    local_start_strategy: str = "radius"
     raster_tolerance: float = 0.005
     emin: float = 1e-9
     e0: float = 1.0
@@ -141,6 +144,7 @@ def _sample_restart_pool(
     global_count,
     local_count,
     generator,
+    model=None,
 ):
     try:
         global_conditions = sample_stratified_feasible(
@@ -155,15 +159,28 @@ def _sample_restart_pool(
         )
     except RuntimeError:
         global_conditions = torch.empty((0, config.dimension), **TENSOR_KWARGS)
-    local_conditions = sample_local_feasible(
-        local_count * config.raw_pool_multiplier,
-        x_train,
-        y_train,
-        constraints,
-        radius=config.local_radius,
-        generator=generator,
-    )
-    return global_conditions, local_conditions
+    requested_local = local_count * config.raw_pool_multiplier
+    if config.local_start_strategy == "archive":
+        local_conditions, local_metadata = select_archive_local_conditions(
+            requested_local,
+            x_train,
+            y_train,
+            constraints,
+            model,
+        )
+    else:
+        local_conditions = sample_local_feasible(
+            requested_local,
+            x_train,
+            y_train,
+            constraints,
+            radius=config.local_radius,
+            generator=generator,
+        )
+        local_metadata = [
+            {"start_method": "radius"} for _ in range(len(local_conditions))
+        ]
+    return global_conditions, local_conditions, local_metadata
 
 
 def _write_diagnostics(output_dir: Path, records):
@@ -188,11 +205,23 @@ def _plot_diagnostics(output_dir: Path, best_history, records):
             iterations,
             [record["posterior_score_std"] for record in records],
             color="tab:orange",
+            label="selected candidate",
+        )
+        axes[0, 1].plot(
+            iterations,
+            [record["posterior_incumbent_score_std"] for record in records],
+            label="incumbent at model fit",
+        )
+        axes[0, 1].plot(
+            iterations,
+            [record["posterior_fixed_burnin_score_std"] for record in records],
+            label="fixed best burn-in",
         )
         axes[0, 1].set(
-            title="Posterior uncertainty in transformed score space",
+            title="Posterior uncertainty in -log(compliance) score",
             xlabel="BO iteration",
         )
+        axes[0, 1].legend(fontsize=8)
         sources = [record["winner_source"] for record in records]
         source_codes = [0 if source == "local" else 1 for source in sources]
         axes[1, 0].scatter(iterations, source_codes, s=14)
@@ -229,6 +258,8 @@ def run_optimization(config: OptimizationConfig | None = None):
     config = config or OptimizationConfig()
     if config.htype not in (0, 1):
         raise ValueError("htype must be 0 (triangles) or 1 (ellipses).")
+    if config.local_start_strategy not in ("radius", "archive"):
+        raise ValueError("local_start_strategy must be 'radius' or 'archive'.")
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -253,10 +284,17 @@ def run_optimization(config: OptimizationConfig | None = None):
             tri_q_min=config.tri_q_min,
         )
         log.write("Bayesian optimization run")
+        local_radius_label = (
+            f"{config.local_radius:.4f}"
+            if config.local_start_strategy == "radius"
+            else "unused"
+        )
         log.write(
             f"seed={config.seed} burn_in={config.resolved_burn_in} "
             f"iterations={config.resolved_iterations} restart_budget="
-            f"{config.ng_rst + config.nl_rst} local_radius={config.local_radius:.4f}"
+            f"{config.ng_rst + config.nl_rst} "
+            f"local_start_strategy={config.local_start_strategy} "
+            f"local_radius={local_radius_label}"
         )
         x_train = sample_stratified_feasible(
             config.resolved_burn_in,
@@ -279,6 +317,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             return_solid_fractions=True,
         )
         initial_best = float(y_train.min().item())
+        fixed_burnin_point = x_train[int(y_train.argmin().item())].detach().clone()
         best_history = [initial_best]
         observed_signatures = {
             geometry_signature(design, constraints) for design in x_train
@@ -312,7 +351,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             x_new = None
             winner = None
 
-            global_conditions, local_conditions = _sample_restart_pool(
+            global_conditions, local_conditions, local_metadata = _sample_restart_pool(
                 config,
                 constraints,
                 x_train,
@@ -320,6 +359,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                 global_count,
                 local_count,
                 generator,
+                model=model,
             )
             ranked_pool = rank_initial_condition_pool(
                 acquisition_function,
@@ -330,19 +370,23 @@ def run_optimization(config: OptimizationConfig | None = None):
                 attempted_starts,
                 config.minimum_restart_distance,
                 observed_points=x_train,
+                local_metadata=local_metadata,
             )
             raw_global, raw_local = len(global_conditions), len(local_conditions)
 
             for _ in range(config.max_restart_batches):
                 if not ranked_pool:
-                    global_conditions, local_conditions = _sample_restart_pool(
-                        config,
-                        constraints,
-                        x_train,
-                        y_train,
-                        global_count,
-                        local_count,
-                        generator,
+                    global_conditions, local_conditions, local_metadata = (
+                        _sample_restart_pool(
+                            config,
+                            constraints,
+                            x_train,
+                            y_train,
+                            global_count,
+                            local_count,
+                            generator,
+                            model=model,
+                        )
                     )
                     ranked_pool = rank_initial_condition_pool(
                         acquisition_function,
@@ -353,6 +397,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                         attempted_starts,
                         config.minimum_restart_distance,
                         observed_points=x_train,
+                        local_metadata=local_metadata,
                     )
                 starts, ranked_pool = take_restart_batch(
                     ranked_pool,
@@ -391,10 +436,39 @@ def run_optimization(config: OptimizationConfig | None = None):
                 )
                 break
 
-            with torch.no_grad():
-                posterior_std = float(
-                    model.posterior(x_new).variance.clamp_min(0).sqrt().item()
+            incumbent_point = x_train[int(y_train.argmin().item())]
+            diagnostic_points = torch.cat(
+                (
+                    x_new,
+                    incumbent_point.unsqueeze(0),
+                    fixed_burnin_point.unsqueeze(0),
                 )
+            )
+            with torch.no_grad():
+                posterior_stds = (
+                    model.posterior(diagnostic_points)
+                    .variance.clamp_min(0)
+                    .sqrt()
+                    .reshape(-1)
+                )
+            posterior_std = float(posterior_stds[0].item())
+            posterior_incumbent_std = float(posterior_stds[1].item())
+            posterior_fixed_burnin_std = float(posterior_stds[2].item())
+            start_acquisition = winner.get("raw_acquisition_value")
+            if start_acquisition is None:
+                start_acquisition_value = math.nan
+                acquisition_gain = math.nan
+            else:
+                start_acquisition_value = float(start_acquisition.item())
+                acquisition_gain = (
+                    float(winner["acquisition_value"].item())
+                    - start_acquisition_value
+                )
+            winner_kernel_distance = model_kernel_distance(
+                model,
+                winner.get("start_point", x_new.reshape(-1)),
+                x_new.reshape(-1),
+            )
             y_new, raster_new = evaluate_designs(
                 x_new,
                 config.xsize,
@@ -428,7 +502,16 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "raster_solid_fraction": float(raster_new.item()),
                 "winner_source": winner["source"],
                 "winner_acquisition": float(winner["acquisition_value"].item()),
+                "winner_start_acquisition": start_acquisition_value,
+                "winner_acquisition_gain": acquisition_gain,
+                "winner_start_distance": winner.get("start_distance", math.nan),
+                "winner_kernel_distance": winner_kernel_distance,
+                "winner_start_method": winner.get("start_method", "global"),
+                "winner_anchor_index": winner.get("anchor_index"),
+                "winner_archive_rank": winner.get("archive_rank"),
                 "posterior_score_std": posterior_std,
+                "posterior_incumbent_score_std": posterior_incumbent_std,
+                "posterior_fixed_burnin_score_std": posterior_fixed_burnin_std,
                 "noise": gp_diagnostics.noise,
                 "outputscale_mean": float(np.mean(outputscales)) if outputscales else math.nan,
                 "lengthscale_min": min(lengthscales, default=math.nan),
@@ -440,6 +523,8 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "local_restarts": local_count,
                 "raw_global": raw_global,
                 "raw_local": raw_local,
+                "requested_raw_local": local_count * config.raw_pool_multiplier,
+                "local_start_strategy": config.local_start_strategy,
                 "optimizer_failures": optimizer_failures,
                 "stagnation": controller.stagnation,
             }
@@ -449,6 +534,8 @@ def run_optimization(config: OptimizationConfig | None = None):
                 f"new={record['new_compliance']:.6f} best={current_best:.6f} "
                 f"solid={record['raster_solid_fraction']:.4f} "
                 f"winner={winner['source']} restarts={global_count}G/{local_count}L "
+                f"move={record['winner_start_distance']:.3g} "
+                f"acq_gain={record['winner_acquisition_gain']:.3g} "
                 f"score_std={posterior_std:.3g} noise={gp_diagnostics.noise:.3g} "
                 f"ls={record['lengthscale_min']:.3g}/"
                 f"{record['lengthscale_median']:.3g}/"

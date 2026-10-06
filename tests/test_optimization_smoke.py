@@ -37,7 +37,9 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             self.best_f = torch.tensor(0.0)
 
         def posterior(self, X):
-            return SimpleNamespace(variance=torch.tensor([[0.04]]))
+            return SimpleNamespace(
+                variance=torch.full((len(X), 1), 0.04, dtype=torch.double)
+            )
 
         def diagnostics(self):
             return GPDiagnostics({"kernel": [0.3]}, {"kernel": 1.2}, 0.01)
@@ -50,6 +52,9 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
                     "candidate": candidate,
                     "signature": b"candidate",
                     "source": "global",
+                    "start_point": start,
+                    "start_distance": 0.05,
+                    "raw_acquisition_value": torch.tensor(1.0),
                     "acquisition_value": torch.tensor(1.5),
                 }
             ]
@@ -73,7 +78,11 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     monkeypatch.setattr(
         optimization,
         "_sample_restart_pool",
-        lambda *args, **kwargs: (start.unsqueeze(0), torch.empty((0, 7))),
+        lambda *args, **kwargs: (
+            start.unsqueeze(0),
+            torch.empty((0, 7)),
+            [],
+        ),
     )
     monkeypatch.setattr(
         optimization,
@@ -127,6 +136,12 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     output_log = (tmp_path / "output_log.txt").read_text()
     assert result["best_source"] == "global"
     assert "posterior_score_std" in diagnostics
+    assert "posterior_incumbent_score_std" in diagnostics
+    assert "posterior_fixed_burnin_score_std" in diagnostics
+    assert "winner_start_distance" in diagnostics
+    assert "winner_start_method" in diagnostics
+    assert "winner_acquisition_gain" in diagnostics
+    assert "local_start_strategy" in diagnostics
     assert "winner_source" in diagnostics
     assert "winner=global" in output_log
     assert "tensor([" not in output_log

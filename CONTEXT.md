@@ -313,3 +313,62 @@ shared random stream; it also removes the Issue 04 contraction diagnostics added
 after that commit. No output directory or stored benchmark result was changed.
 The earlier Issue 04 implementation sections above are therefore historical
 records of experiments, not descriptions of the current package behaviour.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      06/10/26 at 10:43 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Issue 04 archive-restart implementation decision
+
+The radius-contraction experiments treated `local_radius` as though it defined a
+local search region, but it was only the per-coordinate standard deviation of
+random acquisition-optimizer starts. The acquisition optimiser retained the full
+box bounds, so contraction increased feasible starts without mathematically
+constraining the resulting search. It filled the local pool but overrepresented
+closely related starts and produced a worse seed-0 BO trajectory.
+
+The approved alternative uses already evaluated, feasible designs only as local
+initial conditions for constrained LogEI optimisation. It selects the incumbent
+and then diverse members of a high-performing archive using distance induced by
+the fitted GP kernel. These points are not proposed for physical re-evaluation:
+the optimized endpoint must remain feasible, raster-valid, and novel. This is a
+multi-start acquisition-initialisation policy, not particle swarm optimisation
+or a replacement for GP Bayesian optimisation.
+
+The existing radius method remains the default and is retained for a controlled
+comparison. The archive method is opt-in, continues to honour the configured raw
+pool multiplier and restart allocation, supports canonical mixed shape tuples,
+and falls back to the available partial archive if necessary. Diagnostics will
+record local start generation, acquisition improvement, start-to-end movement,
+optimizer failures, and posterior uncertainty at comparable points. BoTorch
+untransforms the outcome standardisation in `posterior()`, so uncertainty is to
+be labelled in negative-log-compliance score units rather than standardized
+units. No physical assumptions, feasibility tolerances, GP model, LogEI policy,
+or expensive-evaluation count are changed.
+
+Implementation in this task is limited to the sampling/acquisition policy,
+diagnostics, documentation, and targeted tests. Multi-seed comparison, acceptance
+decisions, and changing the default strategy are explicitly reserved for the user
+and are not part of this implementation.
+
+Implementation outcome
+
+`OptimizationConfig.local_start_strategy` and the matching CLI option now select
+between `radius` and `archive`, with `radius` unchanged as the default. Archive
+selection deduplicates the high-performing observation set by raster geometry,
+keeps the incumbent, represents previously unseen canonical shape tuples where
+available, and applies greedy max-min selection in normalized GP-kernel distance.
+Observed archive designs may pass restart ranking as initial conditions, but the
+main BO loop still rejects any optimized endpoint whose raster signature has
+already been evaluated.
+
+Restart metadata now retains its starting design and archive provenance through
+acquisition optimisation. The CSV and compact iteration log report requested and
+generated local starts, acquisition gain, normalized start-to-end distance,
+GP-kernel movement, failures, and posterior standard deviations at the selected
+candidate, incumbent, and fixed best burn-in design. The diagnostic plot and
+README use the corrected negative-log-compliance score-unit label. Fifteen
+targeted sampling, mixed-shape, acquisition, GP, restart-policy, and one-iteration
+driver tests passed in 3.60 seconds; the only warnings were upstream PyTorch
+`torch.jit.script` deprecations. No BO benchmark, multi-seed comparison, default
+strategy change, or acceptance decision was performed.
