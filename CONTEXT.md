@@ -372,3 +372,64 @@ targeted sampling, mixed-shape, acquisition, GP, restart-policy, and one-iterati
 driver tests passed in 3.60 seconds; the only warnings were upstream PyTorch
 `torch.jit.script` deprecations. No BO benchmark, multi-seed comparison, default
 strategy change, or acceptance decision was performed.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      06/10/26 at 15:53 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+outputs -> 261006_Archive_Seed0: the above change after ~ 10 iterations.
+
+This was very slow - 10 iterations took ~ 1 hour.
+
+Codex was asked:
+I am now running the latest changes when local_start_strategy is archive. The evaluations are completed particularly slowly (see 261006_Archive_Seed0).
+In plan mode: evaluate why the latest code is so slow and propose a modification which could accelerate this, without compromising the purpose of the modifications made in the latest commit.
+
+Codex reported:
+The slowdown is most likely caused by acquisition optimisation, specifically the five newly guaranteed archive restarts—not by archive selection itself.
+
+The important difference is:
+- 260928_Implemented_Corrections requested 10G/5L, but its radius sampler usually generated zero usable local starts.
+- Archive mode reliably supplies all five local starts.
+- Every supplied start is currently optimized independently with:
+  - maxiter=250
+  - ftol=1e-9
+  - up to 60 seconds per restart
+- Therefore archive mode adds five potentially long constrained optimisations per BO iteration.
+
+Other observations:
+- Archive selection initially computes only a small kernel-distance matrix over approximately 45 elite observations. This should take seconds at most, not minutes.
+- The physical evaluation uses SciPy’s CPU sparse solver once per BO iteration. It is unchanged by the archive commit.
+- Exact GP refitting will become progressively more expensive as the training set grows, but it was already present in the accepted version.
+- CUDA provides limited benefit here because SciPy drives many small, sequential PyTorch evaluations with CPU–GPU synchronization. BoTorch normally gains speed by batching restarts, but the nonlinear constraints prevent that batching. BoTorch optimization documentation
+- Starting exactly at observed archive points may also make LogEI locally flat or poorly conditioned. The small reported archive movements support this possibility, but it cannot currently be confirmed because per-restart timings are collected internally and then discarded.
+
+Proposed modification
+Use a two-stage budget only for archive restarts:
+1. Optimize all five archive starts using a screening budget:
+   - maxiter=50
+   - ftol=1e-6
+   - timeout_sec=15
+2. Select the best feasible archive result from that screening pass.
+3. Refine that one archive result using the existing full settings:
+   - maxiter=250
+   - ftol=1e-9
+   - timeout_sec=60
+4. Optimize all global restarts exactly as now.
+This reduces as many as five full archive optimisations to five short searches plus one full refinement.
+It preserves the purpose of the latest commit:
+- the incumbent and GP-kernel-diverse archive members still provide all local starts;
+- every archive start still participates in LogEI optimisation;
+- the best archive basin still receives the original high-accuracy refinement;
+- global exploration is unchanged;
+- the GP, LogEI acquisition, physical objective, geometric constraints, restart allocation and novelty checks remain unchanged;
+- no expensive physical evaluation is removed or approximated.
+The tolerance change is limited to screening. The final archive candidate is still refined with the current tolerance. This is safer than globally reducing maxiter, removing restarts, or lowering the restart allocation.
+
+The proposed modifications were accepted, and the new code was run. This produced:
+
+ouputs -> 261006_Archive_Seed0_V2 (run for ~ 10 iterations).
+Observe that this performs much worse than the baseline best in 260928_Implemented_Corrections.
+
+The code is returned to the state before this modification, i.e. the commit 'Intelligent restart selection outputs and WSL diagnostics'.
+This ends with the commit of the 261006_Archive_Seed0_V2 output 'Unintelligent restart selection results'.

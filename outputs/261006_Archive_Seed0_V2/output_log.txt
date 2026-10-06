@@ -1,0 +1,16 @@
+Bayesian optimization run
+seed=0 burn_in=105 iterations=525 restart_budget=15 local_start_strategy=archive local_radius=unused
+burn_in_completed=105 elapsed=311.4s
+iter=0001/525 new=135.383076 best=127.566462 solid=0.5010 winner=global restarts=10G/5L move=1.17 acq_gain=3.55 score_std=0.18 noise=0.00654 ls=0.183/0.333/0.693 time=218.8s acq=185.7s (G=117.4/L=67.7;screen=67.7/refine=0.0) gp=6.8s phys=0.1s
+iter=0002/525 new=131.021069 best=127.566462 solid=0.4956 winner=local restarts=10G/5L move=1.44 acq_gain=158 score_std=0.263 noise=0.00641 ls=0.178/0.333/0.693 time=238.6s acq=212.4s (G=118.1/L=93.5;screen=64.4/refine=29.1) gp=0.8s phys=0.1s
+iter=0003/525 new=168.923713 best=127.566462 solid=0.4870 winner=global restarts=10G/5L move=1.41 acq_gain=4.12 score_std=0.206 noise=0.00635 ls=0.183/0.333/0.693 time=237.8s acq=220.4s (G=152.4/L=67.3;screen=67.3/refine=0.0) gp=1.0s phys=0.1s
+iter=0004/525 new=3426.497705 best=127.566462 solid=0.4996 winner=global restarts=10G/5L move=0.623 acq_gain=3.26 score_std=0.177 noise=0.00636 ls=0.18/0.333/0.693 time=268.0s acq=240.0s (G=177.2/L=62.2;screen=62.2/refine=0.0) gp=0.9s phys=0.1s
+iter=0005/525 new=182.906062 best=127.566462 solid=0.4964 winner=global restarts=10G/5L move=1.19 acq_gain=2.52 score_std=0.147 noise=0.783 ls=0.282/0.333/0.693 time=247.8s acq=215.8s (G=153.5/L=61.7;screen=61.7/refine=0.0) gp=0.6s phys=0.1s
+iter=0006/525 new=189.245730 best=127.566462 solid=0.4900 winner=global restarts=10G/5L move=1.51 acq_gain=2.92 score_std=0.153 noise=0.761 ls=0.283/0.333/0.693 time=245.3s acq=224.4s (G=161.2/L=62.6;screen=62.6/refine=0.0) gp=0.3s phys=0.1s
+iter=0007/525 new=2330.313437 best=127.566462 solid=0.4536 winner=global restarts=10G/5L move=0.753 acq_gain=1.76 score_std=0.159 noise=0.746 ls=0.281/0.333/0.693 time=251.7s acq=226.4s (G=160.2/L=65.5;screen=65.5/refine=0.0) gp=0.4s phys=0.1s
+iter=0008/525 new=382.685256 best=127.566462 solid=0.5032 winner=global restarts=10G/5L move=1.37 acq_gain=4.78 score_std=0.00259 noise=0.911 ls=0.333/0.333/0.693 time=241.6s acq=215.4s (G=151.4/L=63.3;screen=63.3/refine=0.0) gp=0.8s phys=0.1s
+iter=0009/525 new=11397.694401 best=127.566462 solid=0.5000 winner=global restarts=10G/5L move=0.872 acq_gain=3.52 score_std=0.00258 noise=0.912 ls=0.333/0.333/0.693 time=255.1s acq=223.0s (G=162.7/L=59.7;screen=59.7/refine=0.0) gp=0.2s phys=0.1s
+iter=0010/525 new=15262.139634 best=127.566462 solid=0.5000 winner=global restarts=10G/5L move=1.22 acq_gain=1.44 score_std=0.00316 noise=0.913 ls=0.333/0.333/0.693 time=378.3s acq=347.8s (G=273.7/L=73.3;screen=73.3/refine=0.0) gp=0.1s phys=0.1s
+iter=0011/525 new=145.492638 best=127.566462 solid=0.5006 winner=global restarts=10G/5L move=1.1 acq_gain=0.774 score_std=0.0037 noise=0.913 ls=0.333/0.333/0.693 time=168.4s acq=141.4s (G=92.7/L=47.9;screen=47.9/refine=0.0) gp=0.1s phys=0.1s
+iter=0012/525 new=220.470096 best=127.566462 solid=0.4952 winner=global restarts=10G/5L move=1.13 acq_gain=1.12 score_std=0.0037 noise=0.914 ls=0.333/0.333/0.693 time=162.1s acq=140.6s (G=96.7/L=43.2;screen=41.2/refine=2.0) gp=0.1s phys=0.1s
+iter=0013/525 new=171.683024 best=127.566462 solid=0.4994 winner=global restarts=10G/5L move=1.3 acq_gain=0.924 score_std=0.00369 noise=0.915 ls=0.333/0.333/0.693 time=234.6s acq=208.2s (G=137.1/L=70.2;screen=70.2/refine=0.0) gp=0.1s phys=0.2s
