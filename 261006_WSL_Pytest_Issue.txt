@@ -1,0 +1,952 @@
+(base) eleno@EINgineer:/mnt/c/WINDOWS/system32$ nvidia-smi
+Tue Oct  6 11:54:36 2026
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 595.61                 Driver Version: 595.95         CUDA Version: 13.2     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 3070 ...    On  |   00000000:01:00.0 Off |                  N/A |
+| N/A   45C    P8             10W /   35W |      50MiB /   8192MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|  No running processes found                                                             |
++-----------------------------------------------------------------------------------------+
+(base) eleno@EINgineer:/mnt/c/WINDOWS/system32$ cd ..
+(base) eleno@EINgineer:/mnt/c/WINDOWS$ cd ..
+(base) eleno@EINgineer:/mnt/c$ cd ~/projects
+(base) eleno@EINgineer:~/projects$ cd one_shape_bo
+(base) eleno@EINgineer:~/projects/one_shape_bo$ conda env create -f environment.yml
+2 channel Terms of Service accepted
+Channels:
+ - conda-forge
+ - defaults
+Platform: linux-64
+Collecting package metadata (repodata.json): done
+Solving environment: done
+
+## Package Plan ##
+
+  environment location: /home/eleno/miniconda3/envs/one-shape-bo
+
+  added / updated specs:
+    - botorch
+    - gpytorch
+    - matplotlib
+    - numpy[version='>=2.0']
+    - pandas
+    - pip
+    - pytest
+    - python=3.12
+    - pytorch
+    - scipy
+    - shapely
+
+
+The following NEW packages will be INSTALLED:
+
+  _openmp_mutex      conda-forge/linux-64::_openmp_mutex-4.5-8_kmp_llvm
+  alsa-lib           conda-forge/linux-64::alsa-lib-1.2.16.1-h7cc23a3_1
+  botorch            conda-forge/noarch::botorch-0.17.2-pyhc364b38_0
+  brotli             conda-forge/linux-64::brotli-1.2.0-h505cf86_4
+  brotli-bin         conda-forge/linux-64::brotli-bin-1.2.0-h9908984_4
+  bzip2              conda-forge/linux-64::bzip2-1.0.8-hda65f42_10
+  ca-certificates    conda-forge/noarch::ca-certificates-2026.7.22-hbd8a1cb_0
+  cairo              conda-forge/linux-64::cairo-1.18.6-h3c89d7e_0
+  cloudpickle        conda-forge/noarch::cloudpickle-3.1.2-pyhcf101f3_1
+  colorama           conda-forge/noarch::colorama-0.4.6-pyhd8ed1ab_1
+  contourpy          conda-forge/linux-64::contourpy-1.4.0-py312h9be0db6_1
+  cpython            conda-forge/noarch::cpython-3.12.14-py312hd8ed1ab_3
+  cuda-crt-tools     conda-forge/linux-64::cuda-crt-tools-13.4.92-ha770c72_0
+  cuda-cudart        conda-forge/linux-64::cuda-cudart-13.4.92-hd2095e1_0
+  cuda-cudart_linux~ conda-forge/noarch::cuda-cudart_linux-64-13.4.92-h9e77f9f_0
+  cuda-cuobjdump     conda-forge/linux-64::cuda-cuobjdump-13.4.92-hb047bc3_0
+  cuda-cupti         conda-forge/linux-64::cuda-cupti-13.4.92-h393e864_0
+  cuda-nvcc-tools    conda-forge/linux-64::cuda-nvcc-tools-13.4.92-hecca717_0
+  cuda-nvdisasm      conda-forge/linux-64::cuda-nvdisasm-13.4.92-hb047bc3_0
+  cuda-nvrtc         conda-forge/linux-64::cuda-nvrtc-13.4.92-hd2095e1_0
+  cuda-nvtx          conda-forge/linux-64::cuda-nvtx-13.4.92-hd2095e1_0
+  cuda-nvvm-tools    conda-forge/linux-64::cuda-nvvm-tools-13.4.92-hb03c661_0
+  cuda-version       conda-forge/noarch::cuda-version-13.4-hfacf21a_3
+  cycler             conda-forge/noarch::cycler-0.12.1-pyhcf101f3_2
+  cyrus-sasl         conda-forge/linux-64::cyrus-sasl-2.1.28-hac629b4_1
+  dbus               conda-forge/linux-64::dbus-1.16.2-he8c428d_2
+  double-conversion  conda-forge/linux-64::double-conversion-3.4.0-hecca717_0
+  exceptiongroup     conda-forge/noarch::exceptiongroup-1.3.1-pyhd8ed1ab_0
+  filelock           conda-forge/noarch::filelock-4.0.12-pyhd8ed1ab_0
+  fmt                conda-forge/linux-64::fmt-12.1.0-h76c4fd7_1
+  font-ttf-dejavu-s~ conda-forge/noarch::font-ttf-dejavu-sans-mono-2.37-hab24e00_0
+  font-ttf-inconsol~ conda-forge/noarch::font-ttf-inconsolata-3.000-h77eed37_0
+  font-ttf-source-c~ conda-forge/noarch::font-ttf-source-code-pro-2.038-h77eed37_0
+  font-ttf-ubuntu    conda-forge/noarch::font-ttf-ubuntu-0.83-h77eed37_3
+  fontconfig         conda-forge/linux-64::fontconfig-2.18.3-h4db4eae_1
+  fonts-conda-ecosy~ conda-forge/noarch::fonts-conda-ecosystem-1-0
+  fonts-conda-forge  conda-forge/noarch::fonts-conda-forge-1-hc364b38_1
+  fonttools          conda-forge/linux-64::fonttools-4.66.1-py312hfd18d64_0
+  freetype           conda-forge/linux-64::freetype-2.14.3-ha770c72_2
+  fribidi            conda-forge/linux-64::fribidi-1.0.17-h7cc23a3_0
+  fsspec             conda-forge/noarch::fsspec-2026.9.0-pyhd8ed1ab_0
+  geos               conda-forge/linux-64::geos-3.14.1-h55b0958_0
+  gmp                conda-forge/linux-64::gmp-6.3.0-hfd2156b_3
+  gmpy2              conda-forge/linux-64::gmpy2-2.3.2-py312h04c1168_0
+  gpytorch           conda-forge/noarch::gpytorch-1.15.2-pyhcf101f3_0
+  graphite2          conda-forge/linux-64::graphite2-1.3.15-h54a6638_1
+  icu                conda-forge/linux-64::icu-78.3-py310h44b86e0_2
+  iniconfig          conda-forge/noarch::iniconfig-2.3.0-pyhd8ed1ab_0
+  jaxtyping          conda-forge/noarch::jaxtyping-0.3.11-pyhd8ed1ab_0
+  jinja2             conda-forge/noarch::jinja2-3.1.6-pyhcf101f3_1
+  joblib             conda-forge/noarch::joblib-1.6.0-pyhcf101f3_0
+  keyutils           conda-forge/linux-64::keyutils-1.6.3-h7cc23a3_1
+  kiwisolver         conda-forge/linux-64::kiwisolver-1.5.1-py312h9be0db6_3
+  krb5               conda-forge/linux-64::krb5-1.22.2-hbc21106_2
+  lcms2              conda-forge/linux-64::lcms2-2.19.1-h9073bf1_3
+  ld_impl_linux-64   conda-forge/linux-64::ld_impl_linux-64-2.46.1-default_hbd61a6d_102
+  lerc               conda-forge/linux-64::lerc-4.2.0-hdb68285_0
+  libabseil          conda-forge/linux-64::libabseil-20260526.0-cxx17_h0dc7533_2
+  libblas            conda-forge/linux-64::libblas-3.11.0-11_h5875eb1_mkl
+  libbrotlicommon    conda-forge/linux-64::libbrotlicommon-1.2.0-h39a168f_4
+  libbrotlidec       conda-forge/linux-64::libbrotlidec-1.2.0-ha411449_4
+  libbrotlienc       conda-forge/linux-64::libbrotlienc-1.2.0-h018ffa1_4
+  libcap             conda-forge/linux-64::libcap-2.78-h084b8d7_1
+  libcblas           conda-forge/linux-64::libcblas-3.11.0-11_hfef963f_mkl
+  libclang-cpp23.1   conda-forge/linux-64::libclang-cpp23.1-23.1.2-default_h0acdd01_0
+  libclang13         conda-forge/linux-64::libclang13-23.1.2-default_hfab3205_0
+  libcublas          conda-forge/linux-64::libcublas-13.8.0.4-h393e864_0
+  libcudnn           conda-forge/linux-64::libcudnn-9.26.0.51-h8a19d09_1
+  libcudss           conda-forge/linux-64::libcudss-0.8.0.10-h7bcfba5_0
+  libcufft           conda-forge/linux-64::libcufft-12.4.0.43-hd2095e1_0
+  libcufile          conda-forge/linux-64::libcufile-1.19.1.55-h63c01a6_0
+  libcups            conda-forge/linux-64::libcups-2.3.3-h7a8fb5f_6
+  libcurand          conda-forge/linux-64::libcurand-10.4.4.72-h393e864_0
+  libcusolver        conda-forge/linux-64::libcusolver-12.3.4.7-h393e864_0
+  libcusparse        conda-forge/linux-64::libcusparse-12.8.6.72-hd2095e1_0
+  libdeflate         conda-forge/linux-64::libdeflate-1.25-hd45a770_1
+  libdrm             conda-forge/linux-64::libdrm-2.4.129-h7cc23a3_0
+  libedit            conda-forge/linux-64::libedit-3.1.20250104-pl5321h373387f_1
+  libegl             conda-forge/linux-64::libegl-1.7.0-ha4b6fd6_5
+  libegl-devel       conda-forge/linux-64::libegl-devel-1.7.0-ha4b6fd6_5
+  libexpat           conda-forge/linux-64::libexpat-2.8.5-hd2095e1_0
+  libffi             conda-forge/linux-64::libffi-3.7.0-h81df57d_1
+  libfreetype        conda-forge/linux-64::libfreetype-2.14.3-ha770c72_2
+  libfreetype6       conda-forge/linux-64::libfreetype6-2.14.3-h5e6c136_2
+  libgcc             conda-forge/linux-64::libgcc-16.2.0-ha9f2e26_7
+  libgcc-ng          conda-forge/linux-64::libgcc-ng-16.2.0-h69a702a_7
+  libgfortran        conda-forge/linux-64::libgfortran-16.2.0-h69a702a_7
+  libgfortran5       conda-forge/linux-64::libgfortran5-16.2.0-h6b99dfc_7
+  libgl              conda-forge/linux-64::libgl-1.7.0-ha4b6fd6_5
+  libgl-devel        conda-forge/linux-64::libgl-devel-1.7.0-ha4b6fd6_5
+  libglib            conda-forge/linux-64::libglib-2.90.0-h569388d_0
+  libglvnd           conda-forge/linux-64::libglvnd-1.7.0-ha4b6fd6_5
+  libglx             conda-forge/linux-64::libglx-1.7.0-ha4b6fd6_5
+  libglx-devel       conda-forge/linux-64::libglx-devel-1.7.0-ha4b6fd6_5
+  libharfbuzz        conda-forge/linux-64::libharfbuzz-14.5.1-h23af247_0
+  libhwloc           conda-forge/linux-64::libhwloc-2.15.0-default_hd7c4d0c_1001
+  libiconv           conda-forge/linux-64::libiconv-1.18-h0cb94f2_3
+  libjpeg-turbo      conda-forge/linux-64::libjpeg-turbo-3.2.0-hb03c661_1
+  liblapack          conda-forge/linux-64::liblapack-3.11.0-11_h5e43f62_mkl
+  libllvm23          conda-forge/linux-64::libllvm23-23.1.2-h474f4eb_0
+  liblzma            conda-forge/linux-64::liblzma-5.8.3-hb03c661_1
+  libmagma           conda-forge/linux-64::libmagma-2.10.0-hd93470c_0
+  libnl              conda-forge/linux-64::libnl-3.11.0-hb03c661_1
+  libnsl             conda-forge/linux-64::libnsl-2.0.1-hb9d3cd8_1
+  libntlm            conda-forge/linux-64::libntlm-1.8-hb9d3cd8_0
+  libnvjitlink       conda-forge/linux-64::libnvjitlink-13.4.92-hd2095e1_0
+  libopengl          conda-forge/linux-64::libopengl-1.7.0-ha4b6fd6_5
+  libpciaccess       conda-forge/linux-64::libpciaccess-0.19-hb03c661_1
+  libpng             conda-forge/linux-64::libpng-1.6.59-h922cc85_0
+  libpq              conda-forge/linux-64::libpq-18.6-h3883810_3
+  libprotobuf        conda-forge/linux-64::libprotobuf-7.35.1-h622638d_3
+  libpython          conda-forge/linux-64::libpython-3.12.14-h0c77377_3_cpython
+  libraqm            conda-forge/linux-64::libraqm-0.11.0-h6406941_0
+  libsqlite          conda-forge/linux-64::libsqlite-3.53.4-h0737f62_102
+  libstdcxx          conda-forge/linux-64::libstdcxx-16.2.0-h934c35e_7
+  libstdcxx-ng       conda-forge/linux-64::libstdcxx-ng-16.2.0-hdf11a46_7
+  libsystemd0        conda-forge/linux-64::libsystemd0-262-h26e0ef7_2
+  libtiff            conda-forge/linux-64::libtiff-4.7.2-hcc2c06a_1
+  libtorch           conda-forge/linux-64::libtorch-2.13.0-cuda130_mkl_h1ca3d63_302
+  libudev1           conda-forge/linux-64::libudev1-262-h26e0ef7_2
+  libuuid            conda-forge/linux-64::libuuid-2.42.4-hcfc3c73_0
+  libuv              conda-forge/linux-64::libuv-1.52.1-h280c20c_1
+  libvulkan-loader   conda-forge/linux-64::libvulkan-loader-1.4.357.0-h0e34353_2
+  libwebp-base       conda-forge/linux-64::libwebp-base-1.6.0-hd42ef1d_1
+  libxcb             conda-forge/linux-64::libxcb-1.17.0-hb83e432_2
+  libxcrypt          conda-forge/linux-64::libxcrypt-4.4.38-h280c20c_0
+  libxkbcommon       conda-forge/linux-64::libxkbcommon-1.13.2-h51789e4_1
+  libxml2            conda-forge/linux-64::libxml2-2.15.4-h7df9aa5_0
+  libxml2-16         conda-forge/linux-64::libxml2-16-2.15.4-hf3af7cc_0
+  libxslt            conda-forge/linux-64::libxslt-1.1.45-h8e12856_1
+  libzlib            conda-forge/linux-64::libzlib-1.3.2-h25fd6f3_3
+  linear_operator    conda-forge/noarch::linear_operator-0.6.1-pyhd8ed1ab_0
+  llvm-openmp        conda-forge/linux-64::llvm-openmp-23.1.2-h7148c6a_0
+  markupsafe         conda-forge/linux-64::markupsafe-3.0.4-py312hfd18d64_0
+  matplotlib         conda-forge/linux-64::matplotlib-3.11.2-py312h6a12a82_1
+  matplotlib-base    conda-forge/linux-64::matplotlib-base-3.11.2-py312hfe9aac7_1
+  mkl                conda-forge/linux-64::mkl-2026.1.0-hd2095e1_245
+  mpc                conda-forge/linux-64::mpc-1.4.0-ha2cb11d_1
+  mpfr               conda-forge/linux-64::mpfr-4.2.2-ha2cb11d_1
+  mpmath             conda-forge/noarch::mpmath-1.3.0-pyhd8ed1ab_1
+  multipledispatch   conda-forge/noarch::multipledispatch-1.0.0-pyh5ded981_0
+  munkres            conda-forge/noarch::munkres-1.1.4-pyhd8ed1ab_1
+  mypy_extensions    conda-forge/noarch::mypy_extensions-1.1.0-pyha770c72_0
+  narwhals           conda-forge/noarch::narwhals-2.27.0-pyh5ded981_0
+  nccl               conda-forge/linux-64::nccl-2.32.3.1-hf1e94c4_0
+  ncurses            conda-forge/linux-64::ncurses-6.6-hdb14827_1
+  networkx           conda-forge/noarch::networkx-3.7-pyhc364b38_0
+  numpy              conda-forge/linux-64::numpy-2.5.3-py312he827f4e_0
+  onednn             conda-forge/linux-64::onednn-3.12.1-omp_h83de36e_0
+  openjpeg           conda-forge/linux-64::openjpeg-2.5.4-heb1ab33_2
+  openldap           conda-forge/linux-64::openldap-2.6.13-hbde042b_0
+  openssl            conda-forge/linux-64::openssl-3.6.5-h781a0a9_0
+  opt_einsum         conda-forge/noarch::opt_einsum-3.4.0-pyhd8ed1ab_1
+  optree             conda-forge/linux-64::optree-0.20.0-py312ha5105d2_1
+  packaging          conda-forge/noarch::packaging-26.3-pyhc364b38_0
+  pandas             conda-forge/linux-64::pandas-3.0.6-np2py312h91ec553_0
+  pcre2              conda-forge/linux-64::pcre2-10.47-h8b3dc9c_1
+  pillow             conda-forge/linux-64::pillow-12.3.0-py312h38079b3_4
+  pip                conda-forge/noarch::pip-26.2.1-pyh8b19718_0
+  pixman             conda-forge/linux-64::pixman-0.46.4-h54a6638_3
+  pluggy             conda-forge/noarch::pluggy-1.6.0-pyhf9edf01_1
+  pthread-stubs      conda-forge/linux-64::pthread-stubs-0.4-h7cc23a3_1004
+  pybind11           conda-forge/noarch::pybind11-3.0.4-pyh293190f_0
+  pybind11-abi       conda-forge/noarch::pybind11-abi-11-hc364b38_1
+  pybind11-global    conda-forge/noarch::pybind11-global-3.0.4-pyh648e204_0
+  pygments           conda-forge/noarch::pygments-2.21.0-pyhcf101f3_0
+  pyparsing          conda-forge/noarch::pyparsing-3.3.3-pyh5ded981_0
+  pyre-extensions    conda-forge/noarch::pyre-extensions-0.0.32-pyh5ded981_2
+  pyro-api           conda-forge/noarch::pyro-api-0.1.2-pyhd8ed1ab_0
+  pyro-ppl           conda-forge/noarch::pyro-ppl-1.9.2-pyhd8ed1ab_0
+  pyside6            conda-forge/linux-64::pyside6-6.11.2-py312hf520645_1
+  pytest             conda-forge/noarch::pytest-9.1.1-pyhc364b38_2
+  python             conda-forge/linux-64::python-3.12.14-h5f976f7_3_cpython
+  python-dateutil    conda-forge/noarch::python-dateutil-2.9.0.post0-pyhe01879c_2
+  python_abi         conda-forge/noarch::python_abi-3.12-9_cp312
+  pytorch            conda-forge/linux-64::pytorch-2.13.0-cuda130_mkl_py312_hcdc9d04_302
+  qhull              conda-forge/linux-64::qhull-2020.2-h434a139_5
+  qt6-main           conda-forge/linux-64::qt6-main-6.11.2-pl5321h9df5c37_0
+  rdma-core          conda-forge/linux-64::rdma-core-65.0-h7b4f2e6_0
+  readline           conda-forge/linux-64::readline-8.3-hd6e31c0_1
+  scikit-learn       conda-forge/linux-64::scikit-learn-1.9.1-np2py312h91ec553_1
+  scipy              conda-forge/linux-64::scipy-1.18.1-py312h106c528_1
+  setuptools         conda-forge/noarch::setuptools-81.0.0-pyh332efcf_0
+  shapely            conda-forge/linux-64::shapely-2.1.2-py312ha95667c_3
+  six                conda-forge/noarch::six-1.17.0-pyhe01879c_1
+  sleef              conda-forge/linux-64::sleef-3.9.0-ha0421bc_0
+  sympy              conda-forge/noarch::sympy-1.14.0-pyh2585a3b_106
+  tbb                conda-forge/linux-64::tbb-2023.1.0-haa8c3ee_2
+  threadpoolctl      conda-forge/noarch::threadpoolctl-3.7.0-pyhc455866_0
+  tk                 conda-forge/linux-64::tk-8.6.13-noxft_h1df4ec4_4
+  tomli              conda-forge/noarch::tomli-2.4.1-pyhcf101f3_0
+  tornado            conda-forge/linux-64::tornado-6.5.10-py312h5cc1888_0
+  tqdm               conda-forge/noarch::tqdm-4.70.1-pyhfa0c392_0
+  triton             conda-forge/linux-64::triton-3.7.1-cuda130py312hc6dca4b_1
+  typing-extensions  conda-forge/noarch::typing-extensions-4.16.0-h69aa097_0
+  typing_extensions  conda-forge/noarch::typing_extensions-4.16.0-pyhcf101f3_0
+  typing_inspect     conda-forge/noarch::typing_inspect-0.9.0-pyhd8ed1ab_1
+  tzdata             conda-forge/noarch::tzdata-2026c-h151e31d_0
+  unicodedata2       conda-forge/linux-64::unicodedata2-18.0.0-py312h5cc1888_0
+  wadler-lindig      conda-forge/noarch::wadler-lindig-0.1.7-pyhe01879c_0
+  wayland            conda-forge/linux-64::wayland-1.26.0-hc1c935e_2
+  wheel              conda-forge/noarch::wheel-0.48.0-pyhd8ed1ab_0
+  xcb-util           conda-forge/linux-64::xcb-util-0.4.1-h4f16b4b_2
+  xcb-util-cursor    conda-forge/linux-64::xcb-util-cursor-0.1.6-hb03c661_0
+  xcb-util-image     conda-forge/linux-64::xcb-util-image-0.4.0-hb711507_2
+  xcb-util-keysyms   conda-forge/linux-64::xcb-util-keysyms-0.4.1-hb711507_0
+  xcb-util-renderut~ conda-forge/linux-64::xcb-util-renderutil-0.3.10-hb711507_0
+  xcb-util-wm        conda-forge/linux-64::xcb-util-wm-0.4.2-hb711507_0
+  xkeyboard-config   conda-forge/linux-64::xkeyboard-config-2.48-h280c20c_0
+  xorg-libice        conda-forge/linux-64::xorg-libice-1.1.2-h280c20c_0
+  xorg-libsm         conda-forge/linux-64::xorg-libsm-1.2.6-h0d788c3_1
+  xorg-libx11        conda-forge/linux-64::xorg-libx11-1.8.13-he1eb515_1
+  xorg-libxau        conda-forge/linux-64::xorg-libxau-1.0.12-h7cc23a3_2
+  xorg-libxcomposite conda-forge/linux-64::xorg-libxcomposite-0.4.7-hb03c661_0
+  xorg-libxcursor    conda-forge/linux-64::xorg-libxcursor-1.2.3-hb9d3cd8_0
+  xorg-libxdamage    conda-forge/linux-64::xorg-libxdamage-1.1.6-hb9d3cd8_0
+  xorg-libxdmcp      conda-forge/linux-64::xorg-libxdmcp-1.1.5-h7cc23a3_2
+  xorg-libxext       conda-forge/linux-64::xorg-libxext-1.3.7-h7cc23a3_1
+  xorg-libxfixes     conda-forge/linux-64::xorg-libxfixes-6.0.2-h7cc23a3_1
+  xorg-libxi         conda-forge/linux-64::xorg-libxi-1.8.3-h7cc23a3_1
+  xorg-libxrandr     conda-forge/linux-64::xorg-libxrandr-1.5.5-h7cc23a3_1
+  xorg-libxrender    conda-forge/linux-64::xorg-libxrender-0.9.12-hb03c661_1
+  xorg-libxtst       conda-forge/linux-64::xorg-libxtst-1.2.5-h7cc23a3_4
+  xorg-libxxf86vm    conda-forge/linux-64::xorg-libxxf86vm-1.1.7-hb03c661_0
+  xorg-xorgproto     conda-forge/linux-64::xorg-xorgproto-2025.1-hebe6cf0_3
+  zlib-ng            conda-forge/linux-64::zlib-ng-2.3.3-hce19668_1
+  zstd               conda-forge/linux-64::zstd-1.5.7-hb78ec9c_7
+
+
+
+Downloading and Extracting Packages:
+
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+#
+# To activate this environment, use
+#
+#     $ conda activate one-shape-bo
+#
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+WARNING conda.conda_pypi.main:notify_externally_managed_future(156):
+  Did you know? You can install many PyPI packages with conda
+  using the conda-pypi beta. Get started:
+    https://docs.conda.io/projects/conda/en/stable/new-features.html
+
+(base) eleno@EINgineer:~/projects/one_shape_bo$ conda activate one-shape-bo
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python --version
+Python 3.12.14
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ which python
+/home/eleno/miniconda3/envs/one-shape-bo/bin/python
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python -m pip install -e .
+Obtaining file:///home/eleno/projects/one_shape_bo
+  Installing build dependencies ... done
+  Checking if build backend supports build_editable ... done
+  Getting requirements to build editable ... done
+  Preparing editable metadata (pyproject.toml) ... done
+Requirement already satisfied: numpy>=2.0 in /home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages (from one-shape-bo==0.1.0) (2.5.3)
+Building wheels for collected packages: one-shape-bo
+  Building editable for one-shape-bo (pyproject.toml) ... done
+  Created wheel for one-shape-bo: filename=one_shape_bo-0.1.0-0.editable-py3-none-any.whl size=2967 sha256=fa22686091406e5ec5e0fa980b68e0eeb7e6251ead717e653acd444f62f11122
+  Stored in directory: /tmp/pip-ephem-wheel-cache-0r8nwkah/wheels/81/17/e7/ef8eb8251139bfbe5f3c8183cab8c82207e10eb82d4a97c1df
+Successfully built one-shape-bo
+Installing collected packages: one-shape-bo
+Successfully installed one-shape-bo-0.1.0
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python -c "import one_shape_bo; print(one_shape_bo.__file__)"
+/home/eleno/projects/one_shape_bo/src/one_shape_bo/__init__.py
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python -c "import torch; print('PyTorch:', torch.__version__); print('CUDA:', torch.version.cuda); print('CUDA available:', torch.cuda.is_available()); print('GPU:', torch.cuda.get_device_name(0) if torch.cuda.is_available() else 'none')"
+PyTorch: 2.13.0
+CUDA: 13.0
+CUDA available: True
+GPU: NVIDIA GeForce RTX 3070 Ti Laptop GPU
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ find "$CONDA_PREFIX" -name cuda.h | head
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/api/include/torch/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/inductor/static_launcher/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/inductor/aoti_include/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/inductor/cpp_wrapper/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/inductor/cpp_wrapper/device_internal/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/torch/csrc/jit/cuda/cuda.h
+/home/eleno/miniconda3/envs/one-shape-bo/include/hwloc/cuda.h
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python -c "import one_shape_bo, torch; print(one_shape_bo.__file__); x=torch.randn(100,100,device='cuda'); print((x@x).shape)"
+/home/eleno/projects/one_shape_bo/src/one_shape_bo/__init__.py
+torch.Size([100, 100])
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ pytest
+=================================================================== test session starts ====================================================================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/eleno/projects/one_shape_bo
+configfile: pyproject.toml
+plugins: jaxtyping-0.3.11
+collected 18 items
+
+tests/test_acquisition_metadata.py .                                                                                                                 [  5%]
+tests/test_benchmark_audit.py ..                                                                                                                     [ 16%]
+tests/test_gaussian_model.py .                                                                                                                       [ 22%]
+tests/test_gaussian_warm_start.py .                                                                                                                  [ 27%]
+tests/test_optimization_policy.py ...                                                                                                                [ 44%]
+tests/test_optimization_smoke.py .                                                                                                                   [ 50%]
+tests/test_physical_regression.py .                                                                                                                  [ 55%]
+tests/test_sampling_details.py FF.FF                                                                                                                 [ 83%]
+tests/test_sampling_policy.py ...                                                                                                                    [100%]
+
+========================================================================= FAILURES =========================================================================
+________________________________________________ test_random_candidate_applies_both_explicit_area_policies _________________________________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77533e4f0860>
+
+    def test_random_candidate_applies_both_explicit_area_policies(monkeypatch):
+        recorded = []
+
+        def fake_shape(area, constraints, shape_type, *args, **kwargs):
+            recorded.append(float(area))
+            return torch.tensor(
+                [0.0, 0.0, 0.0, 0.02, 0.0, 0.0, 0.02], dtype=torch.double
+            )
+
+        monkeypatch.setattr(sampling, "random_shape_area", fake_shape)
+        monkeypatch.setattr(
+            sampling,
+            "separating_axis_theorem_batch",
+            lambda points_i, *args, **kwargs: torch.ones(
+                len(points_i), dtype=torch.double
+            ),
+        )
+        feature_map = {0: 0.0, 7: 0.0, 14: 0.0}
+        constraints = CandidateConstraints()
+
+>       near = sampling.random_shape_candidate(
+            feature_map,
+            constraints,
+            constraints.amin,
+            anchor_trials=2,
+            area_strategy=sampling.AREA_NEAR_EQUAL,
+            generator=torch.Generator().manual_seed(5),
+        )
+
+tests/test_sampling_details.py:65:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/one_shape_bo/sampling.py:218: in random_shape_candidate
+    target_void = minimum_void + (0.05 + 0.90 * _rand(generator=generator)) * (
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+shape = (), generator = <torch._C.Generator object at 0x77533e0c24f0>
+
+    def _rand(shape=(), *, generator=None):
+>       return torch.rand(shape, generator=generator, **TENSOR_KWARGS)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: Expected a 'cuda' device type for generator but found 'cpu'
+
+src/one_shape_bo/sampling.py:103: RuntimeError
+______________________________________________ test_local_sampler_uses_configured_radius_without_contraction _______________________________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77533e02d700>
+
+    def test_local_sampler_uses_configured_radius_without_contraction(monkeypatch):
+        constraints = SimpleConstraints()
+        base = torch.tensor(
+            [[0.0, 0.25, 0.25, 0.55, 0.55, 0.60, 0.60]], dtype=torch.double
+        )
+        values = torch.tensor([[1.0]], dtype=torch.double)
+        monkeypatch.setattr(
+            sampling.torch,
+            "randn",
+            lambda shape, **kwargs: torch.ones(shape, dtype=torch.double),
+        )
+        monkeypatch.setattr(
+            sampling,
+            "rasterized_volume_feasibility",
+            lambda X, constraints: (
+                torch.ones(len(X), dtype=torch.bool),
+                torch.zeros(len(X), dtype=torch.double),
+            ),
+        )
+        monkeypatch.setattr(
+            sampling,
+            "geometry_signature",
+            lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+        )
+
+>       result = sampling.sample_local_feasible(
+            1,
+            base,
+            values,
+            constraints,
+            radius=0.05,
+            max_attempts=1,
+        )
+
+tests/test_sampling_details.py:114:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+src/one_shape_bo/sampling.py:550: in sample_local_feasible
+    candidate = canonicalise_design(torch.cat(output), constraints.nholes)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+point = tensor([0.0000, 0.3000, 0.3000, 0.6000, 0.6000, 0.6500, 0.6500],
+       dtype=torch.float64), nholes = 1
+
+    def canonicalise_design(point, nholes: int):
+        blocks = canonicalise_shape_blocks(point, nholes).reshape(nholes, 7)
+        ntri = int((blocks[:, 0] < 0.5).sum().item())
+        triangle_blocks = blocks[:ntri]
+        if ntri:
+            p0 = triangle_blocks[:, 1:3]
+            edge_1 = 2.0 * triangle_blocks[:, 3:5] - 1.0
+            edge_2 = 2.0 * triangle_blocks[:, 5:7] - 1.0
+            vertices = torch.stack((p0, p0 + edge_1, p0 + edge_2), dim=1)
+        else:
+            vertices = blocks.new_empty((0, 3, 2))
+        triangles = canonicalize_triangles(ntri, vertices)
+        ellipses = canonicalize_ellipses(nholes - ntri, blocks[ntri:, 1:6])
+>       return torch.cat((triangles, ellipses))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       RuntimeError: Expected all tensors to be on the same device, but got tensors is on cuda:0, different from other tensors on cpu (when checking argument in method wrapper_CUDA_cat)
+
+src/one_shape_bo/sampling.py:89: RuntimeError
+________________________________________________ test_rank_pool_keeps_sources_and_filters_near_observations ________________________________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77533e02eba0>
+
+    def test_rank_pool_keeps_sources_and_filters_near_observations(monkeypatch):
+        constraints = SimpleConstraints()
+        global_points = torch.tensor(
+            [
+                [0.0, 0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
+                [0.0, 0.11, 0.10, 0.10, 0.10, 0.10, 0.10],
+            ],
+            dtype=torch.double,
+        )
+        local_points = torch.tensor(
+            [[0.0, 0.40, 0.40, 0.40, 0.40, 0.40, 0.40]], dtype=torch.double
+        )
+        observed = torch.tensor(
+            [[0.0, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10]], dtype=torch.double
+        )
+
+        def acquisition(X):
+            return X[..., 1:].sum(dim=-1)
+
+        monkeypatch.setattr(
+            sampling,
+            "geometry_signature",
+            lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+        )
+>       ranked = sampling.rank_initial_condition_pool(
+            acquisition,
+            global_points,
+            local_points,
+            constraints,
+            excluded_signatures=set(),
+            attempted_starts=[],
+            minimum_distance=0.05,
+            observed_points=observed,
+        )
+
+tests/test_sampling_details.py:185:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+acq_function = <function test_rank_pool_keeps_sources_and_filters_near_observations.<locals>.acquisition at 0x77533e08f6a0>
+global_conditions = tensor([[0.0000, 0.8000, 0.8000, 0.8000, 0.8000, 0.8000, 0.8000],
+        [0.0000, 0.1100, 0.1000, 0.1000, 0.1000, 0.1000, 0.1000]],
+       dtype=torch.float64)
+local_conditions = tensor([[0.0000, 0.4000, 0.4000, 0.4000, 0.4000, 0.4000, 0.4000]],
+       dtype=torch.float64)
+constraints = <test_sampling_details.SimpleConstraints object at 0x77533e02eb70>, excluded_signatures = set(), attempted_starts = []
+minimum_distance = 0.05, observed_points = tensor([[0.0000, 0.1000, 0.1000, 0.1000, 0.1000, 0.1000, 0.1000]],
+       dtype=torch.float64)
+local_metadata = None
+
+    def rank_initial_condition_pool(
+        acq_function,
+        global_conditions,
+        local_conditions,
+        constraints,
+        excluded_signatures,
+        attempted_starts,
+        minimum_distance: float,
+        observed_points=None,
+        local_metadata=None,
+    ):
+        """Rank valid starts by acquisition and source-appropriate coverage."""
+        batches, sources, metadata = [], [], []
+        for source, conditions in (
+            ("global", global_conditions),
+            ("local", local_conditions),
+        ):
+            if conditions.numel():
+                batches.append(conditions)
+                sources.extend([source] * conditions.shape[0])
+                if source == "local" and local_metadata is not None:
+                    if len(local_metadata) != conditions.shape[0]:
+                        raise ValueError("local metadata must align with local conditions")
+                    metadata.extend(local_metadata)
+                else:
+                    metadata.extend({} for _ in range(conditions.shape[0]))
+        if not batches:
+            return []
+        conditions = torch.cat(batches)
+        valid_indices = []
+        for index, point in enumerate(conditions):
+            if not torch.isfinite(point).all():
+                continue
+            if bool(
+                ((point < constraints.box_bounds[0]) | (point > constraints.box_bounds[1])).any()
+            ):
+                continue
+            if feasible_mask(point.unsqueeze(0), constraints)[0]:
+                valid_indices.append(index)
+        if not valid_indices:
+            return []
+        conditions = conditions[valid_indices]
+        sources = [sources[index] for index in valid_indices]
+        metadata = [metadata[index] for index in valid_indices]
+        with torch.no_grad():
+            acquisition = acq_function(conditions.unsqueeze(1)).reshape(-1)
+
+        lower, upper = constraints.box_bounds
+        scale = (upper - lower).clamp_min(1e-12)
+        attempted_normalized = [
+            (point.detach().reshape(-1) - lower) / scale for point in attempted_starts
+        ]
+        observed_normalized = []
+        if observed_points is not None:
+            observed_normalized = [
+                (point.detach().reshape(-1) - lower) / scale
+                for point in observed_points
+            ]
+        normalized = (conditions - lower) / scale
+        if observed_normalized:
+            observed_distance = torch.cdist(
+                normalized, torch.stack(observed_normalized)
+            ).min(dim=1).values
+        else:
+            observed_distance = torch.full(
+                (len(conditions),), float("inf"), **TENSOR_KWARGS
+            )
+        observed_start = [
+            metadata[index].get("allow_observed_start", False)
+            and bool(observed_distance[index] <= 1e-12)
+            for index in range(len(conditions))
+        ]
+        novelty = torch.ones(len(conditions), **TENSOR_KWARGS)
+        for index in range(len(conditions)):
+            references = list(attempted_normalized)
+            if not observed_start[index]:
+                references.extend(observed_normalized)
+            if references:
+                novelty[index] = torch.cdist(
+                    normalized[index : index + 1], torch.stack(references)
+                ).min()
+        acquisition_score = _unit(acquisition)
+        novelty_score = _unit(novelty)
+>       score = torch.stack(
+            [
+                0.55 * acquisition_score[index] + 0.45 * novelty_score[index]
+                if source == "global"
+                else acquisition_score[index]
+                for index, source in enumerate(sources)
+            ]
+        )
+E       RuntimeError: Expected all tensors to be on the same device, but got tensors is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA_cat)
+
+src/one_shape_bo/sampling.py:663: RuntimeError
+___________________________________________ test_rank_pool_allows_observed_archive_start_but_not_observed_global ___________________________________________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x77533e02f3b0>
+
+    def test_rank_pool_allows_observed_archive_start_but_not_observed_global(monkeypatch):
+        constraints = SimpleConstraints()
+        observed = torch.tensor(
+            [[0.0, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30]], dtype=torch.double
+        )
+        signature = observed.detach().cpu().numpy().tobytes()
+        monkeypatch.setattr(
+            sampling,
+            "geometry_signature",
+            lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+        )
+
+>       ranked = sampling.rank_initial_condition_pool(
+            lambda X: X[..., 1:].sum(dim=-1),
+            observed.clone(),
+            observed.clone(),
+            constraints,
+            excluded_signatures={signature},
+            attempted_starts=[],
+            minimum_distance=0.05,
+            observed_points=observed,
+            local_metadata=[
+                {
+                    "allow_observed_start": True,
+                    "anchor_index": 0,
+                    "start_method": "archive",
+                }
+            ],
+        )
+
+tests/test_sampling_details.py:213:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+acq_function = <function test_rank_pool_allows_observed_archive_start_but_not_observed_global.<locals>.<lambda> at 0x775339698900>
+global_conditions = tensor([[0.0000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000]],
+       dtype=torch.float64)
+local_conditions = tensor([[0.0000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000]],
+       dtype=torch.float64)
+constraints = <test_sampling_details.SimpleConstraints object at 0x77533e02f620>
+excluded_signatures = {b'\x00\x00\x00\x00\x00\x00\x00\x00333333\xd3?333333\xd3?333333\xd3?333333\xd3?333333\xd3?333333\xd3?'}, attempted_starts = []
+minimum_distance = 0.05, observed_points = tensor([[0.0000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000, 0.3000]],
+       dtype=torch.float64)
+local_metadata = [{'allow_observed_start': True, 'anchor_index': 0, 'start_method': 'archive'}]
+
+    def rank_initial_condition_pool(
+        acq_function,
+        global_conditions,
+        local_conditions,
+        constraints,
+        excluded_signatures,
+        attempted_starts,
+        minimum_distance: float,
+        observed_points=None,
+        local_metadata=None,
+    ):
+        """Rank valid starts by acquisition and source-appropriate coverage."""
+        batches, sources, metadata = [], [], []
+        for source, conditions in (
+            ("global", global_conditions),
+            ("local", local_conditions),
+        ):
+            if conditions.numel():
+                batches.append(conditions)
+                sources.extend([source] * conditions.shape[0])
+                if source == "local" and local_metadata is not None:
+                    if len(local_metadata) != conditions.shape[0]:
+                        raise ValueError("local metadata must align with local conditions")
+                    metadata.extend(local_metadata)
+                else:
+                    metadata.extend({} for _ in range(conditions.shape[0]))
+        if not batches:
+            return []
+        conditions = torch.cat(batches)
+        valid_indices = []
+        for index, point in enumerate(conditions):
+            if not torch.isfinite(point).all():
+                continue
+            if bool(
+                ((point < constraints.box_bounds[0]) | (point > constraints.box_bounds[1])).any()
+            ):
+                continue
+            if feasible_mask(point.unsqueeze(0), constraints)[0]:
+                valid_indices.append(index)
+        if not valid_indices:
+            return []
+        conditions = conditions[valid_indices]
+        sources = [sources[index] for index in valid_indices]
+        metadata = [metadata[index] for index in valid_indices]
+        with torch.no_grad():
+            acquisition = acq_function(conditions.unsqueeze(1)).reshape(-1)
+
+        lower, upper = constraints.box_bounds
+        scale = (upper - lower).clamp_min(1e-12)
+        attempted_normalized = [
+            (point.detach().reshape(-1) - lower) / scale for point in attempted_starts
+        ]
+        observed_normalized = []
+        if observed_points is not None:
+            observed_normalized = [
+                (point.detach().reshape(-1) - lower) / scale
+                for point in observed_points
+            ]
+        normalized = (conditions - lower) / scale
+        if observed_normalized:
+            observed_distance = torch.cdist(
+                normalized, torch.stack(observed_normalized)
+            ).min(dim=1).values
+        else:
+            observed_distance = torch.full(
+                (len(conditions),), float("inf"), **TENSOR_KWARGS
+            )
+        observed_start = [
+            metadata[index].get("allow_observed_start", False)
+            and bool(observed_distance[index] <= 1e-12)
+            for index in range(len(conditions))
+        ]
+        novelty = torch.ones(len(conditions), **TENSOR_KWARGS)
+        for index in range(len(conditions)):
+            references = list(attempted_normalized)
+            if not observed_start[index]:
+                references.extend(observed_normalized)
+            if references:
+                novelty[index] = torch.cdist(
+                    normalized[index : index + 1], torch.stack(references)
+                ).min()
+        acquisition_score = _unit(acquisition)
+        novelty_score = _unit(novelty)
+>       score = torch.stack(
+            [
+                0.55 * acquisition_score[index] + 0.45 * novelty_score[index]
+                if source == "global"
+                else acquisition_score[index]
+                for index, source in enumerate(sources)
+            ]
+        )
+E       RuntimeError: Expected all tensors to be on the same device, but got tensors is on cpu, different from other tensors on cuda:0 (when checking argument in method wrapper_CUDA_cat)
+
+src/one_shape_bo/sampling.py:663: RuntimeError
+===================================================================== warnings summary =====================================================================
+../../miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488
+../../miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488
+  /home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================================================================= short test summary info ==================================================================
+FAILED tests/test_sampling_details.py::test_random_candidate_applies_both_explicit_area_policies - RuntimeError: Expected a 'cuda' device type for generator but found 'cpu'
+FAILED tests/test_sampling_details.py::test_local_sampler_uses_configured_radius_without_contraction - RuntimeError: Expected all tensors to be on the same device, but got tensors is on cuda:0, different from other tensors on cpu (when checking argument ...
+FAILED tests/test_sampling_details.py::test_rank_pool_keeps_sources_and_filters_near_observations - RuntimeError: Expected all tensors to be on the same device, but got tensors is on cpu, different from other tensors on cuda:0 (when checking argument ...
+FAILED tests/test_sampling_details.py::test_rank_pool_allows_observed_archive_start_but_not_observed_global - RuntimeError: Expected all tensors to be on the same device, but got tensors is on cpu, different from other tensors on cuda:0 (when checking argument ...
+========================================================= 4 failed, 14 passed, 2 warnings in 5.06s =========================================================
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$
+
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ CUDA_VISIBLE_DEVICES="" python -m pytest
+=================================================================== test session starts ====================================================================
+platform linux -- Python 3.12.14, pytest-9.1.1, pluggy-1.6.0
+rootdir: /home/eleno/projects/one_shape_bo
+configfile: pyproject.toml
+plugins: jaxtyping-0.3.11
+collected 18 items
+
+tests/test_acquisition_metadata.py .                                                                                                                 [  5%]
+tests/test_benchmark_audit.py ..                                                                                                                     [ 16%]
+tests/test_gaussian_model.py .                                                                                                                       [ 22%]
+tests/test_gaussian_warm_start.py .                                                                                                                  [ 27%]
+tests/test_optimization_policy.py ...                                                                                                                [ 44%]
+tests/test_optimization_smoke.py .                                                                                                                   [ 50%]
+tests/test_physical_regression.py .                                                                                                                  [ 55%]
+tests/test_sampling_details.py .....                                                                                                                 [ 83%]
+tests/test_sampling_policy.py ...                                                                                                                    [100%]
+
+===================================================================== warnings summary =====================================================================
+../../miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488
+../../miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488
+  /home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/jit/_script.py:1488: DeprecationWarning: `torch.jit.script` is deprecated. Please switch to `torch.compile` or `torch.export`.
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+============================================================== 18 passed, 2 warnings in 5.87s ==============================================================
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python -c "import torch; print(torch.cuda.is_available()); print(torch.cuda.get_device_name(0))"
+True
+NVIDIA GeForce RTX 3070 Ti Laptop GPU
+(one-shape-bo) eleno@EINgineer:~/projects/one_shape_bo$ python
+Python 3.12.14 (main, Sep  2 2026, 23:27:36) [GCC 15.3.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> from one_shape_bo import OptimizationConfig, run_optimization
+settings = {
+xsi>>> settings = {
+... "xsize": 100,
+... "ysize": 50,
+... "bx": 1.0,
+... "by":1.0,
+... "amin":50.0,
+... "smin":1.0,
+... "solid_max":0.5,
+... "nholes":3,
+... "htype":0,
+... "tri_q_min":0.10,
+... "burn_in":105,
+... "iterations":525,
+... "raw_pool_multiplier":3,
+... "ng_rst":10,
+... "nl_rst":5,
+... "max_restart_batches":6,
+... "minimum_restart_distance":0.02,
+... "local_start_strategy":"archive",
+... "local_radius":0.05,
+... "stagnation_patience":105,
+... "exploration_fraction":0.75,
+... "raster_tolerance":0.005,
+... "emin":1e-9,
+... "e0":1.0,
+... "penal":3.0,
+... "seed":0,
+... "plot_every":50,
+... "audit_reference":False,
+... }
+>>> config = OptimizationConfig(**settings)
+>>> result = run_optimization(config)
+Bayesian optimization run
+seed=0 burn_in=105 iterations=525 restart_budget=15 local_start_strategy=archive local_radius=unused
+/tmp/tmp383ou9gs/cuda_utils.c:1:10: fatal error: cuda.h: No such file or directory
+    1 | #include "cuda.h"
+      |          ^~~~~~~~
+compilation terminated.
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+  File "/home/eleno/projects/one_shape_bo/src/one_shape_bo/optimization.py", line 337, in run_optimization
+    model = Pred_Objective_Multi_Task(
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/projects/one_shape_bo/src/one_shape_bo/gaussian.py", line 64, in __init__
+    fit_gpytorch_mll(marginal_likelihood)
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/fit.py", line 110, in fit_gpytorch_mll
+    return FitGPyTorchMLL(
+           ^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/utils/dispatcher.py", line 94, in __call__
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/fit.py", line 212, in _fit_fallback
+    result = optimizer(mll, closure=closure, **optimizer_kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/optim/fit.py", line 94, in fit_gpytorch_mll_scipy
+    result = scipy_minimize(
+             ^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/optim/core.py", line 115, in scipy_minimize
+    raw = minimize_with_timeout(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/optim/utils/timeout.py", line 86, in minimize_with_timeout
+    return optimize.minimize(
+           ^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_minimize.py", line 784, in minimize
+    res = _minimize_lbfgsb(fun, x0, args, jac, bounds,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_lbfgsb_py.py", line 362, in _minimize_lbfgsb
+    sf = _prepare_scalar_function(fun, x0, jac=jac, args=args, epsilon=eps,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_optimize.py", line 310, in _prepare_scalar_function
+    sf = ScalarFunction(fun, x0, args, grad, hess,
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_differentiable_functions.py", line 283, in __init__
+    self._update_fun()
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_differentiable_functions.py", line 362, in _update_fun
+    fx = self._wrapped_fun(self.x)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/_lib/_util.py", line 544, in __call__
+    fx = self.f(np.copy(x), *self.args)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_optimize.py", line 80, in __call__
+    self._compute_if_needed(x, *args)
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/scipy/optimize/_optimize.py", line 74, in _compute_if_needed
+    fg = self.fun(x, *args)
+         ^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/optim/closures/core.py", line 82, in __call__
+    value_tensor, grad_tensors = self.closure(**kwargs)
+                                 ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/botorch/optim/closures/core.py", line 45, in __call__
+    value.backward()
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_tensor.py", line 623, in backward
+    torch.autograd.backward(
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/autograd/__init__.py", line 395, in backward
+    _engine_run_backward(
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/autograd/graph.py", line 979, in _engine_run_backward
+    return Variable._execution_engine.run_backward(  # Calls into the C++ engine to run the backward pass
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_native/registry.py", line 923, in eager_router
+    result = _dispatch(args, kwargs, swallow_cond_exceptions=False)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_native/registry.py", line 919, in _dispatch
+    return getattr(torch.ops._native, impl_name)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_ops.py", line 1279, in __call__
+    return self._op(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_native/ops/bmm_outer_product/triton_impl.py", line 28, in _bmm_outer_product_impl
+    return bmm_outer_product(a, b)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/torch/_native/ops/bmm_outer_product/triton_kernels.py", line 76, in bmm_outer_product
+    _bmm_outer_product_kernel[(B * triton.cdiv(M, BLOCK_M) * triton.cdiv(N, BLOCK_N),)](
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/jit.py", line 370, in <lambda>
+    return lambda *args, **kwargs: self.run(grid=grid, warmup=False, *args, **kwargs)
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/jit.py", line 713, in run
+    device = driver.active.get_current_device()
+             ^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/driver.py", line 39, in active
+    self._active = self.default
+                   ^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/driver.py", line 33, in default
+    self._default = _create_driver()
+                    ^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/driver.py", line 21, in _create_driver
+    return active_drivers[0]()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/backends/nvidia/driver.py", line 336, in __init__
+    self.utils = CudaUtils()  # TODO: make static
+                 ^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/backends/nvidia/driver.py", line 66, in __init__
+    mod = compile_module_from_src(
+          ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/build.py", line 115, in compile_module_from_src
+    so = _build(name, src_path, tmpdir, library_dirs or [], include_dirs or [], libraries or [], ccflags or [])
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/runtime/build.py", line 70, in _build
+    subprocess.check_call(cc_cmd, stdout=subprocess.DEVNULL)
+  File "/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/subprocess.py", line 413, in check_call
+    raise CalledProcessError(retcode, cmd)
+subprocess.CalledProcessError: Command '['/usr/bin/gcc', '/tmp/tmp383ou9gs/cuda_utils.c', '-O3', '-shared', '-fPIC', '-Wno-psabi', '-o', '/tmp/tmp383ou9gs/cuda_utils.cpython-312-x86_64-linux-gnu.so', '-l:libcuda.so.1', '-L/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/backends/nvidia/lib', '-L/usr/lib/wsl/lib', '-I/home/eleno/miniconda3/envs/one-shape-bo/lib/python3.12/site-packages/triton/backends/nvidia/include', '-I/tmp/tmp383ou9gs', '-I/home/eleno/miniconda3/envs/one-shape-bo/include/python3.12', '-I/home/eleno/miniconda3/envs/one-shape-bo/targets/x86_64-linux/include']' returned non-zero exit status 1.
+>>>
