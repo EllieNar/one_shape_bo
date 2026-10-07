@@ -116,8 +116,11 @@ def random_shape_area(
     domain_extent = torch.tensor([xmax - xmin, ymax - ymin], **TENSOR_KWARGS)
     shape_index = torch.tensor([shape_type], **TENSOR_KWARGS)
 
+    # Triangle
     if shape_type == 0:
+        # Samples three random 2D points from a {-1, 1} square and computes the triangle area from these three points
         for _ in range(shape_trials):
+            # Note that torch.rand generates random numbers between 0 and 1, hence *2 then sub 1 to get into desired -1 to 1 interval
             raw_vertices = 2.0 * _rand((3, 2), generator=generator) - 1.0
             edge_1 = raw_vertices[1] - raw_vertices[0]
             edge_2 = raw_vertices[2] - raw_vertices[0]
@@ -125,12 +128,10 @@ def random_shape_area(
             raw_area = 0.5 * torch.abs(
                 edge_1[0] * edge_2[1] - edge_1[1] * edge_2[0]
             )
-            edge_sum = (
-                torch.dot(edge_1, edge_1)
-                + torch.dot(edge_2, edge_2)
-                + torch.dot(edge_3, edge_3)
-            ).clamp_min(eps)
+            edge_sum = (torch.dot(edge_1, edge_1) + torch.dot(edge_2, edge_2) + torch.dot(edge_3, edge_3)).clamp_min(eps)
             quality = 4.0 * (3.0**0.5) * raw_area / edge_sum
+
+            # Triangle quality is invariant to scaling and directly excludes almost collinear shapes
             if raw_area <= eps or quality < constraints.quality_min:
                 continue
             vertices = (raw_vertices - raw_vertices[0]) * torch.sqrt(

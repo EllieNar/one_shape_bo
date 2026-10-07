@@ -210,3 +210,32 @@ provenance, warm-start and diagnose the GP, and adapt exploration in response to
 observed stagnation rather than absolute iteration count. Whether these changes
 improve final compliance and topology across seeds remains unresolved until
 separately approved multi-seed BO benchmarks are run.
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      07/10/26 at 15:52 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+CPU/CUDA seeded-run reproducibility
+
+`runtime.py` automatically selects CUDA whenever `torch.cuda.is_available()` is
+true and creates the seeded `torch.Generator` on that selected device. A fixed
+seed controls a stream on one device; it does not make the CPU and CUDA random
+streams identical. Consequently, otherwise equivalent configurations can produce
+different burn-in designs, fitted GPs, acquisition winners, and BO trajectories
+when one run uses CPU and the other uses CUDA.
+
+This explains the immediate disagreement between
+`260928_Implemented_Corrections` and `outputs/261007_141628_Triangle`. Before the
+first BO proposal, their best burn-in compliances were already 140.316017 and
+127.566462 respectively. A read-only reproduction of only the 105-point burn-in,
+using the current source at commit `9536665`, seed zero, and CPU execution,
+returned 140.31601658261422 at burn-in index 65 and therefore reproduced the
+accepted result to its logged precision. The later run was launched in a
+CUDA-enabled WSL process and followed the CUDA random stream.
+
+For comparison against the accepted September trajectory, launch a fresh Python
+process with `CUDA_VISIBLE_DEVICES=""` set before importing `one_shape_bo`. For a
+GPU run, launch Python normally after verifying CUDA and the required development
+headers. The device, dependency versions, and output path are operational run
+metadata even though they are not currently represented in `run_config.json`.
+Detailed WSL launch instructions for both modes are maintained in `SETUP.md`.

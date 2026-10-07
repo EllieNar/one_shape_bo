@@ -1,0 +1,3 @@
+Bayesian optimization run
+seed=0 burn_in=105 iterations=525 restart_budget=15 local_radius=0.0500
+iter=0001/525 new=135.383076 best=127.566462 solid=0.5010 winner=local restarts=10G/5L score_std=0.18 noise=0.00654 ls=0.183/0.333/0.693
