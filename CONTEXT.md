@@ -433,3 +433,31 @@ Observe that this performs much worse than the baseline best in 260928_Implement
 
 The code is returned to the state before this modification, i.e. the commit 'Intelligent restart selection outputs and WSL diagnostics'.
 This ends with the commit of the 261006_Archive_Seed0_V2 output 'Unintelligent restart selection results'.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      09/10/26 at 17:14 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+See 261009_One_Shape_BO_Runs.xlsx. This is the a comparison of the most important results in outputs, after commit 31a624a.
+Expect a design similar to the warren truss, know that when this is found across multiple seeds, triangles is setup correctly, and thus can run ellipses confidently.
+Note that will have to change the geometry, loading etc to satisfy actual constrains/conditions. Note that may also impose a smaller minimum spacing or a greater bx/by eventually.
+
+- 260928_Implemented_Corrections used a fixed-radius sampling, but usually generated no local raw pool: median 0. It had 102 local winners and finished at a compliance of 83.6612.
+- 260929_10407_Triangle contracted the radius until the local pool was filled: median 15. Local winners increased to 353/525, prolonged stagnation occured, and final compliance worsened to 93.1552, despite the same seed.
+
+The later modification adds the 'archive'. This is a better way of searching for local restarts (see 261007_Additional_Notes.pdf - or appropriately named (similar date) in the Bayesian_Optimisation_Part3 folder). This is used by the final three outputs, which also use the same seed of 967. The differences are:
+- 261008_085508_Triangle used 5 local and 10 global restarts (htype = 0, triangle) -> Reached smallest compliance yet of 79.982. It remained local-heavy, with 332 winners being local. It still experienced substantial stagnation (perhaps overcome with diversity enabled/disabled later on in iteration? Or perhaps this won't work when the same shape?)
+- 261008_172944_Triangle used 8 local and 8 global restarts (htype = 0, triangle) -> Depite everything else the same as the above, compliance of only 96.4448, worse than even 260929_10407_Triangle
+- 261008_173626_Ellipse used 5 local and 10 global restarts (htype = 1, ellipse)
+
+Why, is 261008_085508_Triangle superior to 61008_172944_Triangle, when it uses fewer restarts.
+Well, because it wasn't properly controlled! It used the wrong starting seed, which had a worst burn-in pipulation.
+Further, global restarts decreased from 10 to 8, the increase was entirely local/archive restarts. More acquisition restarts improve the chance of maximising the model's acquisition function, not necessarily the true compliance objective. A GP trained on weaker data can confidently select less useful designs.
+
+So, cannot make conclusion yet on the way to balance the global and local restarts. Next steps:
+- A run with the correct starting seed, and with a different local/global restarts
+- Look into the maths behind the local/global restarts and relate it to the way the code is written. Check in the context to see conclusions on what values they should hold.
+- Run further tests for triangle (once satisfied with the local/global restarts) at different seeds. Want to see little deviation in the result.
+
+Remember, perfection is the enemy to progress!
