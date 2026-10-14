@@ -1,0 +1,16 @@
+In plan mode, analyse the data in Tests.
+Each folder has a 'Note.txt' which describes the aim behind what data was collected, and the result.
+Within each subfolder, thoroughly analyse the data. You should also compare the Best_Geometry.png 'visually' (make relevant comparisons on how the three shapes look in Euclidean space).
+
+MY QUESTIONS:
+1. Why is the result in Triangle_1 so different to that in Triangle_0, despite only the seed changing (in addition to the respective weights)? I am not confident that the code is finding the near-global optimum, as the result can vary greatly between different seeds.
+2. Can it be concluded that changing the acquisition/novelty weighting has negligable difference on the final compliance. Why/not?
+3. There is no obvious trend in behaviour when the proportion of local and global seeds are varied (Triangle_2). Is this conclusive, or should further checks be made (e.g. increasing the total ng_rst + nl_rst) and why/not?
+4. The ellipse outputs are 'visually' very different (compare these in Euclidean space). Arguably more than the variation in triangle results. Is there a mathematical or computational reason behind this (e.g. compare the ellipse aspects of the code to triangle aspects)? Or is this a consequence of varied seeds?
+
+YOUR TASKS:
+1. Provide a concise answer to each of the four points. Read the docs and any relevant research online. Make citations in your response.
+2. If any of your answers to my questions were not heuristic (e.g. 'try more seeds' or 'increase the burn-in'), then propose computational modifications with mathematical reasoning. Make a separate response for each of my questions.
+3. Finally, make a concise summary on what should change overall, and why. Provide an implementation plan.
+
+Do not make any changes to the repository without my approval. Follow your instructions.

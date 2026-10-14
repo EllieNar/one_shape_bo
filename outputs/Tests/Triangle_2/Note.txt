@@ -1,0 +1,8 @@
+Aim: Examine effect on #local and #global seed proportions. Compare to 261008_085508_Triangle with 5 local and 10 global baseline (final compliance of 79.982). Same config, only ng_rst and nl_rst change.
+
+Result: No obvious trend in behaviour. Run for more seeds? Is there a mathematical explanation, or is this mere trial-and-error?
+
+Folder Name; 		Compliance;	Config;		# local;	# global \\
+261013_160904_Triangle;	82.644419	Default;	10;		5 \\
+261013_161341_Triangle; 92.814441	Default;	7;		8 \\
+261013_161749_Triangle;	93.90549	Default;	3;		12 \\

@@ -1,0 +1,20 @@
+{
+  "image": "outputs/Expected_Output_TRIANGLE/Three_Hole_Expected_Result_vf05_nx100_ny50_c96_Rasterised.png",
+  "source_bbox_xyxy": [
+    14,
+    68,
+    683,
+    402
+  ],
+  "grid_shape": [
+    50,
+    100
+  ],
+  "solid_fraction": 0.5332,
+  "permitted_solid_fraction": 0.505,
+  "volume_feasible": false,
+  "void_components": 3,
+  "recomputed_binary_compliance": 76.75324522541312,
+  "logged_continuous_compliance": 96.8918,
+  "comparison_note": "The PNG is a thresholded rendering of a filtered continuous-density topology. Its reconstructed binary volume and compliance are not the continuous optimizer's logged volume and objective, so it is a qualitative topology target rather than a numerical BO target."
+}

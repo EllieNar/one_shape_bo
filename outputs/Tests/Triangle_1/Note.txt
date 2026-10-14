@@ -1,0 +1,9 @@
+Aim: Compare the behaviour for different acquisition-novelty weights in rank_initial_condition_pool
+
+Folder Name;			Compliance;	Config;		acquisition weight (%);	novelty weight (%);		Seed \\
+261013_132546_Triangle;		106.433;	Default;	20;	80;	76 \\
+261013_154627_Triangle;		106.433;	Default;	40;	60;	76 \\
+261013_160158_Triangle;		106.433;	Default;	70;	30;	76 \\
+
+Result:
+No difference in final compliance. Never increases beyond 106.433, an improvement made in iteration #6. Only 2% since the initial best. Compared to Triangle_0, this has ~ 33% error!!

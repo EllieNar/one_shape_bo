@@ -1,0 +1,3 @@
+Aim: Compare the result when only the seed is changed
+Result: Variation of around 10%
+The rasterised outputs look visibly different.

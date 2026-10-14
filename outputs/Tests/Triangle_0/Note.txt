@@ -1,0 +1,9 @@
+Aim: Compare the behaviour for different acquisition-novelty weights in rank_initial_condition_pool
+
+Folder Name;			Compliance;	Config;		acquisition weight;	novelty weight;		Seed \\
+261012_171048_Triangle;		80.0339;	Default;	40;	60;	967 \\
+261012_171527_Triangle;		79.5755;	Default;	20;	80;	967 \\
+261012_172124_Triangle;		80.271;		Default;	70;	30;	967 \\
+
+Result:
+Very little difference in final compliance. Effect is insignificant.
