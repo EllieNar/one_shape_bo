@@ -1,0 +1,114 @@
+[
+  {
+    "bo_iteration": 1,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 2,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 3,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 4,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 5,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 6,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 7,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 8,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 9,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 10,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 11,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 12,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 60.53131354999982,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 0,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 13,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 14,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 15,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  }
+]

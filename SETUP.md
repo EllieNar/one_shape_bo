@@ -214,3 +214,99 @@ For a controlled comparison:
 3. use the same package versions;
 4. use the same configuration and seed; and
 5. write each run to a new output directory.
+
+## MO : Verification of reproducible outputs
+
+cd ~/projects/one_shape_bo
+conda activate one-shape-bo
+
+test ! -e outputs/manual_tests/M0_Verify_Reproducible_Outputs \
+  && echo "Output path is available" \
+  || echo "STOP: choose a new output folder"
+
+Run the test:
+timeout 600s python - <<'PY'
+from one_shape_bo import OptimizationConfig, run_optimization
+
+config = OptimizationConfig(
+    xsize=40,
+    ysize=20,
+    nholes=1,
+    htype=0,
+    amin=20.0,
+    burn_in=8,
+    iterations=4,
+    ng_rst=2,
+    nl_rst=1,
+    raw_pool_multiplier=2,
+    max_restart_batches=2,
+    seed=0,
+    plot_every=0,
+    audit_reference=False,
+    output_dir="outputs/manual_tests/M0_Verify_Reproducible_Outputs",
+)
+
+result = run_optimization(config)
+
+print("\nMANUAL RUN COMPLETED")
+print("best compliance:", result["best_compliance"])
+print("best source:", result["best_source"])
+print("feasible:", result["feasible"])
+print("output directory:", result["output_dir"])
+PY
+
+Expected workload:
+- 8 burn-in FEM evaluations
+- Up to 4 BO FEM evaluations
+- 4 GP fits
+- Maximum wall time: 600 seconds
+- Expected successful shell exit code: 0
+- Timeout exit code: 124
+
+During the run, supervise the console for four iter=... messages. An early “no novel feasible candidate” message is possible but should be noted.
+
+Then, inspect the records:
+find outputs/manual_tests/M0_Verify_Reproducible_Outputs \
+  -maxdepth 2 -type f -printf '%P\n' | sort
+
+python - <<'PY'
+import json
+from pathlib import Path
+
+run = Path("outputs/manual_tests/M0_Verify_Reproducible_Outputs")
+manifest = json.loads((run / "run_manifest.json").read_text())
+fits = json.loads((run / "gp_fits.json").read_text())
+
+print("status:", manifest["status"])
+print("seed:", manifest["initial_seed"])
+print("evaluations:", manifest["evaluation_count"])
+print("GP fits:", manifest["fit_count"])
+print("fit training counts:", [fit["train_count"] for fit in fits])
+PY
+
+For a complete run, expect:
+status: completed
+seed: 0
+evaluations: 12
+GP fits: 4
+fit training counts: [8, 9, 10, 11]
+
+Finally, verify exact reconstruction around BO iteration 2:
+
+python - <<'PY'
+from one_shape_bo import reconstruct_training_set
+
+run = "outputs/manual_tests/M0_Verify_Reproducible_Outputs"
+before = reconstruct_training_set(run, 2, position="before")
+after = reconstruct_training_set(run, 2, position="after")
+
+print("before iteration 2:", before["x"].shape, before["physical_compliance"].shape)
+print("after iteration 2: ", after["x"].shape, after["physical_compliance"].shape)
+print("previous rows unchanged:", (before["x"] == after["x"][:-1]).all().item())
+PY
+
+Expected result:
+
+before iteration 2: torch.Size([9, 7]) torch.Size([9, 1])
+after iteration 2:  torch.Size([10, 7]) torch.Size([10, 1])
+previous rows unchanged: True

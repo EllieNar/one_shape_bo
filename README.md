@@ -70,6 +70,41 @@ configuration, a compact output log, per-iteration GP and restart diagnostics in
 CSV, a diagnostic plot, the best geometry, and (for the standard triangle case)
 a read-only audit of the stored reference PNG.
 
+Each run also has a stable ID and a replayable, versioned record:
+
+- `evaluation_archive.pt` stores every encoded burn-in and BO design, physical
+  compliance, negative-log-compliance GP response, feasibility flags, raster
+  fraction, geometry signature, source, and explicit burn-in/BO indices.
+- `evaluations.csv` is a human-readable index into that tensor archive. It also
+  includes each complete encoded design vector as a JSON list and a checksum of
+  the corresponding lossless tensor row.
+- `burn_in_summary.json` records the actual burn-in range, best and worst designs,
+  and raw/transformed sample variances.
+- `gp_fits.json`, `gp_fits.csv`, and `fit_states/` record the exact archive prefix
+  used by each fit, fitted state and hyperparameters, outcome scaling, likelihood
+  observation noise, RNG states, and fitting warnings or failures. Fit summaries
+  label cold versus warm initialization and distinguish inherited lengthscales,
+  output scales, noise and mean state from the corresponding post-fit values.
+- `run_manifest.json` records resolved settings, software/CUDA details, git/source
+  revision information, lifecycle status, and references to the other records.
+
+The tensor files are lossless local run artifacts and should only be loaded from
+trusted runs. Reconstruct the GP inputs and responses around a chosen iteration
+without rerunning FEM with:
+
+```python
+from one_shape_bo import reconstruct_training_set
+
+before = reconstruct_training_set(run_directory, 11, position="before")
+after = reconstruct_training_set(run_directory, 11, position="after")
+```
+
+Here `physical_compliance` is the FEM output and
+`gp_response_prestandardization` is `-log(compliance)`. The recorded raw and
+transformed sample variances describe variation across evaluated designs; they
+are not observation-noise estimates. Likelihood observation noise and kernel
+output scale are labelled separately in the fit records.
+
 The CSV reports requested and generated local starts, acquisition improvement,
 start-to-end movement, optimizer failures, and posterior uncertainty at the
 selected candidate, current incumbent, and fixed best burn-in design. Posterior

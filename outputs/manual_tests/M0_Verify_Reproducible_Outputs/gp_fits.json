@@ -1,0 +1,74 @@
+[
+  {
+    "archive_stop_exclusive": 6,
+    "bo_iteration": 1,
+    "configuration_sha256": "1ceb272ae073bc8abbcd702586b8387fb13dfbc4bd991dbe1bf3df1384cbf957",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 1,
+    "gp_response_sample_variance": 0.15609823351537358,
+    "kernel_outputscale_mean": 0.2668388867498231,
+    "likelihood_observation_noise_variance": 0.006727840805470341,
+    "not_applicable": {},
+    "raw_compliance_sample_variance": 10365.218024468959,
+    "standardization_mean": [
+      -5.533434217823525
+    ],
+    "standardization_std": [
+      0.39509268977718837
+    ],
+    "state_file": "fit_states/fit_0001.pt",
+    "status": "success",
+    "train_count": 6,
+    "warning_count": 0,
+    "warnings": []
+  },
+  {
+    "archive_stop_exclusive": 7,
+    "bo_iteration": 2,
+    "configuration_sha256": "1ceb272ae073bc8abbcd702586b8387fb13dfbc4bd991dbe1bf3df1384cbf957",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 2,
+    "gp_response_sample_variance": 2.1985320204376126,
+    "kernel_outputscale_mean": 0.3506111596739446,
+    "likelihood_observation_noise_variance": 0.0067698896221497495,
+    "not_applicable": {},
+    "raw_compliance_sample_variance": 17605966.256665096,
+    "standardization_mean": [
+      -6.077026785729042
+    ],
+    "standardization_std": [
+      1.4827447590322527
+    ],
+    "state_file": "fit_states/fit_0002.pt",
+    "status": "success",
+    "train_count": 7,
+    "warning_count": 0,
+    "warnings": []
+  },
+  {
+    "archive_stop_exclusive": 8,
+    "bo_iteration": 3,
+    "configuration_sha256": "1ceb272ae073bc8abbcd702586b8387fb13dfbc4bd991dbe1bf3df1384cbf957",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 3,
+    "gp_response_sample_variance": 1.89161059093906,
+    "kernel_outputscale_mean": 0.3489337928774574,
+    "likelihood_observation_noise_variance": 0.006769362243524458,
+    "not_applicable": {},
+    "raw_compliance_sample_variance": 15376627.405284509,
+    "standardization_mean": [
+      -6.047121574182587
+    ],
+    "standardization_std": [
+      1.3753583500088478
+    ],
+    "state_file": "fit_states/fit_0003.pt",
+    "status": "success",
+    "train_count": 8,
+    "warning_count": 0,
+    "warnings": []
+  }
+]

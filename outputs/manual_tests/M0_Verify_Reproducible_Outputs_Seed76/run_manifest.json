@@ -1,0 +1,59 @@
+{
+  "best_compliance": 101.03897320102062,
+  "best_evaluation_index": 114,
+  "best_source": "local",
+  "configuration_file": "run_config.json",
+  "configuration_sha256": "0255b66d20399614f3bf7f50f7b2e01e639096b184fa41651372c20acb883bee",
+  "created_at_utc": "2026-10-16T08:30:29.294068+00:00",
+  "evaluation_archive": "evaluation_archive.pt",
+  "evaluation_count": 120,
+  "feasible": true,
+  "finished_at_utc": "2026-10-16T08:48:16.134015+00:00",
+  "fit_count": 15,
+  "git": {
+    "commit": "527c775e780f2d6de567268d8f5f027428ec0b82",
+    "dirty": true,
+    "source_sha256": {
+      "src/one_shape_bo/__init__.py": "7bdc5e3f522adcf61d20f0557d0880856ddc466ebc021f2fce5691c830140f79",
+      "src/one_shape_bo/__main__.py": "294917551667a90055f802faecabd2f7f55afc53940dd56f5a227872be9dac05",
+      "src/one_shape_bo/bayesian.py": "09282015be60699a8f34f5864672730a6a1c960ad579afcba6d5bff4b4e3a7c4",
+      "src/one_shape_bo/benchmark.py": "19273b5109ba2b2344b52e3cbf7ea689eb3a12985a2db52ca9189189bb72c78d",
+      "src/one_shape_bo/gaussian.py": "91243c552c7bcb9ef8a907f03799addb239b96e8d3c2aeae92cbbdbc27a4c010",
+      "src/one_shape_bo/optimization.py": "a03eb5c46e60eb4765dd1923c1cef8caa3818bde8e2e3223f181cecbd20b0bbb",
+      "src/one_shape_bo/physical.py": "67871227a365ec6bc7eaa7f8510f306ac1585cbecb3c5ad9ad772587fa77308b",
+      "src/one_shape_bo/records.py": "2a2cf7506053817b8e3241cc194cc555edcedb29254d51511386c53df058aa3d",
+      "src/one_shape_bo/runtime.py": "4d712836f0f9396b1523a10c87caaebd42bc91f35637380b67e9757b4e94d4f2",
+      "src/one_shape_bo/sampling.py": "07f38390110203bfd61671b3d3577a46c2b8a0601ce3e88a21321b479779d740",
+      "src/one_shape_bo/shapes.py": "102751c1b03ef6fa9945dc210045ad97bd5cc84e22c59efd265c2cc6cfecd8f7"
+    },
+    "tracked_status": "M CONTEXT.md\n M README.md\n M SETUP.md\n M src/one_shape_bo.egg-info/PKG-INFO\n M src/one_shape_bo.egg-info/SOURCES.txt\n M src/one_shape_bo/__init__.py\n M src/one_shape_bo/gaussian.py\n M src/one_shape_bo/optimization.py\n M tests/test_gaussian_warm_start.py\n M tests/test_optimization_smoke.py"
+  },
+  "initial_rng_state": "initial_rng_state.pt",
+  "initial_seed": 76,
+  "resolved_configuration": {
+    "burn_in": 105,
+    "dimension": 21,
+    "iterations": 15,
+    "stagnation_patience": 105,
+    "tensor_device": "cpu",
+    "tensor_dtype": "torch.float64"
+  },
+  "run_id": "20261016T083029.293943Z-6cdc9302",
+  "schema_version": 2,
+  "software": {
+    "cuda_available": false,
+    "cuda_version": "13.4",
+    "device_count": 0,
+    "packages": {
+      "botorch": "0.17.2",
+      "gpytorch": "1.15.2",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "torch": "2.14.1"
+    },
+    "platform": "Linux-6.18.33.2-microsoft-standard-WSL2-x86_64-with-glibc2.43",
+    "python": "3.12.15 (main, Oct 13 2026, 16:52:04) [GCC 15.3.0]"
+  },
+  "status": "completed"
+}

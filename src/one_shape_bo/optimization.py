@@ -8,6 +8,7 @@ from datetime import datetime
 import json
 import math
 from pathlib import Path
+import warnings
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,7 +17,11 @@ from botorch.acquisition import LogExpectedImprovement
 
 from .bayesian import Acquisition, Bounds
 from .benchmark import audit_reference_image
-from .gaussian import Pred_Objective_Multi_Task
+from .gaussian import (
+    Pred_Objective_Multi_Task,
+    compliance_to_gp_response,
+    warm_start_metadata,
+)
 from .physical import (
     analytical_solid_fraction,
     evaluate_designs,
@@ -25,6 +30,7 @@ from .physical import (
     rasterized_volume_feasibility,
 )
 from .runtime import TENSOR_KWARGS, make_generator
+from .records import RunRecorder, capture_rng_state
 from .sampling import (
     AREA_BROAD,
     AREA_NEAR_EQUAL,
@@ -264,11 +270,22 @@ def run_optimization(config: OptimizationConfig | None = None):
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
     serializable_config["output_dir"] = str(config.output_dir) if config.output_dir else None
-    (output_dir / "run_config.json").write_text(
-        json.dumps(serializable_config, indent=2), encoding="utf-8"
-    )
-    log = RunLog(output_dir / "output_log.txt")
     generator = make_generator(config.seed)
+    recorder = RunRecorder(
+        output_dir,
+        serializable_config,
+        {
+            "dimension": config.dimension,
+            "burn_in": config.resolved_burn_in,
+            "iterations": config.resolved_iterations,
+            "stagnation_patience": config.resolved_stagnation_patience,
+            "tensor_device": str(TENSOR_KWARGS["device"]),
+            "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
+        },
+        Path(__file__).resolve().parents[2],
+    )
+    recorder.record_initial_rng(capture_rng_state(generator))
+    log = RunLog(output_dir / "output_log.txt")
 
     try:
         constraints = Bounds(
@@ -316,12 +333,30 @@ def run_optimization(config: OptimizationConfig | None = None):
             constraints,
             return_solid_fractions=True,
         )
+        burn_in_signatures = [
+            geometry_signature(design, constraints) for design in x_train
+        ]
+        burn_in_analytical_feasible = feasible_mask(x_train, constraints)
+        burn_in_raster_feasible = (
+            raster_train <= constraints.solid_max + constraints.raster_tolerance
+        )
+        recorder.append_evaluations(
+            x_train,
+            y_train,
+            compliance_to_gp_response(y_train),
+            raster_train,
+            burn_in_signatures,
+            burn_in_analytical_feasible,
+            burn_in_raster_feasible,
+            phase="burn-in",
+            sources="burn-in",
+            burn_in_indices=list(range(1, len(x_train) + 1)),
+        )
+        recorder.record_burn_in_summary()
         initial_best = float(y_train.min().item())
         fixed_burnin_point = x_train[int(y_train.argmin().item())].detach().clone()
         best_history = [initial_best]
-        observed_signatures = {
-            geometry_signature(design, constraints) for design in x_train
-        }
+        observed_signatures = set(burn_in_signatures)
         evaluation_sources = ["burn-in"] * len(x_train)
         controller = StagnationRestartController(
             config.ng_rst,
@@ -334,11 +369,47 @@ def run_optimization(config: OptimizationConfig | None = None):
         record_improvements = 0
 
         for iteration in range(1, config.resolved_iterations + 1):
-            model = Pred_Objective_Multi_Task(
-                x_train,
-                y_train,
-                config.nholes,
-                previous_model=previous_model,
+            fit_rng_before = capture_rng_state(generator)
+            fit_warnings = []
+            initialization_metadata = warm_start_metadata(
+                previous_model,
+                source_fit_index=None if previous_model is None else iteration - 1,
+            )
+            try:
+                with warnings.catch_warnings(record=True) as fit_warnings:
+                    warnings.simplefilter("always")
+                    model = Pred_Objective_Multi_Task(
+                        x_train,
+                        y_train,
+                        config.nholes,
+                        previous_model=previous_model,
+                    )
+            except Exception as error:
+                recorder.record_fit(
+                    bo_iteration=iteration,
+                    train_x=x_train,
+                    train_compliance=y_train,
+                    train_gp_response=compliance_to_gp_response(y_train),
+                    rng_before=fit_rng_before,
+                    rng_after=capture_rng_state(generator),
+                    warnings_recorded=fit_warnings,
+                    initialization_metadata=initialization_metadata,
+                    failure={"type": type(error).__name__, "message": str(error)},
+                )
+                raise
+            gp_diagnostics = model.diagnostics()
+            recorder.record_fit(
+                bo_iteration=iteration,
+                train_x=x_train,
+                train_compliance=y_train,
+                train_gp_response=model.train_score,
+                rng_before=fit_rng_before,
+                rng_after=capture_rng_state(generator),
+                warnings_recorded=fit_warnings,
+                model_state=model.persistence_state(),
+                diagnostics=asdict(gp_diagnostics),
+                transform_parameters=model.transform_parameters(),
+                initialization_metadata=initialization_metadata,
             )
             previous_model = model
             acquisition_function = LogExpectedImprovement(
@@ -348,6 +419,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             attempted_starts = []
             rejected_signatures = set()
             optimizer_failures = 0
+            optimizer_failure_records = []
             x_new = None
             winner = None
 
@@ -415,6 +487,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                     starts,
                 )
                 optimizer_failures += len(acquisition.failed_restarts)
+                optimizer_failure_records.extend(acquisition.failed_restarts)
                 for result in acquisition.successful_results:
                     candidate = result["candidate"]
                     raster_valid, _ = rasterized_volume_feasibility(
@@ -430,6 +503,14 @@ def run_optimization(config: OptimizationConfig | None = None):
                     break
 
             if x_new is None:
+                recorder.record_iteration_event(
+                    {
+                        "bo_iteration": iteration,
+                        "status": "stopped_no_novel_feasible_candidate",
+                        "attempted_start_count": len(attempted_starts),
+                        "optimizer_failures": optimizer_failure_records,
+                    }
+                )
                 log.write(
                     f"iter={iteration:04d} stopped: no novel feasible candidate; "
                     f"starts={len(attempted_starts)} failures={optimizer_failures}"
@@ -480,6 +561,31 @@ def run_optimization(config: OptimizationConfig | None = None):
                 constraints,
                 return_solid_fractions=True,
             )
+            new_analytical_feasible = feasible_mask(x_new, constraints)
+            new_raster_feasible = (
+                raster_new <= constraints.solid_max + constraints.raster_tolerance
+            )
+            recorder.append_evaluations(
+                x_new,
+                y_new,
+                compliance_to_gp_response(y_new),
+                raster_new,
+                [winner["signature"]],
+                new_analytical_feasible,
+                new_raster_feasible,
+                phase="bo",
+                sources=[winner["source"]],
+                bo_iterations=[iteration],
+            )
+            recorder.record_iteration_event(
+                {
+                    "bo_iteration": iteration,
+                    "status": "evaluated",
+                    "winner_source": winner["source"],
+                    "winner_start_method": winner.get("start_method", "global"),
+                    "optimizer_failures": optimizer_failure_records,
+                }
+            )
             x_train = torch.cat((x_train, x_new))
             y_train = torch.cat((y_train, y_new))
             raster_train = torch.cat((raster_train, raster_new))
@@ -493,7 +599,6 @@ def run_optimization(config: OptimizationConfig | None = None):
             best_history.append(current_best)
             controller.observe(improved)
 
-            gp_diagnostics = model.diagnostics()
             lengthscales, outputscales = _flatten_diagnostics(gp_diagnostics)
             record = {
                 "iteration": iteration,
@@ -618,6 +723,13 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"best_source={best_source} evaluations={len(y_train)} "
             f"record_improvements={record_improvements}"
         )
+        recorder.finalize(
+            "completed",
+            best_compliance=best_compliance,
+            best_evaluation_index=best_index,
+            best_source=best_source,
+            feasible=feasible,
+        )
         return {
             "best_design": best_design,
             "best_compliance": best_compliance,
@@ -626,5 +738,11 @@ def run_optimization(config: OptimizationConfig | None = None):
             "output_dir": output_dir,
             "diagnostics": diagnostics_records,
         }
+    except BaseException as error:
+        recorder.finalize(
+            "failed",
+            failure={"type": type(error).__name__, "message": str(error)},
+        )
+        raise
     finally:
         log.close()

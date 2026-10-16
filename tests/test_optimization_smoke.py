@@ -35,6 +35,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
         def __init__(self, *args, **kwargs):
             self.gp = object()
             self.best_f = torch.tensor(0.0)
+            self.train_score = -torch.log(args[1])
 
         def posterior(self, X):
             return SimpleNamespace(
@@ -44,13 +45,19 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
         def diagnostics(self):
             return GPDiagnostics({"kernel": [0.3]}, {"kernel": 1.2}, 0.01)
 
+        def transform_parameters(self):
+            return {"mean": [-2.0], "std": [0.2], "transform_class": "Dummy"}
+
+        def persistence_state(self):
+            return {"model_class": "Dummy", "model_state_dict": {}}
+
     class DummyAcquisition:
         def __init__(self, *args, **kwargs):
             self.failed_restarts = []
             self.successful_results = [
                 {
                     "candidate": candidate,
-                    "signature": b"candidate",
+                    "signature": b"signature",
                     "source": "global",
                     "start_point": start,
                     "start_distance": 0.05,
@@ -69,7 +76,10 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
                 torch.tensor([[10.0], [12.0]], dtype=torch.double),
                 torch.tensor([0.5, 0.5], dtype=torch.double),
             )
-        return torch.tensor([[8.0]], dtype=torch.double), torch.tensor([0.5])
+        return (
+            torch.tensor([[8.0]], dtype=torch.double),
+            torch.tensor([0.5], dtype=torch.double),
+        )
 
     monkeypatch.setattr(optimization, "Bounds", DummyBounds)
     monkeypatch.setattr(
@@ -101,7 +111,10 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     monkeypatch.setattr(
         optimization,
         "geometry_signature",
-        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+        lambda design, constraints: bytes(
+            [int(round(float(design[1].item()) * 100.0))]
+        )
+        * len(b"signature"),
     )
     monkeypatch.setattr(
         optimization,
@@ -134,6 +147,9 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
 
     diagnostics = (tmp_path / "iteration_diagnostics.csv").read_text()
     output_log = (tmp_path / "output_log.txt").read_text()
+    archive = torch.load(
+        tmp_path / "evaluation_archive.pt", map_location="cpu", weights_only=False
+    )
     assert result["best_source"] == "global"
     assert "posterior_score_std" in diagnostics
     assert "posterior_incumbent_score_std" in diagnostics
@@ -145,3 +161,9 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert "winner_source" in diagnostics
     assert "winner=global" in output_log
     assert "tensor([" not in output_log
+    assert evaluation_count == 2
+    assert archive["x"].shape == (3, 7)
+    assert archive["burn_in_index"].tolist() == [1, 2, -1]
+    assert archive["bo_iteration"].tolist() == [-1, -1, 1]
+    assert (tmp_path / "gp_fits.json").exists()
+    assert (tmp_path / "fit_states" / "fit_0001.pt").exists()

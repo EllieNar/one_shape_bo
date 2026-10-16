@@ -7,6 +7,7 @@ src/one_shape_bo/benchmark.py
 src/one_shape_bo/gaussian.py
 src/one_shape_bo/optimization.py
 src/one_shape_bo/physical.py
+src/one_shape_bo/records.py
 src/one_shape_bo/runtime.py
 src/one_shape_bo/sampling.py
 src/one_shape_bo/shapes.py
@@ -22,5 +23,6 @@ tests/test_gaussian_warm_start.py
 tests/test_optimization_policy.py
 tests/test_optimization_smoke.py
 tests/test_physical_regression.py
+tests/test_run_records.py
 tests/test_sampling_details.py
 tests/test_sampling_policy.py

@@ -461,3 +461,59 @@ So, cannot make conclusion yet on the way to balance the global and local restar
 - Run further tests for triangle (once satisfied with the local/global restarts) at different seeds. Want to see little deviation in the result.
 
 Remember, perfection is the enemy to progress!
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      15/10/26 at 15:37 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Structured run persistence and GP replay
+
+The observability work package from `docs/261014_Modifications_To_BO_Code.pdf`
+has been implemented without changing the GP noise model, acquisition policy,
+restart allocation, geometric constraints, FEM calculation, or console summary.
+Every physical evaluation is now recorded once in a lossless ordered tensor
+archive, with a compact CSV index. Burn-in and BO numbering are explicit, and
+the archive includes encoded designs, compliance, negative-log-compliance GP
+responses, feasibility, raster fractions, geometry signatures, and candidate
+sources. Logging reuses values already produced by the optimisation; it does not
+add FEM evaluations.
+
+Each GP fit references the exact prefix of that archive used as training data.
+Fit snapshots store the fitted model and outcome-transform states,
+hyperparameters, likelihood observation noise, kernel output scales, RNG states,
+warnings and failures. Run manifests add stable IDs, resolved configuration,
+software/CUDA versions, and git/source revision information. Raw compliance
+variance and transformed-response variance are explicitly distinguished from
+likelihood observation noise.
+
+Public read-only loaders reconstruct the exact training X, physical compliance,
+and pre-standardisation GP response before or after a selected BO iteration.
+Atomic replacement protects the previous valid JSON, CSV, and tensor snapshots
+from partially written updates. Targeted archive, replay, indexing, RNG,
+warning/failure, atomic-write, GP and one-iteration driver tests passed; the
+driver test confirms that persistence does not increase the number of physical
+evaluator calls.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 09:20 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Readable designs and GP warm-start provenance
+
+The structured records now repeat each encoded design vector as a compact JSON
+list in `evaluations.csv`, alongside a checksum tied to the lossless tensor row.
+This makes designs directly inspectable without changing
+`evaluation_archive.pt` as the source of truth.
+
+GP fit records now label each initialization as cold or warm and identify the
+source fit for a warm start. They separately report the inherited mean-module
+state, kernel lengthscales, output scales and likelihood noise, and the post-fit
+lengthscales and output scales. The full inherited state remains losslessly
+available through a reference to the preceding fit snapshot. Outcome
+standardisation is not labelled as inherited because it is recalculated from
+the current training responses. These are observability-only changes; the
+existing warm-start load and fitting sequence are unchanged.
+The run-record schema version was advanced from 1 to 2 so readers can
+distinguish these expanded records from earlier manual-test outputs.
