@@ -209,6 +209,64 @@ The posterior checks divide the standard deviation of posterior means and the
 standard deviation. Predictive agreement uses the rolling RMS of standardized
 one-step-ahead residuals at evaluated BO candidates.
 
+### Offline observation-noise study
+
+`one_shape_bo.numerical_noise_study` compares learned noise with provisional
+fixed standardized variances using existing persistent run archives. It does
+not run FEM or generate new BO candidates. Every study fit is independently
+cold-started from one of three controlled initializations; ordinary
+`run_optimization` behavior is unchanged and continues to warm-start according
+to `warm_start_policy`.
+
+Prepare five learned-noise archive runs with seeds 0, 1, 2, 3 and 76. Each must
+contain the burn-in and at least 30 BO evaluations so the default snapshots
+after BO evaluations 0, 5, 10 and 20 each have ten subsequent held-out points.
+Then run:
+
+```bash
+python -m one_shape_bo.numerical_noise_study run \
+  --run 0=outputs/noise_study/learned_seed_0 \
+  --run 1=outputs/noise_study/learned_seed_1 \
+  --run 2=outputs/noise_study/learned_seed_2 \
+  --run 3=outputs/noise_study/learned_seed_3 \
+  --run 76=outputs/noise_study/learned_seed_76 \
+  --standardized-variance 1e-6 1e-5 1e-4 \
+  --fit-after 0 5 10 20 \
+  --holdout-size 10 \
+  --initializations 3 \
+  --output-dir outputs/numerical_noise_study/five_seed_study
+```
+
+For every snapshot, a requested standardized fixed variance is converted to
+the configuration/model response scale as
+`requested variance * sample variance(-log(compliance))`. The output records
+both that requested value and the effective fixed likelihood variance, exposing
+any GPyTorch fixed-noise floor. The learned-noise model is fitted to exactly the
+same archived training prefixes and remains the control.
+
+The run is resumable and atomically updates
+`gp_fits_numerical_study.csv`. Lossless fitted states are stored in
+`fit_states/`; the CSV records initialization provenance, warnings/failures,
+fitted hyperparameters, effective noise, probe mean/latent-uncertainty
+variation, and held-out RMSE, residual, coverage and predictive-density
+metrics. Summarize and cast the explicitly provisional decision with:
+
+```bash
+python -m one_shape_bo.numerical_noise_study summarize \
+  outputs/numerical_noise_study/five_seed_study
+python -m one_shape_bo.numerical_noise_study decide \
+  outputs/numerical_noise_study/five_seed_study
+```
+
+The decision function first requires fit stability, held-out accuracy and
+non-collapsed posterior variation relative to the learned control. It then uses
+paired held-out negative log predictive density and a one-standard-error set;
+warning rate and sensitivity to initialization precede larger fixed variance
+as tie-breakers. It writes `decision.json` and returns `no_selection` rather
+than forcing a choice when no fixed variance passes. These are transparent
+provisional screening rules, not a claim that deterministic FEM has physical
+measurement noise.
+
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's
 continuous volume or objective, so it is treated as a qualitative topology

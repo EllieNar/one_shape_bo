@@ -618,3 +618,39 @@ is explicit in the function name and a global archive-row number is never
 mistaken for a BO iteration. The BO functions match `bo_iteration`; the burn-in
 functions match `burn_in_index`. Exact-evaluation functions continue to verify
 the CSV design vector against its checksum and lossless archive row.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 14:47 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Independent numerical observation-noise study
+
+The offline numerical-noise study must not inherit GP hyperparameters between
+archived snapshots, noise candidates or initializations. Each study fit now
+constructs the same unfitted `MixedSingleTaskGP`, Matérn-1.5 kernel, priors and
+outcome transform as production, applies one reproducible controlled cold
+initialization, and performs a single fitting attempt. Three paired initial
+states can therefore reveal initialization fragility without silently allowing
+BoTorch retry initialization to replace the assigned state.
+
+This does not change ordinary Bayesian optimization. The production wrapper
+still applies `_warm_start` after GP construction: the first BO fit is cold,
+later fits inherit the immediately preceding fit, and an explicit
+`warm_start_policy="health_reset"` health warning suppresses inheritance for
+the next fit only. The default `"always"` policy continues to report warnings
+without changing warm-starting.
+
+The archive-only study compares learned noise with fixed standardized
+variances, by default 1e-6, 1e-5 and 1e-4, over five seeds, four snapshots and
+three initializations. Requested standardized fixed variance is converted back
+to pre-standardisation negative-log-compliance units using the snapshot's
+sample response variance. Records distinguish requested and effective noise,
+and include initialization checksums, warnings/failures, fitted
+hyperparameters, representative-probe behavior and held-out predictive
+metrics. Post-processing aggregates initialization behavior within each
+seed/snapshot and variation across seed/snapshot groups. The decision function
+can decline to select; otherwise it requires stability, held-out agreement and
+useful posterior variation relative to learned noise before applying a paired
+NLPD one-standard-error rule. The selected variance remains provisional rather
+than being interpreted as physical FEM observation noise.

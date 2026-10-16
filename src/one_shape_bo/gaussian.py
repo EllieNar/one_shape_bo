@@ -33,6 +33,44 @@ def matern_factory(batch_shape, ard_num_dims, active_dims):
     )
 
 
+def build_objective_gp(
+    train_x,
+    train_y,
+    nholes: int,
+    observation_noise_variance: float | None = None,
+):
+    """Construct an unfitted objective GP with the production model definition.
+
+    This factory deliberately does not accept a previous model. Ordinary BO
+    applies its established warm-start policy after construction, whereas
+    offline numerical studies can apply independent controlled initial states.
+    """
+    train_score = compliance_to_gp_response(train_y)
+    train_yvar = (
+        None
+        if observation_noise_variance is None
+        else torch.full_like(train_score, float(observation_noise_variance))
+    )
+    categorical = list(range(0, 7 * nholes, 7))
+    gp = MixedSingleTaskGP(
+        train_X=train_x,
+        train_Y=train_score,
+        train_Yvar=train_yvar,
+        cat_dims=categorical,
+        cont_kernel_factory=matern_factory,
+        outcome_transform=Standardize(m=1),
+    )
+    return gp, train_score
+
+
+def fit_objective_gp(gp, **fit_options):
+    """Fit a constructed objective GP using the production marginal likelihood."""
+    marginal_likelihood = ExactMarginalLogLikelihood(
+        likelihood=gp.likelihood, model=gp
+    )
+    return fit_gpytorch_mll(marginal_likelihood, **fit_options)
+
+
 def _warm_start(target_gp, previous_model, *, copy_likelihood=True):
     """Reuse fitted hyperparameters, but not outcome-transform statistics."""
     if previous_model is None:
@@ -116,33 +154,21 @@ class Pred_Objective_Multi_Task:
         previous_model=None,
         observation_noise_variance: float | None = None,
     ):
-        train_score = compliance_to_gp_response(train_y)
+        self.gp, train_score = build_objective_gp(
+            train_x,
+            train_y,
+            nholes,
+            observation_noise_variance=observation_noise_variance,
+        )
         self.train_score = train_score.detach().clone()
         self.prescribed_observation_noise_variance = observation_noise_variance
-        train_yvar = (
-            None
-            if observation_noise_variance is None
-            else torch.full_like(train_score, float(observation_noise_variance))
-        )
-        categorical = list(range(0, 7 * nholes, 7))
-        self.gp = MixedSingleTaskGP(
-            train_X=train_x,
-            train_Y=train_score,
-            train_Yvar=train_yvar,
-            cat_dims=categorical,
-            cont_kernel_factory=matern_factory,
-            outcome_transform=Standardize(m=1),
-        )
         _warm_start(
             self.gp,
             previous_model,
             copy_likelihood=observation_noise_variance is None,
         )
         self.best_f = train_score.max()
-        marginal_likelihood = ExactMarginalLogLikelihood(
-            likelihood=self.gp.likelihood, model=self.gp
-        )
-        fit_gpytorch_mll(marginal_likelihood)
+        fit_objective_gp(self.gp)
 
     def posterior(self, X, **kwargs):
         return self.gp.posterior(X, **kwargs)
