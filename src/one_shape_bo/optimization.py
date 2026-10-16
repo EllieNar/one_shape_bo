@@ -63,6 +63,8 @@ class OptimizationConfig:
     minimum_restart_distance: float = 0.02
     local_radius: float = 0.05
     local_start_strategy: str = "radius"
+    acquisition_weight: float = 0.55
+    novelty_weight: float = 0.45
     raster_tolerance: float = 0.005
     emin: float = 1e-9
     e0: float = 1.0
@@ -80,7 +82,6 @@ class OptimizationConfig:
     stagnation_patience: int | None = None
     exploration_fraction: float = 0.75
     seed: int = 0
-    plot_every: int = 10
     output_dir: str | Path | None = None
     audit_reference: bool = True
 
@@ -107,6 +108,11 @@ class OptimizationConfig:
         if self.warm_start_policy is not None:
             return self.warm_start_policy
         return "always"
+
+    @property
+    def resolved_restart_ranking_weights(self):
+        total = self.acquisition_weight + self.novelty_weight
+        return self.acquisition_weight / total, self.novelty_weight / total
 
 class StagnationRestartController:
     """Shift a fixed restart budget toward global starts after stagnation."""
@@ -192,6 +198,18 @@ def _validate_health_configuration(config):
             raise ValueError(f"{name} must be finite and non-negative, or None.")
     if config.health_predictive_window < 1:
         raise ValueError("health_predictive_window must be at least 1.")
+
+
+def _validate_restart_ranking_configuration(config):
+    weights = (config.acquisition_weight, config.novelty_weight)
+    if not all(math.isfinite(weight) and weight >= 0 for weight in weights):
+        raise ValueError(
+            "acquisition_weight and novelty_weight must be finite and non-negative."
+        )
+    if sum(weights) <= 0:
+        raise ValueError(
+            "acquisition_weight and novelty_weight must have a positive total."
+        )
 
 
 def _representative_feasible_points(global_conditions, local_conditions, dimension):
@@ -421,6 +439,7 @@ def run_optimization(config: OptimizationConfig | None = None):
     if config.local_start_strategy not in ("radius", "archive"):
         raise ValueError("local_start_strategy must be 'radius' or 'archive'.")
     _validate_health_configuration(config)
+    _validate_restart_ranking_configuration(config)
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -440,6 +459,10 @@ def run_optimization(config: OptimizationConfig | None = None):
                 else "prescribed"
             ),
             "warm_start_policy": config.resolved_warm_start_policy,
+            "restart_ranking_weights": {
+                "acquisition": config.resolved_restart_ranking_weights[0],
+                "novelty": config.resolved_restart_ranking_weights[1],
+            },
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -631,6 +654,8 @@ def run_optimization(config: OptimizationConfig | None = None):
                 config.minimum_restart_distance,
                 observed_points=x_train,
                 local_metadata=local_metadata,
+                acquisition_weight=config.acquisition_weight,
+                novelty_weight=config.novelty_weight,
             )
             raw_global, raw_local = len(global_conditions), len(local_conditions)
 
@@ -658,6 +683,8 @@ def run_optimization(config: OptimizationConfig | None = None):
                         config.minimum_restart_distance,
                         observed_points=x_train,
                         local_metadata=local_metadata,
+                        acquisition_weight=config.acquisition_weight,
+                        novelty_weight=config.novelty_weight,
                     )
                 starts, ranked_pool = take_restart_batch(
                     ranked_pool,
@@ -871,19 +898,6 @@ def run_optimization(config: OptimizationConfig | None = None):
                 f"{record['lengthscale_median']:.3g}/"
                 f"{record['lengthscale_max']:.3g}"
             )
-
-            if config.plot_every and iteration % config.plot_every == 0:
-                best_index = int(y_train.argmin().item())
-                generate_geometry(
-                    config.xsize,
-                    config.ysize,
-                    x_train[best_index],
-                    config.nholes,
-                    plot=True,
-                    namesave=f"Best_Geometry_iter_{iteration:04d}",
-                    title=f"Best after BO iteration {iteration}",
-                    fol_save=output_dir,
-                )
 
         best_index = int(y_train.argmin().item())
         best_design = x_train[best_index]

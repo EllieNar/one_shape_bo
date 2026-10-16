@@ -113,6 +113,70 @@ selected candidate, current incumbent, and fixed best burn-in design. Posterior
 standard deviation is in the GP's negative-log-compliance score units, not
 standardized units or compliance units.
 
+Periodic geometry plotting is intentionally kept out of the optimisation loop.
+The former `plot_every` configuration field has therefore been removed.
+After a run, recreate the best rasterised design available through a selected
+BO or burn-in evaluation without rerunning FEM:
+
+```bash
+python -m one_shape_bo.plot_evaluation outputs/MY_RUN --best-eval 20
+python -m one_shape_bo.plot_evaluation outputs/MY_RUN --best-burn-in 10
+```
+
+The commands save `Best_Geometry_eval_0020.png` and
+`Best_Burn_In_Geometry_eval_0010.png`, respectively, in the run directory and print
+the selected evaluation metadata. Use `--output path/to/name.png` to choose a
+different destination and `--show` to display the figure when a graphical
+backend is available. The design comes from the lossless archive; the command
+uses `evaluations.csv` to identify the requested step and best-so-far record.
+The earlier best-so-far spellings remain accepted as command-line aliases.
+
+To plot an exact BO or burn-in evaluation rather than the best design available
+by that step, run:
+
+```bash
+python -m one_shape_bo.plot_evaluation outputs/MY_RUN --eval 20
+python -m one_shape_bo.plot_evaluation outputs/MY_RUN --burn-in 10
+```
+
+These save `Geometry_eval_0020.png` and `Burn_In_Geometry_eval_0010.png` and
+also print the complete encoded design vector. The equivalent Python interfaces
+are:
+
+```python
+from one_shape_bo.plot_evaluation import (
+    plot_best_burn_in_geometry,
+    plot_best_geometry,
+    plot_evaluated_burn_in_geometry,
+    plot_evaluated_geometry,
+)
+
+best = plot_best_geometry("outputs/MY_RUN", eval_number=20)
+exact = plot_evaluated_geometry("outputs/MY_RUN", eval_number=20)
+burn_in_best = plot_best_burn_in_geometry("outputs/MY_RUN", eval_number=10)
+burn_in_exact = plot_evaluated_burn_in_geometry(
+    "outputs/MY_RUN", eval_number=10
+)
+print(exact["encoded_design_vector"])
+```
+
+`eval_number` is phase-specific: BO functions match the recorded BO iteration,
+while burn-in functions match the burn-in index. Both exact-evaluation functions
+verify the CSV vector against its stored checksum and lossless archive row.
+
+Global restart starts are ranked using normalized acquisition and novelty
+scores. Their default fractions are 0.55 and 0.45 and can be configured as:
+
+```python
+config = OptimizationConfig(
+    acquisition_weight=0.55,
+    novelty_weight=0.45,
+)
+```
+
+Any finite, non-negative pair with a positive total is accepted and normalized
+internally. Local starts continue to be ranked by acquisition alone.
+
 ## GP noise and health monitoring
 
 By default, the GP retains its learned homoskedastic observation noise. Its

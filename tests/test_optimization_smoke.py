@@ -85,6 +85,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             ]
 
     evaluation_count = 0
+    ranking_kwargs = {}
 
     def fake_evaluate(X, *args, **kwargs):
         nonlocal evaluation_count
@@ -98,6 +99,10 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             torch.tensor([[8.0]], dtype=torch.double),
             torch.tensor([0.5], dtype=torch.double),
         )
+
+    def fake_rank(*args, **kwargs):
+        ranking_kwargs.update(kwargs)
+        return [{"point": start, "source": "global"}]
 
     monkeypatch.setattr(optimization, "Bounds", DummyBounds)
     monkeypatch.setattr(
@@ -115,7 +120,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     monkeypatch.setattr(
         optimization,
         "rank_initial_condition_pool",
-        lambda *args, **kwargs: [{"point": start, "source": "global"}],
+        fake_rank,
     )
     monkeypatch.setattr(
         optimization,
@@ -158,7 +163,8 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             burn_in=2,
             iterations=1,
             output_dir=tmp_path,
-            plot_every=0,
+            acquisition_weight=0.7,
+            novelty_weight=0.3,
             audit_reference=False,
         )
     )
@@ -180,6 +186,8 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert "winner=global" in output_log
     assert "tensor([" not in output_log
     assert evaluation_count == 2
+    assert ranking_kwargs["acquisition_weight"] == 0.7
+    assert ranking_kwargs["novelty_weight"] == 0.3
     assert archive["x"].shape == (3, 7)
     assert archive["burn_in_index"].tolist() == [1, 2, -1]
     assert archive["bo_iteration"].tolist() == [-1, -1, 1]

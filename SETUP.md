@@ -241,7 +241,6 @@ config = OptimizationConfig(
     raw_pool_multiplier=2,
     max_restart_batches=2,
     seed=0,
-    plot_every=0,
     audit_reference=False,
     output_dir="outputs/manual_tests/M0_Verify_Reproducible_Outputs",
 )
@@ -264,6 +263,73 @@ Expected workload:
 - Timeout exit code: 124
 
 During the run, supervise the console for four iter=... messages. An early “no novel feasible candidate” message is possible but should be noted.
+
+Geometry snapshots are generated after the run rather than periodically during
+optimisation. For example, plot the best recorded design through BO evaluation
+3 or burn-in evaluation 5 with:
+
+```bash
+python -m one_shape_bo.plot_evaluation \
+  outputs/manual_tests/M0_Verify_Reproducible_Outputs --best-eval 3
+
+python -m one_shape_bo.plot_evaluation \
+  outputs/manual_tests/M0_Verify_Reproducible_Outputs --best-burn-in 5
+```
+
+The command prints the selected evaluation, compliance, raster fraction, and
+saved PNG path. Add `--show` only when the terminal has a graphical display.
+
+To plot and print the encoded vector for exact BO evaluation 3 or exact burn-in
+evaluation 5 instead of the respective best-so-far design, use:
+
+```bash
+python -m one_shape_bo.plot_evaluation \
+  outputs/manual_tests/M0_Verify_Reproducible_Outputs --eval 3
+
+python -m one_shape_bo.plot_evaluation \
+  outputs/manual_tests/M0_Verify_Reproducible_Outputs --burn-in 5
+```
+
+Within Python, the same operations are:
+
+```python
+from one_shape_bo.plot_evaluation import (
+    plot_best_burn_in_geometry,
+    plot_best_geometry,
+    plot_evaluated_burn_in_geometry,
+    plot_evaluated_geometry,
+)
+
+best = plot_best_geometry(
+    "outputs/manual_tests/M0_Verify_Reproducible_Outputs",
+    eval_number=3,
+)
+exact = plot_evaluated_geometry(
+    "outputs/manual_tests/M0_Verify_Reproducible_Outputs",
+    eval_number=3,
+)
+burn_in_best = plot_best_burn_in_geometry(
+    "outputs/manual_tests/M0_Verify_Reproducible_Outputs",
+    eval_number=5,
+)
+burn_in_exact = plot_evaluated_burn_in_geometry(
+    "outputs/manual_tests/M0_Verify_Reproducible_Outputs",
+    eval_number=5,
+)
+print(exact["encoded_design_vector"])
+```
+
+The global restart ranking defaults to 0.55 acquisition and 0.45 novelty. To
+change that balance, provide both values in `OptimizationConfig`; they are
+normalized internally:
+
+```python
+config = OptimizationConfig(
+    acquisition_weight=0.7,
+    novelty_weight=0.3,
+    output_dir="outputs/MY_RUN",
+)
+```
 
 Then, inspect the records:
 find outputs/manual_tests/M0_Verify_Reproducible_Outputs \

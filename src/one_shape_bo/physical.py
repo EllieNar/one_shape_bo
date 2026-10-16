@@ -131,6 +131,7 @@ def generate_geometry(
     title: str = "Proposed Geometry",
     dir_save=False,
     fol_save=False,
+    show: bool = False,
 ) -> np.ndarray:
     design = torch.as_tensor(X, **TENSOR_KWARGS).detach().reshape(-1)
     expected = 7 * nholes
@@ -186,6 +187,8 @@ def generate_geometry(
             save_directory = Path(dir_save) / fol_save if dir_save else Path(fol_save or ".")
             save_directory.mkdir(parents=True, exist_ok=True)
             figure.savefig(save_directory / f"{namesave}.png", dpi=500)
+        if show:
+            plt.show()
         plt.close(figure)
     return geometry
 

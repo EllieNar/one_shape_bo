@@ -567,3 +567,54 @@ because no preceding model exists; later fits inherit the available preceding
 model state. Users who want health warnings to force one cold fit at the next
 iteration can explicitly select `warm_start_policy="health_reset"` with either
 noise mode.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 10:47 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Post-run geometry plots and configurable restart ranking
+
+Periodic geometry rendering will be removed from the optimisation loop. A
+post-run command will instead reconstruct the best design available through a
+requested burn-in index or BO iteration from the persistent evaluation record
+and save the same rasterised geometry without rerunning FEM. The lossless tensor
+archive remains the design source of truth, while `evaluations.csv` supplies
+readable indexing and objective metadata. Final best-geometry and optimisation-
+diagnostic plots remain part of the normal run output.
+
+Global restart ranking will expose its acquisition and novelty weights through
+`OptimizationConfig`, retaining the current resolved fractions of 0.55 and 0.45
+by default. Finite, non-negative inputs with a positive total will be normalised
+to fractions before use. Local starts remain ranked by acquisition alone, so
+this change does not alter their established policy, the acquisition function,
+the GP, feasibility constraints, or the physical model.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 11:44 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Best-so-far and exact-evaluation geometry inspection
+
+The post-run best-so-far function is named `plot_best_geometry` to make its
+selection semantics explicit. A separate `plot_evaluated_geometry` function
+selects one exact, one-based evaluation record and reports its encoded design
+vector as well as rendering it. The exact-evaluation path decodes the readable
+CSV vector and verifies it against both its recorded checksum and the lossless
+archive row before plotting. Both functions reuse recorded objectives and
+raster fractions and do not rerun FEM.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 11:56 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Consistent geometry evaluation numbering
+
+All post-run Python plotting functions now accept `eval_number`. BO and burn-in
+records have separate best-so-far and exact-evaluation functions, so the phase
+is explicit in the function name and a global archive-row number is never
+mistaken for a BO iteration. The BO functions match `bo_iteration`; the burn-in
+functions match `burn_in_index`. Exact-evaluation functions continue to verify
+the CSV design vector against its checksum and lossless archive row.

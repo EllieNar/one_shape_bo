@@ -231,3 +231,60 @@ def test_rank_pool_allows_observed_archive_start_but_not_observed_global(monkeyp
     assert len(ranked) == 1
     assert ranked[0]["source"] == "local"
     assert ranked[0]["anchor_index"] == 0
+
+
+def test_global_rank_weights_can_prioritize_acquisition_or_novelty(monkeypatch):
+    constraints = SimpleConstraints()
+    global_points = torch.tensor(
+        [
+            [0.0, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2],
+            [0.0, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8],
+        ],
+        dtype=torch.double,
+    )
+    observed = torch.zeros((1, 7), dtype=torch.double)
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+
+    def ranked(acquisition_weight, novelty_weight):
+        return sampling.rank_initial_condition_pool(
+            lambda X: -X[..., 1:].sum(dim=-1),
+            global_points,
+            torch.empty((0, 7), dtype=torch.double),
+            constraints,
+            excluded_signatures=set(),
+            attempted_starts=[],
+            minimum_distance=0.0,
+            observed_points=observed,
+            acquisition_weight=acquisition_weight,
+            novelty_weight=novelty_weight,
+        )
+
+    assert torch.equal(ranked(1.0, 0.0)[0]["point"], global_points[0])
+    assert torch.equal(ranked(0.0, 1.0)[0]["point"], global_points[1])
+
+
+def test_rank_weights_require_a_positive_finite_total():
+    constraints = SimpleConstraints()
+    point = torch.zeros((1, 7), dtype=torch.double)
+
+    for weights in ((0.0, 0.0), (float("nan"), 1.0), (-1.0, 2.0)):
+        try:
+            sampling.rank_initial_condition_pool(
+                lambda X: X[..., 1],
+                point,
+                torch.empty((0, 7), dtype=torch.double),
+                constraints,
+                excluded_signatures=set(),
+                attempted_starts=[],
+                minimum_distance=0.0,
+                acquisition_weight=weights[0],
+                novelty_weight=weights[1],
+            )
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("Invalid ranking weights were accepted.")

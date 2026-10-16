@@ -587,8 +587,18 @@ def rank_initial_condition_pool(
     minimum_distance: float,
     observed_points=None,
     local_metadata=None,
+    acquisition_weight: float = 0.55,
+    novelty_weight: float = 0.45,
 ):
     """Rank valid starts by acquisition and source-appropriate coverage."""
+    weights = torch.tensor(
+        [acquisition_weight, novelty_weight], **TENSOR_KWARGS
+    )
+    if not torch.isfinite(weights).all() or bool((weights < 0).any()):
+        raise ValueError("Ranking weights must be finite and non-negative.")
+    if float(weights.sum().item()) <= 0:
+        raise ValueError("Ranking weights must have a positive total.")
+    acquisition_fraction, novelty_fraction = weights / weights.sum()
     batches, sources, metadata = [], [], []
     for source, conditions in (
         ("global", global_conditions),
@@ -662,7 +672,8 @@ def rank_initial_condition_pool(
     novelty_score = _unit(novelty)
     score = torch.stack(
         [
-            0.55 * acquisition_score[index] + 0.45 * novelty_score[index]
+            acquisition_fraction * acquisition_score[index]
+            + novelty_fraction * novelty_score[index]
             if source == "global"
             else acquisition_score[index]
             for index, source in enumerate(sources)

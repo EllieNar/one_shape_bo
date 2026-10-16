@@ -8,6 +8,7 @@ from one_shape_bo.optimization import (
     OptimizationConfig,
     _assess_gp_health,
     _validate_health_configuration,
+    _validate_restart_ranking_configuration,
 )
 
 
@@ -137,4 +138,28 @@ def test_prescribed_noise_must_be_finite_and_positive(noise):
     with pytest.raises(ValueError, match="finite and positive"):
         _validate_health_configuration(
             OptimizationConfig(observation_noise_variance=noise)
+        )
+
+
+def test_restart_ranking_weights_default_and_normalize():
+    default = OptimizationConfig()
+    scaled = OptimizationConfig(acquisition_weight=55.0, novelty_weight=45.0)
+
+    assert default.resolved_restart_ranking_weights == (0.55, 0.45)
+    assert scaled.resolved_restart_ranking_weights == (0.55, 0.45)
+    _validate_restart_ranking_configuration(default)
+    _validate_restart_ranking_configuration(scaled)
+
+
+@pytest.mark.parametrize(
+    "acquisition,novelty",
+    [(0.0, 0.0), (-1.0, 1.0), (float("inf"), 1.0)],
+)
+def test_restart_ranking_config_rejects_invalid_weights(acquisition, novelty):
+    with pytest.raises(ValueError):
+        _validate_restart_ranking_configuration(
+            OptimizationConfig(
+                acquisition_weight=acquisition,
+                novelty_weight=novelty,
+            )
         )
