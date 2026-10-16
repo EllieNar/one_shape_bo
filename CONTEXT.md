@@ -654,3 +654,39 @@ can decline to select; otherwise it requires stability, held-out agreement and
 useful posterior variation relative to learned noise before applying a paired
 NLPD one-standard-error rule. The selected variance remains provisional rather
 than being interpreted as physical FEM observation noise.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 16:39 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Offline GP health-threshold calibration
+
+Once the numerical-noise study selects a provisional fixed standardized
+variance, a separate archive-only replay calibrates health warnings without
+additional FEM evaluations. Every source run is replayed one BO prefix at a
+time using the production sequence of one initial cold fit followed by warm
+fits. Each warm fit is compared with an independently cold-fitted reference,
+and the next archived response supplies the one-step-ahead predictive result.
+
+The selected standardized noise is converted to raw negative-log-compliance
+variance separately for every training prefix. This exactly holds the studied
+standardized value constant, but it is not equivalent to the current runtime
+configuration's one constant raw variance. This limitation is recorded in the
+study outputs rather than silently treating the units as interchangeable.
+
+Provisional lower thresholds for signal variance, posterior-mean spread and
+posterior standard deviation, together with an upper rolling predictive-
+residual threshold and window, are chosen with leave-one-seed-out validation.
+The independent adverse label is a failed fit, fitting warning, or absolute
+one-step standardized residual above 2.576 by default. Candidate thresholds
+must respect a configurable maximum false-positive rate and demonstrate
+positive held-out discrimination; otherwise the recommendation remains null.
+For prescribed noise, `health_nu_min` is correctly marked not applicable
+because current runtime health logic uses `health_signal_variance_min` instead.
+
+The replay uses one common deterministic probe comprising deduplicated feasible
+archive designs. This supports seed-to-seed comparison but does not exactly
+reproduce historical iteration-specific restart pools. Recommendations are
+therefore written to `recommended_health_config.json` for review and never
+alter `OptimizationConfig` defaults automatically.

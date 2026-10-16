@@ -267,6 +267,49 @@ than forcing a choice when no fixed variance passes. These are transparent
 provisional screening rules, not a claim that deterministic FEM has physical
 measurement noise.
 
+### Offline health-threshold study
+
+After `decision.json` contains a provisional fixed standardized variance,
+`one_shape_bo.health_monitoring_study` replays every archived BO prefix without
+rerunning FEM. It uses the production initialization sequence—first fit cold,
+then warm from the preceding fit—and independently cold-fits the same data as a
+stability reference. The next archived evaluation supplies a genuine
+one-step-ahead predictive check.
+
+```bash
+python -m one_shape_bo.health_monitoring_study run \
+  outputs/numerical_noise_study/five_seed_study \
+  --output-dir outputs/health_monitoring_study/five_seed_study \
+  --window 3 5 10
+python -m one_shape_bo.health_monitoring_study summarize \
+  outputs/health_monitoring_study/five_seed_study
+python -m one_shape_bo.health_monitoring_study calibrate \
+  outputs/health_monitoring_study/five_seed_study
+```
+
+If `decision.json` is absent, the run command first invokes the numerical
+study's decision function. It stops if that decision is `no_selection`.
+Alternatively, `--selected-standardized-variance 1e-6` can explicitly supply a
+reviewed value. At every replay fit, the standardized value is converted to
+pre-standardisation response units using that prefix's response sample
+variance.
+
+`gp_health_replay.csv` records signal/noise measures, posterior behavior,
+one-step residuals, warm/cold disagreement, warnings and fitted
+hyperparameters. Calibration uses leave-one-seed-out validation and limits the
+false-warning rate while testing lower signal, mean-spread and posterior-SD
+thresholds and several rolling-residual windows. It writes
+`recommended_health_config.json`, but never changes runtime defaults. A value
+is left `null` when cross-seed evidence is insufficient. `health_nu_min` is
+reported as not applicable because prescribed-noise runtime monitoring uses
+signal variance rather than the learned-noise signal fraction.
+
+The recommendations are provisional for two explicit reasons: the replay's
+common probes are the deduplicated feasible archive rather than each historical
+restart pool, and constant standardized noise requires a different raw
+variance after response standardisation at each fit. Review those assumptions
+before transferring the values into `OptimizationConfig`.
+
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's
 continuous volume or objective, so it is treated as a qualitative topology
