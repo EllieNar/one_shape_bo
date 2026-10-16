@@ -1,3 +1,4 @@
+import pytest
 import torch
 
 from one_shape_bo import sampling
@@ -40,6 +41,18 @@ class RBFKernel:
 
 class KernelModel:
     covar_module = RBFKernel()
+
+
+@pytest.fixture(autouse=True)
+def assume_raster_feasible_unless_tested(monkeypatch):
+    monkeypatch.setattr(
+        sampling,
+        "rasterized_volume_feasibility",
+        lambda X, constraints: (
+            torch.ones(len(X), dtype=torch.bool, device=X.device),
+            torch.zeros(len(X), dtype=torch.double, device=X.device),
+        ),
+    )
 
 
 def test_random_candidate_applies_both_explicit_area_policies(monkeypatch):
@@ -288,3 +301,144 @@ def test_rank_weights_require_a_positive_finite_total():
             pass
         else:
             raise AssertionError("Invalid ranking weights were accepted.")
+
+
+def test_greedy_global_ranking_recomputes_novelty_after_each_selection(
+    monkeypatch,
+):
+    constraints = SimpleConstraints()
+    global_points = torch.tensor(
+        [
+            [0.0, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
+            [0.0, 0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
+            [0.0, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
+        ],
+        dtype=torch.double,
+    )
+    observed = torch.zeros((1, 7), dtype=torch.double)
+    acquisition_calls = 0
+
+    def acquisition(X):
+        nonlocal acquisition_calls
+        acquisition_calls += 1
+        return X[..., 1]
+
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+    greedy = sampling.rank_initial_condition_pool(
+        acquisition,
+        global_points,
+        torch.empty((0, 7), dtype=torch.double),
+        constraints,
+        excluded_signatures=set(),
+        attempted_starts=[],
+        minimum_distance=0.0,
+        observed_points=observed,
+        acquisition_weight=0.4,
+        novelty_weight=0.6,
+        number_global=2,
+        global_selection_strategy="greedy_dynamic_novelty",
+    )
+    static = sampling.rank_initial_condition_pool(
+        lambda X: X[..., 1],
+        global_points,
+        torch.empty((0, 7), dtype=torch.double),
+        constraints,
+        excluded_signatures=set(),
+        attempted_starts=[],
+        minimum_distance=0.0,
+        observed_points=observed,
+        acquisition_weight=0.4,
+        novelty_weight=0.6,
+        number_global=2,
+        global_selection_strategy="static_rank",
+    )
+
+    assert acquisition_calls == 1
+    assert torch.equal(greedy[0]["point"], global_points[0])
+    assert torch.equal(greedy[1]["point"], global_points[2])
+    assert torch.equal(static[1]["point"], global_points[1])
+    assert [entry["global_selection_step"] for entry in greedy] == [1, 2, 3]
+    assert [entry["reserve_start"] for entry in greedy] == [False, False, True]
+    for entry in greedy:
+        assert 0.0 <= float(entry["normalized_acquisition_score"]) <= 1.0
+        assert 0.0 <= float(entry["normalized_novelty_score"]) <= 1.0
+        assert 0.0 <= float(entry["rank_score"]) <= 1.0
+
+
+def test_greedy_global_ranking_applies_distance_after_selected_start(monkeypatch):
+    constraints = SimpleConstraints()
+    global_points = torch.tensor(
+        [
+            [0.0, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
+            [0.0, 0.80, 0.80, 0.80, 0.80, 0.80, 0.80],
+            [0.0, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
+        ],
+        dtype=torch.double,
+    )
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+
+    ranked = sampling.rank_initial_condition_pool(
+        lambda X: X[..., 1],
+        global_points,
+        torch.empty((0, 7), dtype=torch.double),
+        constraints,
+        excluded_signatures=set(),
+        attempted_starts=[],
+        minimum_distance=0.3,
+        observed_points=torch.zeros((1, 7), dtype=torch.double),
+        acquisition_weight=1.0,
+        novelty_weight=0.0,
+        number_global=3,
+        global_selection_strategy="greedy_dynamic_novelty",
+    )
+
+    assert torch.equal(ranked[0]["point"], global_points[0])
+    assert torch.equal(ranked[1]["point"], global_points[2])
+    assert all(not torch.equal(entry["point"], global_points[1]) for entry in ranked)
+
+
+def test_greedy_global_ranking_excludes_raster_infeasible_candidates(monkeypatch):
+    constraints = SimpleConstraints()
+    global_points = torch.tensor(
+        [
+            [0.0, 0.90, 0.90, 0.90, 0.90, 0.90, 0.90],
+            [0.0, 0.30, 0.30, 0.30, 0.30, 0.30, 0.30],
+        ],
+        dtype=torch.double,
+    )
+    monkeypatch.setattr(
+        sampling,
+        "geometry_signature",
+        lambda design, constraints: design.detach().cpu().numpy().tobytes(),
+    )
+    monkeypatch.setattr(
+        sampling,
+        "rasterized_volume_feasibility",
+        lambda X, constraints: (
+            torch.tensor([False, True], dtype=torch.bool),
+            torch.zeros(len(X), dtype=torch.double),
+        ),
+    )
+
+    ranked = sampling.rank_initial_condition_pool(
+        lambda X: X[..., 1],
+        global_points,
+        torch.empty((0, 7), dtype=torch.double),
+        constraints,
+        excluded_signatures=set(),
+        attempted_starts=[],
+        minimum_distance=0.0,
+        number_global=2,
+        global_selection_strategy="greedy_dynamic_novelty",
+    )
+
+    assert len(ranked) == 1
+    assert torch.equal(ranked[0]["point"], global_points[1])

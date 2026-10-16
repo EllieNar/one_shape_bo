@@ -151,6 +151,20 @@ def test_restart_ranking_weights_default_and_normalize():
     _validate_restart_ranking_configuration(scaled)
 
 
+def test_global_restart_selection_strategy_defaults_to_greedy_and_keeps_static():
+    greedy = OptimizationConfig()
+    static = OptimizationConfig(global_restart_selection_strategy="static_rank")
+
+    assert greedy.global_restart_selection_strategy == "greedy_dynamic_novelty"
+    _validate_restart_ranking_configuration(greedy)
+    _validate_restart_ranking_configuration(static)
+
+    with pytest.raises(ValueError, match="global_restart_selection_strategy"):
+        _validate_restart_ranking_configuration(
+            OptimizationConfig(global_restart_selection_strategy="unknown")
+        )
+
+
 @pytest.mark.parametrize(
     "acquisition,novelty",
     [(0.0, 0.0), (-1.0, 1.0), (float("inf"), 1.0)],

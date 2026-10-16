@@ -8,6 +8,7 @@ from datetime import datetime
 import json
 import math
 from pathlib import Path
+import time
 import warnings
 
 import matplotlib.pyplot as plt
@@ -65,6 +66,7 @@ class OptimizationConfig:
     local_start_strategy: str = "radius"
     acquisition_weight: float = 0.55
     novelty_weight: float = 0.45
+    global_restart_selection_strategy: str = "greedy_dynamic_novelty"
     raster_tolerance: float = 0.005
     emin: float = 1e-9
     e0: float = 1.0
@@ -201,6 +203,14 @@ def _validate_health_configuration(config):
 
 
 def _validate_restart_ranking_configuration(config):
+    if config.global_restart_selection_strategy not in (
+        "greedy_dynamic_novelty",
+        "static_rank",
+    ):
+        raise ValueError(
+            "global_restart_selection_strategy must be "
+            "'greedy_dynamic_novelty' or 'static_rank'."
+        )
     weights = (config.acquisition_weight, config.novelty_weight)
     if not all(math.isfinite(weight) and weight >= 0 for weight in weights):
         raise ValueError(
@@ -372,6 +382,129 @@ def _write_diagnostics(output_dir: Path, records):
         writer.writerows(records)
 
 
+RESTART_ATTEMPT_FIELDS = (
+    "bo_iteration",
+    "restart_batch",
+    "restart_index",
+    "source",
+    "global_selection_strategy",
+    "global_selection_step",
+    "reserve_start",
+    "raw_start_acquisition_value",
+    "normalized_acquisition_score",
+    "raw_novelty_distance",
+    "normalized_novelty_score",
+    "rank_score",
+    "optimizer_status",
+    "optimized_acquisition_value",
+    "optimizer_runtime_seconds",
+    "warning_count",
+    "endpoint_signature_hex",
+    "duplicate_within_batch",
+    "duplicate_within_iteration",
+    "duplicate_observed",
+    "raster_feasible_endpoint",
+    "failure_reason",
+    "new_compliance",
+    "best_compliance_after_iteration",
+    "final_best_compliance",
+)
+
+
+def _scalar_or_none(value):
+    if value is None:
+        return None
+    if torch.is_tensor(value):
+        if value.numel() != 1:
+            return json.dumps(value.detach().cpu().reshape(-1).tolist())
+        return float(value.detach().cpu().item())
+    return value
+
+
+def _write_restart_attempts(output_dir: Path, records):
+    if not records:
+        return
+    with (output_dir / "restart_attempts.csv").open(
+        "w", newline="", encoding="utf-8"
+    ) as stream:
+        writer = csv.DictWriter(stream, fieldnames=RESTART_ATTEMPT_FIELDS)
+        writer.writeheader()
+        writer.writerows(
+            {
+                field: (
+                    "N/A"
+                    if record.get(field) is None
+                    else _scalar_or_none(record[field])
+                )
+                for field in RESTART_ATTEMPT_FIELDS
+            }
+            for record in records
+        )
+
+
+def _global_start_diversity(points, constraints):
+    if len(points) < 2:
+        return {"minimum": math.nan, "mean": math.nan, "median": math.nan}
+    lower, upper = constraints.box_bounds
+    scale = (upper - lower).clamp_min(1e-12)
+    normalized = torch.stack(
+        [(point.detach().reshape(-1) - lower) / scale for point in points]
+    )
+    distances = torch.pdist(normalized)
+    return {
+        "minimum": float(distances.min().item()),
+        "mean": float(distances.mean().item()),
+        "median": float(distances.median().item()),
+    }
+
+
+def _restart_attempt_row(
+    bo_iteration,
+    restart_batch,
+    result,
+    optimizer_status,
+    *,
+    duplicate_within_batch=False,
+    duplicate_within_iteration=False,
+    duplicate_observed=False,
+    raster_feasible_endpoint=None,
+):
+    signature = result.get("signature")
+    return {
+        "bo_iteration": bo_iteration,
+        "restart_batch": restart_batch,
+        "restart_index": result.get("restart_index"),
+        "source": result.get("source"),
+        "global_selection_strategy": result.get(
+            "global_selection_strategy"
+        ),
+        "global_selection_step": result.get("global_selection_step"),
+        "reserve_start": result.get("reserve_start"),
+        "raw_start_acquisition_value": result.get("raw_acquisition_value"),
+        "normalized_acquisition_score": result.get(
+            "normalized_acquisition_score"
+        ),
+        "raw_novelty_distance": result.get("raw_novelty_distance"),
+        "normalized_novelty_score": result.get("normalized_novelty_score"),
+        "rank_score": result.get("rank_score"),
+        "optimizer_status": optimizer_status,
+        "optimized_acquisition_value": result.get("acquisition_value"),
+        "optimizer_runtime_seconds": result.get("elapsed_seconds"),
+        "warning_count": result.get("warning_count"),
+        "endpoint_signature_hex": (
+            None if signature is None else bytes(signature).hex()
+        ),
+        "duplicate_within_batch": duplicate_within_batch,
+        "duplicate_within_iteration": duplicate_within_iteration,
+        "duplicate_observed": duplicate_observed,
+        "raster_feasible_endpoint": raster_feasible_endpoint,
+        "failure_reason": result.get("reason"),
+        "new_compliance": None,
+        "best_compliance_after_iteration": None,
+        "final_best_compliance": None,
+    }
+
+
 def _plot_diagnostics(output_dir: Path, best_history, records):
     figure, axes = plt.subplots(2, 2, figsize=(11, 7), constrained_layout=True)
     axes[0, 0].plot(range(len(best_history)), best_history)
@@ -463,6 +596,9 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "acquisition": config.resolved_restart_ranking_weights[0],
                 "novelty": config.resolved_restart_ranking_weights[1],
             },
+            "global_restart_selection_strategy": (
+                config.global_restart_selection_strategy
+            ),
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -495,6 +631,8 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"iterations={config.resolved_iterations} restart_budget="
             f"{config.ng_rst + config.nl_rst} "
             f"local_start_strategy={config.local_start_strategy} "
+            f"global_restart_selection_strategy="
+            f"{config.global_restart_selection_strategy} "
             f"local_radius={local_radius_label} "
             f"noise_mode="
             f"{'learned' if config.observation_noise_variance is None else 'prescribed'} "
@@ -553,6 +691,7 @@ def run_optimization(config: OptimizationConfig | None = None):
         )
         previous_model = None
         diagnostics_records = []
+        restart_attempt_records = []
         record_improvements = 0
         predictive_z_history = []
         warm_start_controller = GPWarmStartController()
@@ -628,6 +767,13 @@ def run_optimization(config: OptimizationConfig | None = None):
             rejected_signatures = set()
             optimizer_failures = 0
             optimizer_failure_records = []
+            ranking_runtime_seconds = 0.0
+            optimizer_runtime_seconds = 0.0
+            attempted_global_starts = []
+            duplicate_within_batch_count = 0
+            duplicate_within_iteration_count = 0
+            duplicate_observed_count = 0
+            optimized_endpoint_signatures = set()
             x_new = None
             winner = None
 
@@ -644,6 +790,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             representative_points = _representative_feasible_points(
                 global_conditions, local_conditions, config.dimension
             )
+            ranking_started = time.perf_counter()
             ranked_pool = rank_initial_condition_pool(
                 acquisition_function,
                 global_conditions,
@@ -656,10 +803,15 @@ def run_optimization(config: OptimizationConfig | None = None):
                 local_metadata=local_metadata,
                 acquisition_weight=config.acquisition_weight,
                 novelty_weight=config.novelty_weight,
+                number_global=global_count,
+                global_selection_strategy=(
+                    config.global_restart_selection_strategy
+                ),
             )
+            ranking_runtime_seconds += time.perf_counter() - ranking_started
             raw_global, raw_local = len(global_conditions), len(local_conditions)
 
-            for _ in range(config.max_restart_batches):
+            for restart_batch in range(1, config.max_restart_batches + 1):
                 if not ranked_pool:
                     global_conditions, local_conditions, local_metadata = (
                         _sample_restart_pool(
@@ -673,6 +825,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                             model=model,
                         )
                     )
+                    ranking_started = time.perf_counter()
                     ranked_pool = rank_initial_condition_pool(
                         acquisition_function,
                         global_conditions,
@@ -685,6 +838,13 @@ def run_optimization(config: OptimizationConfig | None = None):
                         local_metadata=local_metadata,
                         acquisition_weight=config.acquisition_weight,
                         novelty_weight=config.novelty_weight,
+                        number_global=global_count,
+                        global_selection_strategy=(
+                            config.global_restart_selection_strategy
+                        ),
+                    )
+                    ranking_runtime_seconds += (
+                        time.perf_counter() - ranking_started
                     )
                 starts, ranked_pool = take_restart_batch(
                     ranked_pool,
@@ -692,28 +852,97 @@ def run_optimization(config: OptimizationConfig | None = None):
                     local_count,
                     config.nholes,
                     diversity=True,
+                    global_selection_strategy=(
+                        config.global_restart_selection_strategy
+                    ),
                 )
                 if not starts:
                     continue
                 attempted_starts.extend(entry["point"].detach().clone() for entry in starts)
+                attempted_global_starts.extend(
+                    entry["point"].detach().clone()
+                    for entry in starts
+                    if entry["source"] == "global"
+                )
+                optimization_started = time.perf_counter()
                 acquisition = Acquisition(
                     acquisition_function,
                     constraints,
                     starts,
                 )
+                optimizer_runtime_seconds += (
+                    time.perf_counter() - optimization_started
+                )
                 optimizer_failures += len(acquisition.failed_restarts)
                 optimizer_failure_records.extend(acquisition.failed_restarts)
+                for result in acquisition.failed_restarts:
+                    restart_attempt_records.append(
+                        _restart_attempt_row(
+                            iteration,
+                            restart_batch,
+                            result,
+                            "optimizer_failure",
+                        )
+                    )
+                duplicate_results = getattr(
+                    acquisition, "duplicate_results", []
+                )
+                duplicate_within_batch_count += len(duplicate_results)
+                for result in duplicate_results:
+                    restart_attempt_records.append(
+                        _restart_attempt_row(
+                            iteration,
+                            restart_batch,
+                            result,
+                            "duplicate_within_batch",
+                            duplicate_within_batch=True,
+                        )
+                    )
                 for result in acquisition.successful_results:
                     candidate = result["candidate"]
                     raster_valid, _ = rasterized_volume_feasibility(
                         candidate, constraints
                     )
                     signature = result["signature"]
-                    if not raster_valid.all() or signature in observed_signatures:
+                    raster_feasible = bool(raster_valid.all())
+                    duplicate_within_iteration = (
+                        signature in optimized_endpoint_signatures
+                    )
+                    optimized_endpoint_signatures.add(signature)
+                    if duplicate_within_iteration:
+                        duplicate_within_iteration_count += 1
+                    duplicate_observed = signature in observed_signatures
+                    if duplicate_observed:
+                        duplicate_observed_count += 1
+                    if (
+                        not raster_feasible
+                        or duplicate_observed
+                        or duplicate_within_iteration
+                    ):
                         rejected_signatures.add(signature)
-                        continue
-                    x_new, winner = candidate, result
-                    break
+                    status = "successful_unique_not_selected"
+                    if not raster_feasible:
+                        status = "infeasible_endpoint"
+                    elif duplicate_within_iteration:
+                        status = "duplicate_within_iteration"
+                    elif duplicate_observed:
+                        status = "duplicate_observed"
+                    elif x_new is None:
+                        status = "selected_endpoint"
+                        x_new, winner = candidate, result
+                    restart_attempt_records.append(
+                        _restart_attempt_row(
+                            iteration,
+                            restart_batch,
+                            result,
+                            status,
+                            duplicate_within_iteration=(
+                                duplicate_within_iteration
+                            ),
+                            duplicate_observed=duplicate_observed,
+                            raster_feasible_endpoint=raster_feasible,
+                        )
+                    )
                 if x_new is not None:
                     break
 
@@ -738,8 +967,18 @@ def run_optimization(config: OptimizationConfig | None = None):
                         "status": "stopped_no_novel_feasible_candidate",
                         "attempted_start_count": len(attempted_starts),
                         "optimizer_failures": optimizer_failure_records,
+                        "duplicate_within_batch_count": (
+                            duplicate_within_batch_count
+                        ),
+                        "duplicate_within_iteration_count": (
+                            duplicate_within_iteration_count
+                        ),
+                        "duplicate_observed_count": duplicate_observed_count,
+                        "ranking_runtime_seconds": ranking_runtime_seconds,
+                        "optimizer_runtime_seconds": optimizer_runtime_seconds,
                     }
                 )
+                _write_restart_attempts(output_dir, restart_attempt_records)
                 log.write(
                     f"iter={iteration:04d} stopped: no novel feasible candidate; "
                     f"starts={len(attempted_starts)} failures={optimizer_failures}"
@@ -836,6 +1075,13 @@ def run_optimization(config: OptimizationConfig | None = None):
                     "winner_source": winner["source"],
                     "winner_start_method": winner.get("start_method", "global"),
                     "optimizer_failures": optimizer_failure_records,
+                    "duplicate_within_batch_count": duplicate_within_batch_count,
+                    "duplicate_within_iteration_count": (
+                        duplicate_within_iteration_count
+                    ),
+                    "duplicate_observed_count": duplicate_observed_count,
+                    "ranking_runtime_seconds": ranking_runtime_seconds,
+                    "optimizer_runtime_seconds": optimizer_runtime_seconds,
                 }
             )
             x_train = torch.cat((x_train, x_new))
@@ -850,6 +1096,32 @@ def run_optimization(config: OptimizationConfig | None = None):
             record_improvements += int(improved)
             best_history.append(current_best)
             controller.observe(improved)
+
+            current_attempt_rows = [
+                row
+                for row in restart_attempt_records
+                if row["bo_iteration"] == iteration
+            ]
+            for attempt_record in current_attempt_rows:
+                attempt_record["new_compliance"] = float(y_new.item())
+                attempt_record["best_compliance_after_iteration"] = current_best
+            attempt_runtimes = [
+                float(row["optimizer_runtime_seconds"])
+                for row in current_attempt_rows
+                if row.get("optimizer_runtime_seconds") is not None
+            ]
+            global_reference_distances = [
+                float(_scalar_or_none(row["raw_novelty_distance"]))
+                for row in current_attempt_rows
+                if row.get("source") == "global"
+                and row.get("raw_novelty_distance") is not None
+                and math.isfinite(
+                    float(_scalar_or_none(row["raw_novelty_distance"]))
+                )
+            ]
+            start_diversity = _global_start_diversity(
+                attempted_global_starts, constraints
+            )
 
             lengthscales, outputscales = _flatten_diagnostics(gp_diagnostics)
             record = {
@@ -882,10 +1154,43 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "raw_local": raw_local,
                 "requested_raw_local": local_count * config.raw_pool_multiplier,
                 "local_start_strategy": config.local_start_strategy,
+                "global_restart_selection_strategy": (
+                    config.global_restart_selection_strategy
+                ),
+                "ranking_runtime_seconds": ranking_runtime_seconds,
+                "optimizer_runtime_seconds": optimizer_runtime_seconds,
+                "optimizer_restart_runtime_median": (
+                    float(np.median(attempt_runtimes))
+                    if attempt_runtimes
+                    else math.nan
+                ),
+                "global_start_pairwise_distance_min": start_diversity[
+                    "minimum"
+                ],
+                "global_start_pairwise_distance_mean": start_diversity["mean"],
+                "global_start_pairwise_distance_median": start_diversity[
+                    "median"
+                ],
+                "global_start_reference_distance_min": min(
+                    global_reference_distances, default=math.nan
+                ),
+                "duplicate_endpoint_within_batch_count": (
+                    duplicate_within_batch_count
+                ),
+                "duplicate_endpoint_within_iteration_count": (
+                    duplicate_within_iteration_count
+                ),
+                "duplicate_endpoint_observed_count": duplicate_observed_count,
+                "successful_unique_endpoint_count": sum(
+                    row["optimizer_status"]
+                    in ("selected_endpoint", "successful_unique_not_selected")
+                    for row in current_attempt_rows
+                ),
                 "optimizer_failures": optimizer_failures,
                 "stagnation": controller.stagnation,
             }
             diagnostics_records.append(record)
+            _write_restart_attempts(output_dir, restart_attempt_records)
             log.write(
                 f"iter={iteration:04d}/{config.resolved_iterations} "
                 f"new={record['new_compliance']:.6f} best={current_best:.6f} "
@@ -914,6 +1219,9 @@ def run_optimization(config: OptimizationConfig | None = None):
             abs(initial_best), 1e-12
         )
         best_source = evaluation_sources[best_index]
+        for attempt_record in restart_attempt_records:
+            attempt_record["final_best_compliance"] = best_compliance
+        _write_restart_attempts(output_dir, restart_attempt_records)
         _write_diagnostics(output_dir, diagnostics_records)
         _plot_diagnostics(output_dir, best_history, diagnostics_records)
         generate_geometry(

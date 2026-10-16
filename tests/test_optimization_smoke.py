@@ -170,6 +170,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     )
 
     diagnostics = (tmp_path / "iteration_diagnostics.csv").read_text()
+    restart_attempts = (tmp_path / "restart_attempts.csv").read_text()
     output_log = (tmp_path / "output_log.txt").read_text()
     archive = torch.load(
         tmp_path / "evaluation_archive.pt", map_location="cpu", weights_only=False
@@ -182,12 +183,21 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert "winner_start_method" in diagnostics
     assert "winner_acquisition_gain" in diagnostics
     assert "local_start_strategy" in diagnostics
+    assert "global_restart_selection_strategy" in diagnostics
+    assert "global_start_pairwise_distance_min" in diagnostics
+    assert "ranking_runtime_seconds" in diagnostics
+    assert "optimized_acquisition_value" in restart_attempts
+    assert "final_best_compliance" in restart_attempts
     assert "winner_source" in diagnostics
     assert "winner=global" in output_log
     assert "tensor([" not in output_log
     assert evaluation_count == 2
     assert ranking_kwargs["acquisition_weight"] == 0.7
     assert ranking_kwargs["novelty_weight"] == 0.3
+    assert ranking_kwargs["number_global"] == 10
+    assert ranking_kwargs["global_selection_strategy"] == (
+        "greedy_dynamic_novelty"
+    )
     assert archive["x"].shape == (3, 7)
     assert archive["burn_in_index"].tolist() == [1, 2, -1]
     assert archive["bo_iteration"].tolist() == [-1, -1, 1]

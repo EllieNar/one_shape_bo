@@ -294,6 +294,7 @@ class RunRecorder:
             "gp_fits.csv",
             "initial_rng_state.pt",
             "iteration_events.json",
+            "restart_attempts.csv",
             "fit_states",
         )
         collisions = [name for name in protected if (self.output_dir / name).exists()]

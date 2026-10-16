@@ -690,3 +690,36 @@ archive designs. This supports seed-to-seed comparison but does not exactly
 reproduce historical iteration-specific restart pools. Recommendations are
 therefore written to `recommended_health_config.json` for review and never
 alter `OptimizationConfig` defaults automatically.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 18:23 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Greedy global restart selection with dynamic novelty
+
+Global restart selection now defaults to a greedy weighted acquisition/novelty
+rule. Acquisition values are evaluated once for an eligible raw pool. At each
+selection step, novelty is recomputed as normalized Euclidean distance to the
+union of observations, previously attempted starts and global starts already
+selected. Acquisition and current novelty are separately min-max normalized
+over the remaining eligible global candidates, then combined with the configured
+non-negative weights. The chosen start enters the reference set before the next
+score calculation. Dynamic minimum-distance filtering can therefore remove a
+candidate that becomes redundant after an earlier selection.
+
+The existing `static_rank` path is retained as an explicit experimental
+comparison and continues to use its former one-pass scoring and subsequent
+diverse-batch selection. Local restart ranking remains acquisition-only. Greedy
+global ordering takes precedence over the batch selector, including for mixed
+shape tuples; reserve candidates are greedily ordered to preserve optimizer-
+failure fallback batches.
+
+Run records now include one row per optimized restart in
+`restart_attempts.csv`, retaining start scores, optimized acquisition values,
+optimizer runtime, failures and duplicate endpoint classifications. Iteration
+diagnostics include normalized global-start pairwise diversity, reference
+distance, ranking and optimization runtime, duplicate counts and compliance.
+This is a sampling/acquisition-initialization change only: the GP, acquisition
+function, feasibility constraints, physical model and FEM evaluation count are
+unchanged.

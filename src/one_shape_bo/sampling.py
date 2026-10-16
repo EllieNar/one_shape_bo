@@ -589,8 +589,18 @@ def rank_initial_condition_pool(
     local_metadata=None,
     acquisition_weight: float = 0.55,
     novelty_weight: float = 0.45,
+    number_global: int | None = None,
+    global_selection_strategy: str = "greedy_dynamic_novelty",
 ):
     """Rank valid starts by acquisition and source-appropriate coverage."""
+    if global_selection_strategy not in (
+        "greedy_dynamic_novelty",
+        "static_rank",
+    ):
+        raise ValueError(
+            "global_selection_strategy must be 'greedy_dynamic_novelty' "
+            "or 'static_rank'."
+        )
     weights = torch.tensor(
         [acquisition_weight, novelty_weight], **TENSOR_KWARGS
     )
@@ -659,6 +669,155 @@ def rank_initial_condition_pool(
         and bool(observed_distance[index] <= 1e-12)
         for index in range(len(conditions))
     ]
+
+    if global_selection_strategy == "greedy_dynamic_novelty":
+        accepted_start_signatures = set()
+        eligible_indices = []
+        signatures = {}
+        for index, point in enumerate(conditions):
+            if not torch.isfinite(acquisition[index]):
+                continue
+            signature = geometry_signature(point, constraints)
+            allow_observed = observed_start[index]
+            if signature in accepted_start_signatures:
+                continue
+            if signature in excluded_signatures and not allow_observed:
+                continue
+            accepted_start_signatures.add(signature)
+            signatures[index] = signature
+            eligible_indices.append(index)
+
+        if eligible_indices:
+            raster_feasible, _ = rasterized_volume_feasibility(
+                conditions[eligible_indices], constraints
+            )
+            eligible_indices = [
+                index
+                for index, is_feasible in zip(eligible_indices, raster_feasible)
+                if bool(is_feasible)
+            ]
+
+        global_remaining = [
+            index
+            for index in eligible_indices
+            if sources[index] == "global"
+        ]
+        selected_global = []
+        global_entries = []
+        global_target = (
+            len(global_remaining)
+            if number_global is None
+            else max(0, int(number_global))
+        )
+        while global_remaining:
+            references = attempted_normalized + observed_normalized + selected_global
+            if references:
+                reference_tensor = torch.stack(references)
+                distances = torch.cdist(
+                    normalized[global_remaining], reference_tensor
+                ).min(dim=1).values
+            else:
+                distances = torch.full(
+                    (len(global_remaining),), float("inf"), **TENSOR_KWARGS
+                )
+            distance_eligible = [
+                position
+                for position, value in enumerate(distances)
+                if value >= minimum_distance
+            ]
+            if not distance_eligible:
+                break
+            candidate_indices = [
+                global_remaining[position] for position in distance_eligible
+            ]
+            candidate_distances = distances[distance_eligible]
+            acquisition_score = _unit(acquisition[candidate_indices])
+            novelty_score = _unit(candidate_distances)
+            combined_score = (
+                acquisition_fraction * acquisition_score
+                + novelty_fraction * novelty_score
+            )
+            chosen_position = max(
+                range(len(candidate_indices)),
+                key=lambda position: (
+                    float(combined_score[position].item()),
+                    float(acquisition_score[position].item()),
+                    float(novelty_score[position].item()),
+                    -candidate_indices[position],
+                ),
+            )
+            index = candidate_indices[chosen_position]
+            point = conditions[index].detach().reshape(-1)
+            selection_step = len(global_entries) + 1
+            entry = {
+                "point": point,
+                "source": "global",
+                "shape_tuple": tuple(
+                    int(point[7 * hole].item())
+                    for hole in range(constraints.nholes)
+                ),
+                "raw_acquisition_value": acquisition[index].detach(),
+                "normalized_acquisition_score": acquisition_score[
+                    chosen_position
+                ].detach(),
+                "raw_novelty_distance": candidate_distances[
+                    chosen_position
+                ].detach(),
+                "normalized_novelty_score": novelty_score[
+                    chosen_position
+                ].detach(),
+                "rank_score": combined_score[chosen_position].detach(),
+                "global_selection_step": selection_step,
+                "global_selection_strategy": global_selection_strategy,
+                "reserve_start": selection_step > global_target,
+                "signature": signatures[index],
+            }
+            entry.update(metadata[index])
+            global_entries.append(entry)
+            selected_global.append(normalized[index])
+            global_remaining.remove(index)
+
+        local_indices = [
+            index
+            for index in eligible_indices
+            if sources[index] == "local"
+        ]
+        local_acquisition_score = _unit(acquisition[local_indices])
+        local_entries = []
+        for position in torch.argsort(local_acquisition_score, descending=True):
+            local_position = int(position.item())
+            index = local_indices[local_position]
+            allow_observed = observed_start[index]
+            references = list(attempted_normalized)
+            if not allow_observed:
+                references.extend(observed_normalized)
+            novelty = conditions.new_tensor(1.0)
+            if references:
+                novelty = torch.cdist(
+                    normalized[index : index + 1], torch.stack(references)
+                ).min()
+            if references and novelty < minimum_distance:
+                continue
+            point = conditions[index].detach().reshape(-1)
+            entry = {
+                "point": point,
+                "source": "local",
+                "shape_tuple": tuple(
+                    int(point[7 * hole].item())
+                    for hole in range(constraints.nholes)
+                ),
+                "raw_acquisition_value": acquisition[index].detach(),
+                "normalized_acquisition_score": local_acquisition_score[
+                    local_position
+                ].detach(),
+                "rank_score": local_acquisition_score[local_position].detach(),
+                "global_selection_strategy": global_selection_strategy,
+                "signature": signatures[index],
+            }
+            entry.update(metadata[index])
+            local_entries.append(entry)
+        return global_entries + local_entries
+
     novelty = torch.ones(len(conditions), **TENSOR_KWARGS)
     for index in range(len(conditions)):
         references = list(attempted_normalized)
@@ -706,6 +865,7 @@ def rank_initial_condition_pool(
             ),
             "raw_acquisition_value": acquisition[index].detach(),
             "rank_score": score[index].detach(),
+            "global_selection_strategy": global_selection_strategy,
             "signature": signature,
         }
         entry.update(metadata[index])
@@ -720,11 +880,66 @@ def take_restart_batch(
     number_local: int,
     nholes: int,
     diversity: bool = True,
+    global_selection_strategy: str = "static_rank",
 ):
     """Take a source-balanced, spatially diverse batch across shape tuples."""
     target_total = min(number_global + number_local, len(ranked_pool))
     if not target_total:
         return [], list(ranked_pool)
+    if global_selection_strategy == "greedy_dynamic_novelty":
+        global_indices = sorted(
+            (
+                index
+                for index, entry in enumerate(ranked_pool)
+                if entry["source"] == "global"
+            ),
+            key=lambda index: ranked_pool[index].get(
+                "global_selection_step", float("inf")
+            ),
+        )[:number_global]
+        local_pool = [
+            entry for entry in ranked_pool if entry["source"] == "local"
+        ]
+        selected_local, _ = take_restart_batch(
+            local_pool,
+            0,
+            number_local,
+            nholes,
+            diversity=diversity,
+            global_selection_strategy="static_rank",
+        )
+        selected_ids = {id(entry) for entry in selected_local}
+        selected_indices = list(global_indices) + [
+            index
+            for index, entry in enumerate(ranked_pool)
+            if id(entry) in selected_ids
+        ]
+        if len(selected_indices) < target_total:
+            selected_set = set(selected_indices)
+            selected_indices.extend(
+                index
+                for index in range(len(ranked_pool))
+                if index not in selected_set
+            )
+            selected_indices = selected_indices[:target_total]
+        selected_set = set(selected_indices)
+        return (
+            [
+                entry
+                for index, entry in enumerate(ranked_pool)
+                if index in selected_set
+            ],
+            [
+                entry
+                for index, entry in enumerate(ranked_pool)
+                if index not in selected_set
+            ],
+        )
+    if global_selection_strategy != "static_rank":
+        raise ValueError(
+            "global_selection_strategy must be 'greedy_dynamic_novelty' "
+            "or 'static_rank'."
+        )
     source_remaining = {"global": number_global, "local": number_local}
     selected_indices, selected_points, represented_shapes = [], [], set()
 

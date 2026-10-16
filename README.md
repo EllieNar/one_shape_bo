@@ -165,17 +165,37 @@ while burn-in functions match the burn-in index. Both exact-evaluation functions
 verify the CSV vector against its stored checksum and lossless archive row.
 
 Global restart starts are ranked using normalized acquisition and novelty
-scores. Their default fractions are 0.55 and 0.45 and can be configured as:
+scores. The default `greedy_dynamic_novelty` strategy chooses global starts one
+at a time. After each choice, novelty is recomputed as normalized Euclidean
+distance from all observations, previously attempted starts and global starts
+already selected for that batch. Acquisition and novelty are min-max scaled to
+`[0, 1]` over the currently eligible candidates before applying their weights.
+Their default fractions are 0.55 and 0.45 and can be configured as:
 
 ```python
 config = OptimizationConfig(
     acquisition_weight=0.55,
     novelty_weight=0.45,
+    global_restart_selection_strategy="greedy_dynamic_novelty",
 )
 ```
 
 Any finite, non-negative pair with a positive total is accepted and normalized
-internally. Local starts continue to be ranked by acquisition alone.
+internally. Local starts continue to be ranked by acquisition alone. The former
+one-pass ranking and separate diverse-batch selector remain available for
+controlled comparison with:
+
+```python
+config = OptimizationConfig(
+    global_restart_selection_strategy="static_rank",
+)
+```
+
+`restart_attempts.csv` records every optimized start, its selection scores,
+optimized acquisition value, runtime, failure status and duplicate-endpoint
+classification. `iteration_diagnostics.csv` additionally reports global-start
+pairwise diversity, ranking/optimization runtime, duplicate counts and best
+compliance. These diagnostics add no physical evaluations.
 
 ## GP noise and health monitoring
 

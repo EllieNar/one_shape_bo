@@ -70,3 +70,32 @@ def test_restart_batch_balances_sources_and_preserves_mixed_tuples():
     assert sum(entry["source"] == "global" for entry in selected) == 2
     assert sum(entry["source"] == "local" for entry in selected) == 2
     assert {entry["shape_tuple"] for entry in selected} == {(0, 0, 1), (0, 1, 1)}
+
+
+def test_greedy_restart_batch_preserves_global_selection_order():
+    pool = [
+        {
+            **_entry("global", (0, 0, 1), 0.10, 0.9),
+            "global_selection_step": 1,
+        },
+        {
+            **_entry("global", (0, 0, 1), 0.11, 0.8),
+            "global_selection_step": 2,
+        },
+        {
+            **_entry("global", (0, 1, 1), 0.90, 0.7),
+            "global_selection_step": 3,
+        },
+    ]
+
+    selected, remaining = sampling.take_restart_batch(
+        pool,
+        2,
+        0,
+        3,
+        diversity=True,
+        global_selection_strategy="greedy_dynamic_novelty",
+    )
+
+    assert [entry["global_selection_step"] for entry in selected] == [1, 2]
+    assert [entry["global_selection_step"] for entry in remaining] == [3]

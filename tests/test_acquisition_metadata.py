@@ -65,3 +65,37 @@ def test_acquisition_preserves_mixed_tuple_source_without_geometry_output(
         20: 0.0,
     }
     assert capsys.readouterr().out == ""
+
+
+def test_acquisition_records_duplicate_optimized_endpoints(monkeypatch):
+    point_a = torch.zeros(21, dtype=torch.double)
+    point_b = torch.ones(21, dtype=torch.double)
+    point_b[[0, 7, 14]] = 0.0
+
+    def fake_optimize(**kwargs):
+        candidate = torch.full((1, 1, 21), 0.25, dtype=torch.double)
+        candidate[..., [0, 7, 14]] = 0.0
+        return candidate, torch.tensor(2.0)
+
+    monkeypatch.setattr(bayesian, "optimize_acqf_mixed", fake_optimize)
+    monkeypatch.setattr(
+        bayesian,
+        "geometry_signature",
+        lambda design, constraints: b"same-endpoint",
+    )
+
+    result = bayesian.Acquisition(
+        acq_function=object(),
+        constraints=SimpleConstraints(),
+        initial_conditions=[
+            {"point": point_a, "source": "global"},
+            {"point": point_b, "source": "global"},
+        ],
+    )
+
+    assert len(result.all_successful_results) == 2
+    assert len(result.successful_results) == 1
+    assert len(result.duplicate_results) == 1
+    assert result.duplicate_results[0]["endpoint_status"] == (
+        "duplicate_within_batch"
+    )

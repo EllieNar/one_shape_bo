@@ -335,6 +335,8 @@ class Acquisition:
     ):
         self.acq_function = acq_function
         self.successful_results = []
+        self.all_successful_results = []
+        self.duplicate_results = []
         self.failed_restarts = []
         entries = self._entries(initial_conditions)
         for restart_index, entry in enumerate(entries):
@@ -344,11 +346,14 @@ class Acquisition:
             failure = self._initial_failure(initial_point, constraints)
             if failure:
                 self.failed_restarts.append(
-                    {
-                        "restart_index": restart_index,
-                        "source": entry["source"],
-                        "reason": failure,
-                    }
+                    self._copy_start_metadata(
+                        entry,
+                        {
+                            "restart_index": restart_index,
+                            "source": entry["source"],
+                            "reason": failure,
+                        },
+                    )
                 )
                 continue
             started = time.perf_counter()
@@ -412,6 +417,13 @@ class Acquisition:
                     "archive_rank",
                     "start_method",
                     "raw_acquisition_value",
+                    "normalized_acquisition_score",
+                    "raw_novelty_distance",
+                    "normalized_novelty_score",
+                    "rank_score",
+                    "global_selection_step",
+                    "global_selection_strategy",
+                    "reserve_start",
                 ):
                     if key in entry:
                         result[key] = entry[key]
@@ -424,25 +436,33 @@ class Acquisition:
                 OptimizationGradientError,
             ) as error:
                 self.failed_restarts.append(
-                    {
-                        "restart_index": restart_index,
-                        "source": entry["source"],
-                        "reason": str(error),
-                        "elapsed_seconds": time.perf_counter() - started,
-                    }
+                    self._copy_start_metadata(
+                        entry,
+                        {
+                            "restart_index": restart_index,
+                            "source": entry["source"],
+                            "reason": str(error),
+                            "elapsed_seconds": time.perf_counter() - started,
+                        },
+                    )
                 )
 
         self.successful_results.sort(
             key=lambda result: float(result["acquisition_value"].item()),
             reverse=True,
         )
+        self.all_successful_results = list(self.successful_results)
         unique, signatures = [], set()
         for result in self.successful_results:
             signature = geometry_signature(result["candidate"].squeeze(0), constraints)
-            if signature not in signatures:
-                result["signature"] = signature
-                unique.append(result)
-                signatures.add(signature)
+            result["signature"] = signature
+            if signature in signatures:
+                result["endpoint_status"] = "duplicate_within_batch"
+                self.duplicate_results.append(result)
+                continue
+            result["endpoint_status"] = "unique"
+            unique.append(result)
+            signatures.add(signature)
         self.successful_results = unique
 
     @staticmethod
@@ -458,6 +478,25 @@ class Acquisition:
             copied["source"] = entry.get("source", "unspecified")
             entries.append(copied)
         return entries
+
+    @staticmethod
+    def _copy_start_metadata(entry, target):
+        for key in (
+            "anchor_index",
+            "archive_rank",
+            "start_method",
+            "raw_acquisition_value",
+            "normalized_acquisition_score",
+            "raw_novelty_distance",
+            "normalized_novelty_score",
+            "rank_score",
+            "global_selection_step",
+            "global_selection_strategy",
+            "reserve_start",
+        ):
+            if key in entry:
+                target[key] = entry[key]
+        return target
 
     @staticmethod
     def _initial_failure(point, constraints):
