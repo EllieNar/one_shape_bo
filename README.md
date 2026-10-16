@@ -85,6 +85,8 @@ Each run also has a stable ID and a replayable, versioned record:
   observation noise, RNG states, and fitting warnings or failures. Fit summaries
   label cold versus warm initialization and distinguish inherited lengthscales,
   output scales, noise and mean state from the corresponding post-fit values.
+  They also report GP signal/noise health metrics, threshold reasons and any
+  requested cold-fit action.
 - `run_manifest.json` records resolved settings, software/CUDA details, git/source
   revision information, lifecycle status, and references to the other records.
 
@@ -110,6 +112,38 @@ start-to-end movement, optimizer failures, and posterior uncertainty at the
 selected candidate, current incumbent, and fixed best burn-in design. Posterior
 standard deviation is in the GP's negative-log-compliance score units, not
 standardized units or compliance units.
+
+## GP noise and health monitoring
+
+By default, the GP retains its learned homoskedastic observation noise. Its
+signal fraction is monitored with an initial warning threshold of `0.01`; a
+warning is reported but does not change warm-starting. A deterministic FEM
+noise variance can instead be prescribed in pre-standardisation
+negative-log-compliance units:
+
+```python
+config = OptimizationConfig(
+    observation_noise_variance=1e-8,
+    health_signal_variance_min=1e-4,
+)
+```
+
+When `warm_start_policy` is omitted or set to `None`, both learned-noise and
+prescribed-noise runs always warm-start after the unavoidable first cold fit;
+health warnings are report-only. Set `warm_start_policy="health_reset"` to make
+any enabled health warning force one cold fit at the next BO iteration. The
+appropriate positive prescribed variance and near-zero signal threshold should
+be obtained from a numerical-stability study; the example values above are
+illustrative, not recommended defaults. Optional posterior-mean,
+posterior-standard-deviation and rolling predictive-residual thresholds remain
+disabled until explicitly configured.
+
+Signal and learned-noise variances are compared on the GP-standardised scale;
+signal variance is the median kernel diagonal over the feasible restart pool.
+The posterior checks divide the standard deviation of posterior means and the
+90th percentile of latent posterior standard deviations by the training-response
+standard deviation. Predictive agreement uses the rolling RMS of standardized
+one-step-ahead residuals at evaluated BO candidates.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's

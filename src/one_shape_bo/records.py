@@ -21,7 +21,7 @@ import numpy as np
 import torch
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 3
 ARCHIVE_NAME = "evaluation_archive.pt"
 
 
@@ -238,6 +238,25 @@ class RunRecorder:
         "gp_response_sample_variance",
         "standardization_mean",
         "standardization_std",
+        "noise_mode",
+        "prescribed_observation_noise_variance",
+        "signal_variance",
+        "observation_noise_variance",
+        "signal_to_noise_ratio",
+        "signal_fraction_nu",
+        "representative_point_count",
+        "posterior_mean_spread_ratio",
+        "posterior_std_ratio",
+        "withheld_predictive_mean",
+        "withheld_predictive_std",
+        "withheld_observed_response",
+        "withheld_standardized_residual",
+        "predictive_window_count",
+        "predictive_rms_z",
+        "health_warning_triggered",
+        "health_warning_reasons",
+        "health_action",
+        "next_fit_forced_cold",
         "initialization_type",
         "warm_start_source_fit_index",
         "warm_start_state_reference",
@@ -569,6 +588,8 @@ class RunRecorder:
         diagnostics=None,
         transform_parameters=None,
         initialization_metadata=None,
+        noise_mode=None,
+        prescribed_observation_noise_variance=None,
         failure=None,
     ):
         train_x = torch.as_tensor(train_x).detach().cpu()
@@ -623,6 +644,11 @@ class RunRecorder:
             },
             "transform_parameters": transform_parameters,
             "initialization": initialization_metadata,
+            "noise_mode": noise_mode,
+            "prescribed_observation_noise_variance": (
+                prescribed_observation_noise_variance
+            ),
+            "health": None,
             "model_state": model_state,
             "diagnostics": diagnostics,
             "rng_before_fit": rng_before,
@@ -648,6 +674,27 @@ class RunRecorder:
             "standardization_std": (
                 None if transform_parameters is None else transform_parameters.get("std")
             ),
+            "noise_mode": noise_mode,
+            "prescribed_observation_noise_variance": (
+                prescribed_observation_noise_variance
+            ),
+            "signal_variance": None,
+            "observation_noise_variance": None,
+            "signal_to_noise_ratio": None,
+            "signal_fraction_nu": None,
+            "representative_point_count": None,
+            "posterior_mean_spread_ratio": None,
+            "posterior_std_ratio": None,
+            "withheld_predictive_mean": None,
+            "withheld_predictive_std": None,
+            "withheld_observed_response": None,
+            "withheld_standardized_residual": None,
+            "predictive_window_count": None,
+            "predictive_rms_z": None,
+            "health_warning_triggered": None,
+            "health_warning_reasons": None,
+            "health_action": None,
+            "next_fit_forced_cold": None,
             "initialization_type": initialization_metadata.get(
                 "initialization_type"
             ),
@@ -699,6 +746,10 @@ class RunRecorder:
             "configuration_sha256": self.configuration_sha256,
         }
         self.fit_records.append(record)
+        self._flush_fit_records()
+        return fit_index
+
+    def _flush_fit_records(self):
         atomic_json_write(self.fit_records, self.output_dir / "gp_fits.json")
         csv_rows = []
         for item in self.fit_records:
@@ -715,6 +766,21 @@ class RunRecorder:
                 }
             )
         atomic_csv_write(csv_rows, self.fit_fields, self.output_dir / "gp_fits.csv")
+
+    def update_fit_health(self, fit_index: int, health):
+        """Attach health results to an existing fit record and snapshot."""
+        if fit_index < 1 or fit_index > len(self.fit_records):
+            raise IndexError(f"Unknown fit index {fit_index}.")
+        health = _json_safe(health)
+        record = self.fit_records[fit_index - 1]
+        for field in self.fit_fields:
+            if field in health:
+                record[field] = health[field]
+        state_path = self.fit_dir / f"fit_{fit_index:04d}.pt"
+        state = torch.load(state_path, map_location="cpu", weights_only=False)
+        state["health"] = health
+        atomic_torch_save(state, state_path)
+        self._flush_fit_records()
 
     def record_iteration_event(self, event):
         self.iteration_events.append(_json_safe(event))

@@ -30,6 +30,23 @@ def test_warm_start_copies_gp_hyperparameter_modules():
         assert torch.equal(module.bias, torch.full_like(module.bias, 3.0))
 
 
+def test_fixed_noise_warm_start_does_not_copy_likelihood_state():
+    source = DummyGP(3.0)
+    target = DummyGP(0.0)
+
+    _warm_start(target, source, copy_likelihood=False)
+
+    assert torch.equal(
+        target.mean_module.weight, torch.full_like(target.mean_module.weight, 3.0)
+    )
+    assert torch.equal(
+        target.covar_module.weight, torch.full_like(target.covar_module.weight, 3.0)
+    )
+    assert torch.equal(
+        target.likelihood.weight, torch.zeros_like(target.likelihood.weight)
+    )
+
+
 def test_warm_start_metadata_identifies_source_and_inherited_values():
     source = DummyGP(3.0)
     previous = SimpleNamespace(

@@ -33,12 +33,15 @@ def matern_factory(batch_shape, ard_num_dims, active_dims):
     )
 
 
-def _warm_start(target_gp, previous_model):
+def _warm_start(target_gp, previous_model, *, copy_likelihood=True):
     """Reuse fitted hyperparameters, but not outcome-transform statistics."""
     if previous_model is None:
         return
     source_gp = getattr(previous_model, "gp", previous_model)
-    for module_name in ("mean_module", "covar_module", "likelihood"):
+    module_names = ["mean_module", "covar_module"]
+    if copy_likelihood:
+        module_names.append("likelihood")
+    for module_name in module_names:
         getattr(target_gp, module_name).load_state_dict(
             getattr(source_gp, module_name).state_dict()
         )
@@ -51,7 +54,9 @@ def _module_state_summary(module):
     }
 
 
-def warm_start_metadata(previous_model, source_fit_index=None):
+def warm_start_metadata(
+    previous_model, source_fit_index=None, *, inherit_likelihood=True
+):
     """Describe the state supplied to a fit without changing that state."""
     if previous_model is None:
         return {
@@ -75,7 +80,9 @@ def warm_start_metadata(previous_model, source_fit_index=None):
         ),
         "inherited_lengthscales": diagnostics.lengthscales,
         "inherited_outputscales": diagnostics.outputscales,
-        "inherited_likelihood_noise_variance": diagnostics.noise,
+        "inherited_likelihood_noise_variance": (
+            diagnostics.noise if inherit_likelihood else None
+        ),
         "inherited_mean_module_state": _module_state_summary(source_gp.mean_module),
     }
 
@@ -87,21 +94,50 @@ class GPDiagnostics:
     noise: float
 
 
+@dataclass(frozen=True)
+class GPHealthDiagnostics:
+    signal_variance: float
+    observation_noise_variance: float
+    signal_to_noise_ratio: float
+    signal_fraction_nu: float
+    representative_point_count: int
+    posterior_mean_spread_ratio: float | None
+    posterior_std_ratio: float | None
+
+
 class Pred_Objective_Multi_Task:
     """Mixed-variable GP over negative log compliance."""
 
-    def __init__(self, train_x, train_y, nholes: int, previous_model=None):
+    def __init__(
+        self,
+        train_x,
+        train_y,
+        nholes: int,
+        previous_model=None,
+        observation_noise_variance: float | None = None,
+    ):
         train_score = compliance_to_gp_response(train_y)
         self.train_score = train_score.detach().clone()
+        self.prescribed_observation_noise_variance = observation_noise_variance
+        train_yvar = (
+            None
+            if observation_noise_variance is None
+            else torch.full_like(train_score, float(observation_noise_variance))
+        )
         categorical = list(range(0, 7 * nholes, 7))
         self.gp = MixedSingleTaskGP(
             train_X=train_x,
             train_Y=train_score,
+            train_Yvar=train_yvar,
             cat_dims=categorical,
             cont_kernel_factory=matern_factory,
             outcome_transform=Standardize(m=1),
         )
-        _warm_start(self.gp, previous_model)
+        _warm_start(
+            self.gp,
+            previous_model,
+            copy_likelihood=observation_noise_variance is None,
+        )
         self.best_f = train_score.max()
         marginal_likelihood = ExactMarginalLogLikelihood(
             likelihood=self.gp.likelihood, model=self.gp
@@ -126,8 +162,71 @@ class Pred_Objective_Multi_Task:
             lengthscales=lengthscales,
             outputscales=outputscales,
             noise=float(
-                self.gp.likelihood.noise.detach().reshape(-1)[0].cpu().item()
+                self.gp.likelihood.noise.detach().reshape(-1).median().cpu().item()
             ),
+        )
+
+    @property
+    def noise_mode(self):
+        return (
+            "learned"
+            if self.prescribed_observation_noise_variance is None
+            else "prescribed"
+        )
+
+    def observation_noise_variance_raw_response(self):
+        """Return likelihood noise variance in pre-standardisation score units."""
+        if self.prescribed_observation_noise_variance is not None:
+            return float(self.prescribed_observation_noise_variance)
+        standard_deviation = self.gp.outcome_transform.stdvs.detach().reshape(-1)[0]
+        standardized_noise = self.gp.likelihood.noise.detach().reshape(-1)[0]
+        return float((standardized_noise * standard_deviation**2).item())
+
+    def health_diagnostics(self, representative_points) -> GPHealthDiagnostics:
+        """Compute scale-consistent health metrics without changing GP state."""
+        points = torch.as_tensor(
+            representative_points,
+            device=self.train_score.device,
+            dtype=self.train_score.dtype,
+        )
+        if points.ndim == 1:
+            points = points.unsqueeze(0)
+        representative_count = len(points)
+        kernel_points = points if representative_count else self.gp.train_inputs[0]
+        with torch.no_grad():
+            kernel_diagonal = self.gp.covar_module(kernel_points).diagonal(
+                dim1=-2, dim2=-1
+            )
+            signal_variance = float(kernel_diagonal.reshape(-1).median().item())
+            observation_noise = self.diagnostics().noise
+            signal_to_noise = signal_variance / max(observation_noise, 1e-300)
+            signal_fraction = signal_variance / max(
+                signal_variance + observation_noise, 1e-300
+            )
+            mean_spread_ratio = None
+            posterior_std_ratio = None
+            if representative_count >= 2:
+                posterior = self.posterior(points)
+                response_scale = self.train_score.reshape(-1).std(correction=1)
+                if torch.isfinite(response_scale) and response_scale > 0:
+                    posterior_means = posterior.mean.reshape(-1)
+                    posterior_stds = (
+                        posterior.variance.clamp_min(0).sqrt().reshape(-1)
+                    )
+                    mean_spread_ratio = float(
+                        (posterior_means.std(correction=1) / response_scale).item()
+                    )
+                    posterior_std_ratio = float(
+                        (torch.quantile(posterior_stds, 0.9) / response_scale).item()
+                    )
+        return GPHealthDiagnostics(
+            signal_variance=signal_variance,
+            observation_noise_variance=observation_noise,
+            signal_to_noise_ratio=signal_to_noise,
+            signal_fraction_nu=signal_fraction,
+            representative_point_count=representative_count,
+            posterior_mean_spread_ratio=mean_spread_ratio,
+            posterior_std_ratio=posterior_std_ratio,
         )
 
     def transform_parameters(self):

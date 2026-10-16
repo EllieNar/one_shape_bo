@@ -67,6 +67,14 @@ class OptimizationConfig:
     emin: float = 1e-9
     e0: float = 1.0
     penal: float = 3.0
+    observation_noise_variance: float | None = None
+    warm_start_policy: str | None = None
+    health_nu_min: float = 0.01
+    health_signal_variance_min: float | None = None
+    health_mean_spread_min: float | None = None
+    health_posterior_std_min: float | None = None
+    health_predictive_z_max: float | None = None
+    health_predictive_window: int = 5
     burn_in: int | None = None
     iterations: int | None = None
     stagnation_patience: int | None = None
@@ -94,6 +102,11 @@ class OptimizationConfig:
             return self.stagnation_patience
         return 5 * self.dimension
 
+    @property
+    def resolved_warm_start_policy(self):
+        if self.warm_start_policy is not None:
+            return self.warm_start_policy
+        return "always"
 
 class StagnationRestartController:
     """Shift a fixed restart budget toward global starts after stagnation."""
@@ -113,6 +126,22 @@ class StagnationRestartController:
 
     def observe(self, improved: bool):
         self.stagnation = 0 if improved else self.stagnation + 1
+
+
+class GPWarmStartController:
+    """Apply a health-triggered cold start to the next fit only."""
+
+    def __init__(self):
+        self.force_cold_next = False
+
+    def model_for_fit(self, previous_model):
+        if self.force_cold_next:
+            self.force_cold_next = False
+            return None
+        return previous_model
+
+    def observe_health(self, health):
+        self.force_cold_next = bool(health["next_fit_forced_cold"])
 
 
 class RunLog:
@@ -140,6 +169,131 @@ def _flatten_diagnostics(diagnostics):
     ]
     outputscales = list(diagnostics.outputscales.values())
     return lengthscales, outputscales
+
+
+def _validate_health_configuration(config):
+    if config.observation_noise_variance is not None and (
+        not math.isfinite(config.observation_noise_variance)
+        or config.observation_noise_variance <= 0
+    ):
+        raise ValueError("observation_noise_variance must be finite and positive.")
+    if config.warm_start_policy not in (None, "health_reset", "always"):
+        raise ValueError("warm_start_policy must be 'health_reset', 'always', or None.")
+    if not 0.0 <= config.health_nu_min <= 1.0:
+        raise ValueError("health_nu_min must lie in [0, 1].")
+    for name in (
+        "health_signal_variance_min",
+        "health_mean_spread_min",
+        "health_posterior_std_min",
+        "health_predictive_z_max",
+    ):
+        value = getattr(config, name)
+        if value is not None and (not math.isfinite(value) or value < 0):
+            raise ValueError(f"{name} must be finite and non-negative, or None.")
+    if config.health_predictive_window < 1:
+        raise ValueError("health_predictive_window must be at least 1.")
+
+
+def _representative_feasible_points(global_conditions, local_conditions, dimension):
+    pools = [pool for pool in (global_conditions, local_conditions) if len(pool)]
+    if not pools:
+        return torch.empty((0, dimension), **TENSOR_KWARGS)
+    return torch.unique(torch.cat(pools), dim=0)
+
+
+def _assess_gp_health(
+    model,
+    representative_points,
+    config,
+    predictive_z_history,
+    *,
+    withheld_predictive_mean=None,
+    withheld_predictive_std=None,
+    withheld_observed_response=None,
+):
+    diagnostics = asdict(model.health_diagnostics(representative_points))
+    reasons = []
+    core_metrics = (
+        diagnostics["signal_variance"],
+        diagnostics["observation_noise_variance"],
+        diagnostics["signal_to_noise_ratio"],
+        diagnostics["signal_fraction_nu"],
+    )
+    if not all(math.isfinite(value) for value in core_metrics):
+        reasons.append("nonfinite_signal_or_noise_metric")
+    elif model.noise_mode == "learned":
+        if diagnostics["signal_fraction_nu"] < config.health_nu_min:
+            reasons.append("signal_fraction_nu_below_threshold")
+    elif (
+        config.health_signal_variance_min is not None
+        and diagnostics["signal_variance"] < config.health_signal_variance_min
+    ):
+        reasons.append("signal_variance_below_threshold")
+
+    mean_spread = diagnostics["posterior_mean_spread_ratio"]
+    if (
+        config.health_mean_spread_min is not None
+        and mean_spread is not None
+        and mean_spread < config.health_mean_spread_min
+    ):
+        reasons.append("posterior_mean_spread_below_threshold")
+    posterior_std = diagnostics["posterior_std_ratio"]
+    if (
+        config.health_posterior_std_min is not None
+        and posterior_std is not None
+        and posterior_std < config.health_posterior_std_min
+    ):
+        reasons.append("posterior_std_below_threshold")
+
+    standardized_residual = None
+    predictive_rms_z = None
+    if (
+        withheld_predictive_mean is not None
+        and withheld_predictive_std is not None
+        and withheld_observed_response is not None
+        and withheld_predictive_std > 0
+    ):
+        standardized_residual = (
+            withheld_observed_response - withheld_predictive_mean
+        ) / withheld_predictive_std
+        predictive_z_history.append(standardized_residual)
+        window = predictive_z_history[-config.health_predictive_window :]
+        predictive_rms_z = math.sqrt(sum(value**2 for value in window) / len(window))
+        if (
+            config.health_predictive_z_max is not None
+            and len(window) == config.health_predictive_window
+            and predictive_rms_z > config.health_predictive_z_max
+        ):
+            reasons.append("predictive_rms_z_above_threshold")
+
+    warning = bool(reasons)
+    if not warning:
+        action = "none"
+    elif config.resolved_warm_start_policy == "health_reset":
+        action = "cold_fit_next_iteration"
+    else:
+        action = "warn_only"
+    diagnostics.update(
+        {
+            "noise_mode": model.noise_mode,
+            "prescribed_observation_noise_variance": (
+                model.prescribed_observation_noise_variance
+            ),
+            "withheld_predictive_mean": withheld_predictive_mean,
+            "withheld_predictive_std": withheld_predictive_std,
+            "withheld_observed_response": withheld_observed_response,
+            "withheld_standardized_residual": standardized_residual,
+            "predictive_window_count": min(
+                len(predictive_z_history), config.health_predictive_window
+            ),
+            "predictive_rms_z": predictive_rms_z,
+            "health_warning_triggered": warning,
+            "health_warning_reasons": reasons,
+            "health_action": action,
+            "next_fit_forced_cold": action == "cold_fit_next_iteration",
+        }
+    )
+    return diagnostics
 
 
 def _sample_restart_pool(
@@ -266,6 +420,7 @@ def run_optimization(config: OptimizationConfig | None = None):
         raise ValueError("htype must be 0 (triangles) or 1 (ellipses).")
     if config.local_start_strategy not in ("radius", "archive"):
         raise ValueError("local_start_strategy must be 'radius' or 'archive'.")
+    _validate_health_configuration(config)
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -279,6 +434,12 @@ def run_optimization(config: OptimizationConfig | None = None):
             "burn_in": config.resolved_burn_in,
             "iterations": config.resolved_iterations,
             "stagnation_patience": config.resolved_stagnation_patience,
+            "noise_mode": (
+                "learned"
+                if config.observation_noise_variance is None
+                else "prescribed"
+            ),
+            "warm_start_policy": config.resolved_warm_start_policy,
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -311,7 +472,10 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"iterations={config.resolved_iterations} restart_budget="
             f"{config.ng_rst + config.nl_rst} "
             f"local_start_strategy={config.local_start_strategy} "
-            f"local_radius={local_radius_label}"
+            f"local_radius={local_radius_label} "
+            f"noise_mode="
+            f"{'learned' if config.observation_noise_variance is None else 'prescribed'} "
+            f"warm_start_policy={config.resolved_warm_start_policy}"
         )
         x_train = sample_stratified_feasible(
             config.resolved_burn_in,
@@ -367,13 +531,19 @@ def run_optimization(config: OptimizationConfig | None = None):
         previous_model = None
         diagnostics_records = []
         record_improvements = 0
+        predictive_z_history = []
+        warm_start_controller = GPWarmStartController()
 
         for iteration in range(1, config.resolved_iterations + 1):
             fit_rng_before = capture_rng_state(generator)
             fit_warnings = []
+            fit_previous_model = warm_start_controller.model_for_fit(previous_model)
             initialization_metadata = warm_start_metadata(
-                previous_model,
-                source_fit_index=None if previous_model is None else iteration - 1,
+                fit_previous_model,
+                source_fit_index=(
+                    None if fit_previous_model is None else iteration - 1
+                ),
+                inherit_likelihood=config.observation_noise_variance is None,
             )
             try:
                 with warnings.catch_warnings(record=True) as fit_warnings:
@@ -382,7 +552,10 @@ def run_optimization(config: OptimizationConfig | None = None):
                         x_train,
                         y_train,
                         config.nholes,
-                        previous_model=previous_model,
+                        previous_model=fit_previous_model,
+                        observation_noise_variance=(
+                            config.observation_noise_variance
+                        ),
                     )
             except Exception as error:
                 recorder.record_fit(
@@ -394,11 +567,19 @@ def run_optimization(config: OptimizationConfig | None = None):
                     rng_after=capture_rng_state(generator),
                     warnings_recorded=fit_warnings,
                     initialization_metadata=initialization_metadata,
+                    noise_mode=(
+                        "learned"
+                        if config.observation_noise_variance is None
+                        else "prescribed"
+                    ),
+                    prescribed_observation_noise_variance=(
+                        config.observation_noise_variance
+                    ),
                     failure={"type": type(error).__name__, "message": str(error)},
                 )
                 raise
             gp_diagnostics = model.diagnostics()
-            recorder.record_fit(
+            current_fit_index = recorder.record_fit(
                 bo_iteration=iteration,
                 train_x=x_train,
                 train_compliance=y_train,
@@ -410,6 +591,10 @@ def run_optimization(config: OptimizationConfig | None = None):
                 diagnostics=asdict(gp_diagnostics),
                 transform_parameters=model.transform_parameters(),
                 initialization_metadata=initialization_metadata,
+                noise_mode=model.noise_mode,
+                prescribed_observation_noise_variance=(
+                    config.observation_noise_variance
+                ),
             )
             previous_model = model
             acquisition_function = LogExpectedImprovement(
@@ -432,6 +617,9 @@ def run_optimization(config: OptimizationConfig | None = None):
                 local_count,
                 generator,
                 model=model,
+            )
+            representative_points = _representative_feasible_points(
+                global_conditions, local_conditions, config.dimension
             )
             ranked_pool = rank_initial_condition_pool(
                 acquisition_function,
@@ -503,6 +691,20 @@ def run_optimization(config: OptimizationConfig | None = None):
                     break
 
             if x_new is None:
+                health = _assess_gp_health(
+                    model,
+                    representative_points,
+                    config,
+                    predictive_z_history,
+                )
+                recorder.update_fit_health(current_fit_index, health)
+                warm_start_controller.observe_health(health)
+                if health["health_warning_triggered"]:
+                    log.write(
+                        f"GP HEALTH WARNING iter={iteration:04d} "
+                        f"reasons={','.join(health['health_warning_reasons'])} "
+                        f"action={health['health_action']}"
+                    )
                 recorder.record_iteration_event(
                     {
                         "bo_iteration": iteration,
@@ -526,11 +728,16 @@ def run_optimization(config: OptimizationConfig | None = None):
                 )
             )
             with torch.no_grad():
+                diagnostic_posterior = model.posterior(diagnostic_points)
                 posterior_stds = (
-                    model.posterior(diagnostic_points)
-                    .variance.clamp_min(0)
-                    .sqrt()
-                    .reshape(-1)
+                    diagnostic_posterior.variance.clamp_min(0).sqrt().reshape(-1)
+                )
+                withheld_predictive_mean = float(
+                    diagnostic_posterior.mean.reshape(-1)[0].item()
+                )
+                withheld_predictive_std = math.sqrt(
+                    float(posterior_stds[0].item()) ** 2
+                    + model.observation_noise_variance_raw_response()
                 )
             posterior_std = float(posterior_stds[0].item())
             posterior_incumbent_std = float(posterior_stds[1].item())
@@ -561,6 +768,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                 constraints,
                 return_solid_fractions=True,
             )
+            gp_response_new = compliance_to_gp_response(y_new)
             new_analytical_feasible = feasible_mask(x_new, constraints)
             new_raster_feasible = (
                 raster_new <= constraints.solid_max + constraints.raster_tolerance
@@ -568,7 +776,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             recorder.append_evaluations(
                 x_new,
                 y_new,
-                compliance_to_gp_response(y_new),
+                gp_response_new,
                 raster_new,
                 [winner["signature"]],
                 new_analytical_feasible,
@@ -577,6 +785,23 @@ def run_optimization(config: OptimizationConfig | None = None):
                 sources=[winner["source"]],
                 bo_iterations=[iteration],
             )
+            health = _assess_gp_health(
+                model,
+                representative_points,
+                config,
+                predictive_z_history,
+                withheld_predictive_mean=withheld_predictive_mean,
+                withheld_predictive_std=withheld_predictive_std,
+                withheld_observed_response=float(gp_response_new.item()),
+            )
+            recorder.update_fit_health(current_fit_index, health)
+            warm_start_controller.observe_health(health)
+            if health["health_warning_triggered"]:
+                log.write(
+                    f"GP HEALTH WARNING iter={iteration:04d} "
+                    f"reasons={','.join(health['health_warning_reasons'])} "
+                    f"action={health['health_action']}"
+                )
             recorder.record_iteration_event(
                 {
                     "bo_iteration": iteration,

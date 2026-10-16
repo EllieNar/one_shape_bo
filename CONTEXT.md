@@ -517,3 +517,53 @@ the current training responses. These are observability-only changes; the
 existing warm-start load and fitting sequence are unchanged.
 The run-record schema version was advanced from 1 to 2 so readers can
 distinguish these expanded records from earlier manual-test outputs.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 10:01 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+GP health monitoring and response policy
+
+The GP will support either the existing learned homoskedastic likelihood noise
+or a user-prescribed positive constant variance in pre-standardisation
+negative-log-compliance units. `None` retains the existing learned-noise model.
+For the mixed composite kernel, signal variance is defined as the median prior
+kernel diagonal over feasible restart-pool designs. This is compared with the
+likelihood noise on the GP's standardised scale to report SNR and signal
+fraction. Learned-noise runs initially warn at signal fraction below 0.01.
+
+Additional scale-normalised checks cover posterior-mean spread, posterior
+standard deviation and rolling one-step-ahead predictive residuals. They do not
+receive invented numerical defaults: each remains report-only until its user
+threshold is supplied. The two posterior ratios use, respectively, the standard
+deviation of posterior means and the 90th percentile of latent posterior
+standard deviations, divided by training-response standard deviation.
+Predictive agreement uses rolling RMS standardized residuals. Monitoring reuses
+feasible acquisition pools and the next BO evaluation, so it adds neither FEM
+evaluations nor optimizer-RNG draws.
+
+The initially implemented response policy made learned-noise warnings force one
+cold fit at the next BO iteration, while prescribed-noise warnings were
+report-only. This default was subsequently superseded by the decision recorded
+below. Prescribed runs rebuild their fixed noise vector for the current training
+set rather than inheriting it; their mean and kernel state can be warm-started.
+Detailed metrics, reasons and actions are saved with each GP fit, while the
+console receives one concise warning.
+This addition advances the run-record schema to version 3.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      16/10/26 at 10:47 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Default GP warm-start policy
+
+Omitting `warm_start_policy` (or setting it to `None`) now resolves to
+`"always"` for both learned and prescribed observation noise. Health warnings
+remain visible in the console and persistent fit records but do not alter GP
+initialisation under this default. The first fit remains necessarily cold
+because no preceding model exists; later fits inherit the available preceding
+model state. Users who want health warnings to force one cold fit at the next
+iteration can explicitly select `warm_start_policy="health_reset"` with either
+noise mode.

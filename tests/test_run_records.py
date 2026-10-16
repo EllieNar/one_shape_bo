@@ -51,7 +51,7 @@ def test_archive_round_trip_alignment_and_training_reconstruction(tmp_path):
     recorder = make_recorder(tmp_path)
     burn_x, burn_y, burn_score = append_burn_in(recorder)
     rng = capture_rng_state(torch.Generator().manual_seed(7))
-    recorder.record_fit(
+    first_fit_index = recorder.record_fit(
         bo_iteration=1,
         train_x=burn_x,
         train_compliance=burn_y,
@@ -74,6 +74,30 @@ def test_archive_round_trip_alignment_and_training_reconstruction(tmp_path):
             "inherited_outputscales": None,
             "inherited_likelihood_noise_variance": None,
             "inherited_mean_module_state": None,
+        },
+    )
+    recorder.update_fit_health(
+        first_fit_index,
+        {
+            "noise_mode": "learned",
+            "prescribed_observation_noise_variance": None,
+            "signal_variance": 0.001,
+            "observation_noise_variance": 1.0,
+            "signal_to_noise_ratio": 0.001,
+            "signal_fraction_nu": 0.001 / 1.001,
+            "representative_point_count": 4,
+            "posterior_mean_spread_ratio": 0.4,
+            "posterior_std_ratio": 0.2,
+            "withheld_predictive_mean": -2.0,
+            "withheld_predictive_std": 0.1,
+            "withheld_observed_response": -2.1,
+            "withheld_standardized_residual": -1.0,
+            "predictive_window_count": 1,
+            "predictive_rms_z": 1.0,
+            "health_warning_triggered": True,
+            "health_warning_reasons": ["signal_fraction_nu_below_threshold"],
+            "health_action": "cold_fit_next_iteration",
+            "next_fit_forced_cold": True,
         },
     )
     bo_x = torch.tensor([[0.5, 0.6]], dtype=torch.double)
@@ -136,6 +160,7 @@ def test_archive_round_trip_alignment_and_training_reconstruction(tmp_path):
     assert torch.equal(
         fit["model_state"]["weight"], torch.tensor([1.25], dtype=torch.double)
     )
+    assert fit["health"]["signal_variance"] == 0.001
 
     with (tmp_path / "evaluations.csv").open(newline="") as stream:
         rows = list(csv.DictReader(stream))
@@ -150,6 +175,10 @@ def test_archive_round_trip_alignment_and_training_reconstruction(tmp_path):
         fit_rows = list(csv.DictReader(stream))
     assert fit_rows[0]["initialization_type"] == "cold"
     assert fit_rows[0]["warm_start_source_fit_index"] == "N/A"
+    assert fit_rows[0]["health_warning_triggered"] == "True"
+    assert json.loads(fit_rows[0]["health_warning_reasons"]) == [
+        "signal_fraction_nu_below_threshold"
+    ]
     assert json.loads(fit_rows[0]["post_fit_lengthscales"]) == {"kernel": [0.3]}
     assert fit_rows[1]["initialization_type"] == "warm"
     assert fit_rows[1]["warm_start_source_fit_index"] == "1"

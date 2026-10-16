@@ -1,9 +1,10 @@
+import json
 from types import SimpleNamespace
 
 import torch
 
 from one_shape_bo import optimization
-from one_shape_bo.gaussian import GPDiagnostics
+from one_shape_bo.gaussian import GPDiagnostics, GPHealthDiagnostics
 
 
 def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp_path):
@@ -36,10 +37,13 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             self.gp = object()
             self.best_f = torch.tensor(0.0)
             self.train_score = -torch.log(args[1])
+            self.noise_mode = "learned"
+            self.prescribed_observation_noise_variance = None
 
         def posterior(self, X):
             return SimpleNamespace(
-                variance=torch.full((len(X), 1), 0.04, dtype=torch.double)
+                mean=torch.full((len(X), 1), -2.2, dtype=torch.double),
+                variance=torch.full((len(X), 1), 0.04, dtype=torch.double),
             )
 
         def diagnostics(self):
@@ -50,6 +54,20 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
 
         def persistence_state(self):
             return {"model_class": "Dummy", "model_state_dict": {}}
+
+        def observation_noise_variance_raw_response(self):
+            return 0.001
+
+        def health_diagnostics(self, points):
+            return GPHealthDiagnostics(
+                signal_variance=1.2,
+                observation_noise_variance=0.01,
+                signal_to_noise_ratio=120.0,
+                signal_fraction_nu=1.2 / 1.21,
+                representative_point_count=len(points),
+                posterior_mean_spread_ratio=0.4,
+                posterior_std_ratio=0.2,
+            )
 
     class DummyAcquisition:
         def __init__(self, *args, **kwargs):
@@ -167,3 +185,6 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert archive["bo_iteration"].tolist() == [-1, -1, 1]
     assert (tmp_path / "gp_fits.json").exists()
     assert (tmp_path / "fit_states" / "fit_0001.pt").exists()
+    fit_records = json.loads((tmp_path / "gp_fits.json").read_text())
+    assert fit_records[0]["noise_mode"] == "learned"
+    assert fit_records[0]["health_warning_triggered"] is False
