@@ -723,3 +723,63 @@ distance, ranking and optimization runtime, duplicate counts and compliance.
 This is a sampling/acquisition-initialization change only: the GP, acquisition
 function, feasibility constraints, physical model and FEM evaluation count are
 unchanged.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      17/10/26 at 15:23 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Nested global/archive restart-budget study
+
+The global selector and batch fallback behavior were deliberately left
+unchanged. Global novelty is recomputed against observations, supplied attempted
+starts and earlier global choices in its greedy ordering; local candidates are
+not members of that global-choice set. The dynamic selector rescales both raw
+LogEI and current novelty to [0, 1] over the remaining eligible global candidates
+at every round. If one requested source is insufficient, `take_restart_batch`
+may fill the batch from the other source. This cross-source substitution is
+intentional for production robustness. Ordinary run diagnostics now distinguish
+the planned allocation from actual attempts, source shortfalls and substitutions
+so that this fallback is no longer hidden.
+
+`adaptive_restart_allocation=False` was added to hold `ng_rst` and `nl_rst`
+fixed when a controlled production run requires it. The default remains `True`,
+preserving the stagnation controller's existing shift toward global restarts.
+
+The new archive-only `restart_budget_study` reads the provisional fixed
+standardized variance from the numerical-noise study's `decision.json` and
+restores the matching saved cold-fit GP state for each seed/snapshot. It always
+uses archive starts for the local source. Global and archive starts remain only
+initial conditions: every acquisition optimization uses the same full box and
+constraints, and no radius/trust region is imposed. No FEM quantity is
+recomputed.
+
+For every seed/snapshot, the study generates one reproducible maximum global
+pool and one deterministic maximum archive pool, applies the current ranking
+policy once, and stores their ordered sequences. Each retained start is
+optimized exactly once with a frozen GP, fixed LogEI and common optimizer
+settings. Every `(ng_rst, nl_rst)` comparison is then reconstructed from the
+first `ng_rst` global and first `nl_rst` archive entries. The study does not use
+production cross-source substitution: an unavailable prefix is recorded as an
+explicit source shortfall. This separates the controlled experiment from the
+intentionally resilient production fallback.
+
+Lossless candidate pools and optimized endpoints are atomically checkpointed;
+CSV summaries record requested and actual allocations, failures, feasibility,
+endpoint duplicates, diversity, runtime, winning source and best feasible
+LogEI. Final compliance is marked not applicable because a frozen-acquisition
+comparison cannot supply counterfactual FEM outcomes. The provisional decision
+uses paired seed/snapshot LogEI regret and selects the smallest budget whose
+one-standard-error interval overlaps the best observed allocation. It never
+changes runtime defaults and requires later sequential multi-seed BO
+confirmation.
+
+For the proposed recipes, the short five-seed/two-snapshot design optimizes at
+most 200 unique starts, whereas the full five-seed/four-snapshot design with up
+to 30 starts from each source optimizes at most 1,200. The acquisition-
+optimization workload is therefore approximately six times larger for the full
+study. With the 60-second per-start timeout, conservative upper bounds are about
+3.3 hours and 20 hours respectively, although normal completion should be
+faster. The short scientific study is not required before the full study; a
+one-seed, one-snapshot smoke run is the more efficient way to validate paths,
+device setup and checkpointing before starting the resumable full study.

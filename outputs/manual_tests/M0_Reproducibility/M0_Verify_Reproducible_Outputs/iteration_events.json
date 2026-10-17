@@ -1,0 +1,23 @@
+[
+  {
+    "bo_iteration": 1,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 2,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 3,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  }
+]

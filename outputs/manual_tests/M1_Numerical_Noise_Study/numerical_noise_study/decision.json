@@ -1,0 +1,62 @@
+{
+  "candidate_assessments": [
+    {
+      "eligible": false,
+      "ineligibility_reasons": [
+        "warning_fit_rate_above_threshold"
+      ],
+      "mean_heldout_nlpd": 8.814476344842735,
+      "median_heldout_rmse": 0.5149374788280345,
+      "median_initialization_rmse_range": 1.7239469376081895e-05,
+      "noise_candidate": "fixed_1e-06",
+      "paired_group_count": 20,
+      "requested_standardized_noise_variance": 1e-06,
+      "se_heldout_nlpd": 3.3623554024220734,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.4
+    },
+    {
+      "eligible": true,
+      "ineligibility_reasons": [],
+      "mean_heldout_nlpd": 8.823343542094268,
+      "median_heldout_rmse": 0.5149360204376702,
+      "median_initialization_rmse_range": 1.2006331577399387e-05,
+      "noise_candidate": "fixed_1e-05",
+      "paired_group_count": 20,
+      "requested_standardized_noise_variance": 1e-05,
+      "se_heldout_nlpd": 3.36270517874158,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.0
+    },
+    {
+      "eligible": true,
+      "ineligibility_reasons": [],
+      "mean_heldout_nlpd": 8.78147750188915,
+      "median_heldout_rmse": 0.5149150787562731,
+      "median_initialization_rmse_range": 1.4480312966545783e-05,
+      "noise_candidate": "fixed_1e-04",
+      "paired_group_count": 20,
+      "requested_standardized_noise_variance": 0.0001,
+      "se_heldout_nlpd": 3.3633716133770717,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.0
+    }
+  ],
+  "eligibility_thresholds": {
+    "maximum_rmse_ratio_to_control": 1.25,
+    "maximum_warning_fit_rate": 0.25,
+    "minimum_latent_sd_ratio_to_control": 0.05,
+    "minimum_mean_spread_ratio_to_control": 0.25,
+    "minimum_success_rate": 0.95
+  },
+  "learned_noise_remains_control": true,
+  "one_standard_error_candidates": [
+    "fixed_1e-05",
+    "fixed_1e-04"
+  ],
+  "rationale": "Eligible candidates were compared by paired held-out NLPD. Within one standard error of the best, warning rate and initialization sensitivity were preferred; larger variance was used only as the final regularising tie-break.",
+  "selected_candidate": "fixed_1e-05",
+  "selected_standardized_noise_variance": 1e-05,
+  "selection_is_provisional": true,
+  "status": "provisional_selection"
+}

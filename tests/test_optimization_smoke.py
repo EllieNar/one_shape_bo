@@ -185,6 +185,9 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert "local_start_strategy" in diagnostics
     assert "global_restart_selection_strategy" in diagnostics
     assert "global_start_pairwise_distance_min" in diagnostics
+    assert "actual_global_restart_attempts" in diagnostics
+    assert "actual_local_restart_attempts" in diagnostics
+    assert "adaptive_restart_allocation" in diagnostics
     assert "ranking_runtime_seconds" in diagnostics
     assert "optimized_acquisition_value" in restart_attempts
     assert "final_best_compliance" in restart_attempts

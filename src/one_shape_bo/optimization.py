@@ -83,6 +83,7 @@ class OptimizationConfig:
     iterations: int | None = None
     stagnation_patience: int | None = None
     exploration_fraction: float = 0.75
+    adaptive_restart_allocation: bool = True
     seed: int = 0
     output_dir: str | Path | None = None
     audit_reference: bool = True
@@ -119,15 +120,23 @@ class OptimizationConfig:
 class StagnationRestartController:
     """Shift a fixed restart budget toward global starts after stagnation."""
 
-    def __init__(self, ng_rst, nl_rst, patience, exploration_fraction=0.75):
+    def __init__(
+        self,
+        ng_rst,
+        nl_rst,
+        patience,
+        exploration_fraction=0.75,
+        enabled=True,
+    ):
         self.baseline = (int(ng_rst), int(nl_rst))
         self.patience = int(patience)
         self.exploration_fraction = float(exploration_fraction)
+        self.enabled = bool(enabled)
         self.stagnation = 0
 
     def allocation(self):
         total = sum(self.baseline)
-        if self.stagnation < self.patience or total == 0:
+        if not self.enabled or self.stagnation < self.patience or total == 0:
             return self.baseline
         global_count = min(total, max(1, math.ceil(total * self.exploration_fraction)))
         return global_count, total - global_count
@@ -203,6 +212,8 @@ def _validate_health_configuration(config):
 
 
 def _validate_restart_ranking_configuration(config):
+    if not isinstance(config.adaptive_restart_allocation, bool):
+        raise ValueError("adaptive_restart_allocation must be a boolean.")
     if config.global_restart_selection_strategy not in (
         "greedy_dynamic_novelty",
         "static_rank",
@@ -458,6 +469,34 @@ def _global_start_diversity(points, constraints):
     }
 
 
+def _actual_restart_allocation(records, global_requested, local_requested):
+    """Describe attempted starts without hiding cross-source substitution."""
+    global_actual = sum(row.get("source") == "global" for row in records)
+    local_actual = sum(row.get("source") == "local" for row in records)
+    batch_count = len(
+        {
+            row.get("restart_batch")
+            for row in records
+            if row.get("restart_batch") is not None
+        }
+    )
+    global_total_requested = int(global_requested) * batch_count
+    local_total_requested = int(local_requested) * batch_count
+    return {
+        "planned_global_restarts_per_batch": int(global_requested),
+        "planned_local_restarts_per_batch": int(local_requested),
+        "restart_batches_attempted": batch_count,
+        "requested_global_restarts": global_total_requested,
+        "requested_local_restarts": local_total_requested,
+        "actual_global_restart_attempts": global_actual,
+        "actual_local_restart_attempts": local_actual,
+        "global_restart_shortfall": max(0, global_total_requested - global_actual),
+        "local_restart_shortfall": max(0, local_total_requested - local_actual),
+        "global_restart_substitution": max(0, global_actual - global_total_requested),
+        "local_restart_substitution": max(0, local_actual - local_total_requested),
+    }
+
+
 def _restart_attempt_row(
     bo_iteration,
     restart_batch,
@@ -586,6 +625,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             "burn_in": config.resolved_burn_in,
             "iterations": config.resolved_iterations,
             "stagnation_patience": config.resolved_stagnation_patience,
+            "adaptive_restart_allocation": config.adaptive_restart_allocation,
             "noise_mode": (
                 "learned"
                 if config.observation_noise_variance is None
@@ -630,6 +670,8 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"seed={config.seed} burn_in={config.resolved_burn_in} "
             f"iterations={config.resolved_iterations} restart_budget="
             f"{config.ng_rst + config.nl_rst} "
+            f"adaptive_restart_allocation="
+            f"{config.adaptive_restart_allocation} "
             f"local_start_strategy={config.local_start_strategy} "
             f"global_restart_selection_strategy="
             f"{config.global_restart_selection_strategy} "
@@ -688,6 +730,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             config.nl_rst,
             config.resolved_stagnation_patience,
             config.exploration_fraction,
+            enabled=config.adaptive_restart_allocation,
         )
         previous_model = None
         diagnostics_records = []
@@ -947,6 +990,14 @@ def run_optimization(config: OptimizationConfig | None = None):
                     break
 
             if x_new is None:
+                current_attempt_rows = [
+                    row
+                    for row in restart_attempt_records
+                    if row["bo_iteration"] == iteration
+                ]
+                actual_allocation = _actual_restart_allocation(
+                    current_attempt_rows, global_count, local_count
+                )
                 health = _assess_gp_health(
                     model,
                     representative_points,
@@ -976,6 +1027,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                         "duplicate_observed_count": duplicate_observed_count,
                         "ranking_runtime_seconds": ranking_runtime_seconds,
                         "optimizer_runtime_seconds": optimizer_runtime_seconds,
+                        **actual_allocation,
                     }
                 )
                 _write_restart_attempts(output_dir, restart_attempt_records)
@@ -1068,6 +1120,14 @@ def run_optimization(config: OptimizationConfig | None = None):
                     f"reasons={','.join(health['health_warning_reasons'])} "
                     f"action={health['health_action']}"
                 )
+            current_attempt_rows = [
+                row
+                for row in restart_attempt_records
+                if row["bo_iteration"] == iteration
+            ]
+            actual_allocation = _actual_restart_allocation(
+                current_attempt_rows, global_count, local_count
+            )
             recorder.record_iteration_event(
                 {
                     "bo_iteration": iteration,
@@ -1082,6 +1142,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                     "duplicate_observed_count": duplicate_observed_count,
                     "ranking_runtime_seconds": ranking_runtime_seconds,
                     "optimizer_runtime_seconds": optimizer_runtime_seconds,
+                    **actual_allocation,
                 }
             )
             x_train = torch.cat((x_train, x_new))
@@ -1097,11 +1158,6 @@ def run_optimization(config: OptimizationConfig | None = None):
             best_history.append(current_best)
             controller.observe(improved)
 
-            current_attempt_rows = [
-                row
-                for row in restart_attempt_records
-                if row["bo_iteration"] == iteration
-            ]
             for attempt_record in current_attempt_rows:
                 attempt_record["new_compliance"] = float(y_new.item())
                 attempt_record["best_compliance_after_iteration"] = current_best
@@ -1150,6 +1206,10 @@ def run_optimization(config: OptimizationConfig | None = None):
                 "outputscales": json.dumps(gp_diagnostics.outputscales),
                 "global_restarts": global_count,
                 "local_restarts": local_count,
+                "adaptive_restart_allocation": (
+                    config.adaptive_restart_allocation
+                ),
+                **actual_allocation,
                 "raw_global": raw_global,
                 "raw_local": raw_local,
                 "requested_raw_local": local_count * config.raw_pool_multiplier,

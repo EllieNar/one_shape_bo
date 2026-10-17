@@ -1,0 +1,293 @@
+[
+  {
+    "bo_iteration": 1,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 2,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 3,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 4,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 5,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 6,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 7,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 8,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 9,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.143770399999994,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 5,
+        "source": "global"
+      },
+      {
+        "elapsed_seconds": 7.270297800000662,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 10,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 8.026897400000053,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 8,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 11,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.434165099999518,
+        "reason": "infeasible optimizer result",
+        "restart_index": 2,
+        "source": "local"
+      },
+      {
+        "elapsed_seconds": 7.257481200000257,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 4,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 12,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 13,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 8.399391099999775,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 14,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 14,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.417296000000533,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 10,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 15,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 16,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 17,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.223165800000061,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 4,
+        "source": "local"
+      },
+      {
+        "elapsed_seconds": 7.385978700000123,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 6,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 18,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 19,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.254737500000374,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 10,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 20,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 21,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 22,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 23,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 24,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.353200699999434,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 25,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 26,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.758823800000755,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 3,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 27,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 28,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 29,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 30,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  }
+]

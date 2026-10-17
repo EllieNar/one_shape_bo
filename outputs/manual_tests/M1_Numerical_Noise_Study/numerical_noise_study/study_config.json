@@ -1,0 +1,36 @@
+{
+  "allow_incompatible_sources": false,
+  "allow_partial": false,
+  "cold_start_every_fit": true,
+  "fit_after_bo_iterations": [
+    0,
+    5,
+    10,
+    20
+  ],
+  "fit_max_attempts": 1,
+  "holdout_size": 10,
+  "initializations": 3,
+  "learned_noise_control": true,
+  "perturbation_scale": 0.25,
+  "run_directories": {
+    "0": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_0",
+    "15": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_15",
+    "23": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_23",
+    "46": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_46",
+    "53": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_53"
+  },
+  "schema_version": 1,
+  "seeds": [
+    0,
+    15,
+    23,
+    46,
+    53
+  ],
+  "standardized_variances": [
+    1e-06,
+    1e-05,
+    0.0001
+  ]
+}

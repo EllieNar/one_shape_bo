@@ -165,6 +165,16 @@ def test_global_restart_selection_strategy_defaults_to_greedy_and_keeps_static()
         )
 
 
+def test_adaptive_restart_allocation_requires_boolean():
+    _validate_restart_ranking_configuration(
+        OptimizationConfig(adaptive_restart_allocation=False)
+    )
+    with pytest.raises(ValueError, match="adaptive_restart_allocation"):
+        _validate_restart_ranking_configuration(
+            OptimizationConfig(adaptive_restart_allocation="off")
+        )
+
+
 @pytest.mark.parametrize(
     "acquisition,novelty",
     [(0.0, 0.0), (-1.0, 1.0), (float("inf"), 1.0)],

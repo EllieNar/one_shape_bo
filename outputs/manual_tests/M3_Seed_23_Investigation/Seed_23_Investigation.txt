@@ -1,0 +1,26 @@
+This study is conducted on the code at commit 74f3b8b.
+
+numerical_noise_study (seeds 0, 15, 23, 46, 53) and health_monitoring_study complete. Results in outputs/manual_tests. Notice that seed 23 flags multiple GP health warnings. The GP becomes effectively uninformative, similar to previous Seed 76 outputs.
+
+Then, prescribed the optimization_config_overrides proposed in the recommended_health_config.json. Conducted the following "study": intended examination.
+
+(1) Seed_23_v2: always warm-start, global_restart_selection_strategy set to "greedy_dynamic_novelty", use the optimization_config_overrides.
+This should be compared to Seed_23_v3. Hope to see faster tendency towards small compliance. Observation: Earlier GP Health Warnings again (see below - is this because applied more stringent results from the health monitoring study?). Indeed, much faster tendency towards small compliance; 121 after iteration 9 compared to 134 in Seed_23_v3 (and 141 in Seed_23). Final compliance is 112; after only 30 iterations, see ~ 20% improvement and no adverse GP behaviour. GP surrogate seems to be informative.
+
+(2) Seed_23_v3: always warm-start, global_restart_selection_strategy set to "static_rank", use the optimization_config_overrides.
+This should have been conducted before v2. Intend to compare to Seed_23 (within M1_Numerical_Noise_Study). Hope to see fewer GP health warnings. Hope that GP remains informative.
+Comparison observation: Earlier GP Health Warnings (is this because applied more stringent results from the health monitoring study?). GP has less fluctuation, and already finds better result after iteration 6. No spike in compliance at iteration 9.
+
+(3) Seed_23_v4: cold start if GP health warning flagged (warm_start_policy = health_reset), global_restart_selection_strategy set to "greedy_dynamic_novelty", use the optimization_config_overrides. Hope to see even faster tendancy towards minimum than v2. Hope for less variation in compliance.
+Observation: the cold fitting doesn't seem to be working?
+GP Health Warning is flagged after the 2nd iteration. Claim to cold fit the next iteration. Result from iteration 3 (and 4) is identical to iteration 3, v2 - no evidence of cold restart (when v2 had warm restart).
+Result from iteration 5 diverges to v2 (why, when the GP parameters should be warm-started between iteration 4 and 5?).
+Final result is worse than v2.
+The final result found in v4 is very similar to the final result found in v3. This suggests that cold-fitting after GP health warning is not advantageous?
+
+You must:
+1. Inspect the numerical_noise_study (M1_Numerical_Noise_Study) and health_monitoring_study (M2_Health_Monitoring_Study) outputs. Were these conducted correctly? Are the findings reasonable?
+2. Inspect the Seed_23 exam (M3_Seed_23_Investigation, above report, but you should also examine the relevant folders). What can be concluded?
+
+Be concise. Plan mode/reporting to the chat only. Follow AGENTS.md.
+

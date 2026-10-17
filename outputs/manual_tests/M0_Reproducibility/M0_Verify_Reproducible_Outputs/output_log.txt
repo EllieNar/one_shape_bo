@@ -1,0 +1,10 @@
+Bayesian optimization run
+seed=0 burn_in=6 iterations=3 restart_budget=1 local_start_strategy=radius local_radius=0.0500
+iter=0001/3 new=11368.278785 best=160.151117 solid=0.4996 winner=global restarts=1G/0L move=1.32 acq_gain=0.899 score_std=0.289 noise=0.00673 ls=0.318/0.333/0.693
+iter=0002/3 new=343.018744 best=160.151117 solid=0.4830 winner=global restarts=1G/0L move=0.836 acq_gain=0.499 score_std=1.25 noise=0.00677 ls=0.132/0.333/0.693
+iter=0003/3 new=157.703560 best=157.703560 solid=0.4998 winner=global restarts=1G/0L move=1.44 acq_gain=0.322 score_std=1.17 noise=0.00677 ls=0.116/0.333/0.693
+Final Bayesian optimization report
+best_compliance=157.70355962
+initial_best=160.15111712 improvement=1.528%
+analytical_solid=0.500000 raster_solid=0.499800 feasible=True
+best_source=global evaluations=9 record_improvements=1

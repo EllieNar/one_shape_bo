@@ -16,6 +16,8 @@ acquisition-optimizer starts; these observed starts are not physically evaluated
 again, and optimized endpoints must remain feasible and novel. After a
 configurable period without a record improvement, a fixed restart budget shifts
 toward global starts; an improvement restores the baseline global/local split.
+Set `adaptive_restart_allocation=False` to keep the configured `ng_rst` and
+`nl_rst` split fixed despite stagnation.
 
 ## Development environment
 
@@ -329,6 +331,61 @@ common probes are the deduplicated feasible archive rather than each historical
 restart pool, and constant standardized noise requires a different raw
 variance after response standardisation at each fit. Review those assumptions
 before transferring the values into `OptimizationConfig`.
+
+### Offline restart-budget study
+
+`one_shape_bo.restart_budget_study` compares global/archive restart budgets
+without running FEM. It reads the provisional fixed standardized variance from
+the numerical-noise study's `decision.json`, restores the corresponding saved
+GP at each archived snapshot, and freezes that GP and its LogEI acquisition.
+For each seed/snapshot it saves one shared global pool and one deterministic
+archive-start pool. Every retained start is optimized once; allocation results
+then use nested global and archive prefixes, so a shared start has identical
+optimizer settings and output in every comparison.
+
+The study always treats the local source as `archive`. Archive starts and global
+starts are initial conditions for optimization over the full acquisition box;
+`local_radius` is not used. It also disables adaptive allocation and source
+substitution inside the study. Ordinary BO behavior is unchanged: if one source
+is short, `take_restart_batch` may fill the batch from the other source.
+
+```python
+from pathlib import Path
+
+from one_shape_bo.restart_budget_study import (
+    recommend_restart_allocation,
+    run_restart_budget_study,
+    summarize_restart_budget_study,
+)
+
+source = Path("outputs/manual_tests/M1_Numerical_Noise_Study")
+runs = {seed: source / f"Seed_{seed}" for seed in (0, 15, 23, 46, 53)}
+output = Path("outputs/manual_tests/M4_Restart_Budget_Study/full")
+
+rows = run_restart_budget_study(
+    run_directories=runs,
+    numerical_study_directory=source / "numerical_noise_study",
+    output_directory=output,
+    fit_after=(0, 5, 10, 20),
+    allocations=(
+        (0, 5), (3, 2), (5, 0),
+        (0, 10), (5, 5), (7, 3), (10, 0),
+        (0, 15), (8, 7), (10, 5), (15, 0),
+        (0, 20), (10, 10), (20, 0),
+        (0, 30), (15, 15), (20, 10), (30, 0),
+    ),
+)
+summary = summarize_restart_budget_study(output)
+recommendation = recommend_restart_allocation(output)
+print(recommendation)
+```
+
+The run is atomically checkpointed after every optimized start. The primary
+metric is the greatest LogEI among unique, analytically and raster-feasible,
+non-observed endpoints. The recommendation uses paired seed/snapshot LogEI
+regret and a one-standard-error rule, but remains provisional until candidate
+settings are confirmed with sequential multi-seed BO runs. `final_compliance`
+is explicitly not applicable because the frozen study does not evaluate FEM.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's

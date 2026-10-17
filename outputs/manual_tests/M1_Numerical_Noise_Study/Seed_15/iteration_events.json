@@ -1,0 +1,247 @@
+[
+  {
+    "bo_iteration": 1,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 2,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 3,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 4,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 5,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 10.792413699999997,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 7,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 6,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 7,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 8,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 9,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 10,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 11,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 12,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 13,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 14,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 15,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.988306400000511,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 11,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 16,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 7.455206499999804,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 10,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 17,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 4.656936399999722,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 11,
+        "source": "local"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 18,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 19,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 20,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 21,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 22,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 23,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 8.450176199999987,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 5,
+        "source": "global"
+      }
+    ],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 24,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 25,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 26,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 27,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 28,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 29,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 30,
+    "optimizer_failures": [],
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  }
+]
