@@ -29,6 +29,37 @@ def test_stagnation_changes_split_without_changing_budget_and_resets():
     assert controller.allocation() == (8, 8)
 
 
+def test_stagnation_allocation_can_be_disabled():
+    controller = StagnationRestartController(
+        ng_rst=8,
+        nl_rst=8,
+        patience=1,
+        exploration_fraction=0.75,
+        enabled=False,
+    )
+
+    controller.observe(False)
+    controller.observe(False)
+    controller.observe(False)
+
+    assert controller.allocation() == (8, 8)
+
+
+def test_actual_restart_allocation_exposes_source_substitution():
+    records = [
+        {"restart_batch": 1, "source": "global"},
+        {"restart_batch": 1, "source": "local"},
+        {"restart_batch": 1, "source": "local"},
+    ]
+
+    allocation = optimization._actual_restart_allocation(records, 2, 1)
+
+    assert allocation["actual_global_restart_attempts"] == 1
+    assert allocation["actual_local_restart_attempts"] == 2
+    assert allocation["global_restart_shortfall"] == 1
+    assert allocation["local_restart_substitution"] == 1
+
+
 def test_archive_restart_pool_requests_multiplier_times_local_budget(monkeypatch):
     captured = {}
 
