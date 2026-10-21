@@ -1,0 +1,39 @@
+{
+  "created_at_utc": "2026-10-19T08:48:04.306988+00:00",
+  "schema_version": 1,
+  "software": {
+    "device": "cpu",
+    "packages": {
+      "botorch": "0.17.2",
+      "gpytorch": "1.15.2",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "torch": "2.14.1"
+    }
+  },
+  "status": "running",
+  "study_id": "weight-20261019T084804.306988Z",
+  "study_source": {
+    "commit": null,
+    "dirty": null,
+    "source_sha256": {
+      "src\\one_shape_bo\\__init__.py": "7bdc5e3f522adcf61d20f0557d0880856ddc466ebc021f2fce5691c830140f79",
+      "src\\one_shape_bo\\__main__.py": "294917551667a90055f802faecabd2f7f55afc53940dd56f5a227872be9dac05",
+      "src\\one_shape_bo\\bayesian.py": "40bae5b01f0d79a874aae5d6ffafbf8b4104cfdf027e216a816fecd3f5c445b3",
+      "src\\one_shape_bo\\benchmark.py": "19273b5109ba2b2344b52e3cbf7ea689eb3a12985a2db52ca9189189bb72c78d",
+      "src\\one_shape_bo\\gaussian.py": "95eec1147c7b8bdff02cb8c35409beed7bd393fe5a99391ea85537e2f30e46a9",
+      "src\\one_shape_bo\\global_restart_weight_study.py": "babf723ff3919d0c34d5c09a0f686f8ce4ffba41f95fa52c6559943c4185241d",
+      "src\\one_shape_bo\\health_monitoring_study.py": "7763ad0a4cd3d4cc64ceffafc8f2b44ac5c9c3af28e3c644f534723966401e58",
+      "src\\one_shape_bo\\numerical_noise_study.py": "7c4cb244d830af329d9e14103c353fdf1365eb4266ada5aebe7baaf60f655f2d",
+      "src\\one_shape_bo\\optimization.py": "0360c00877f64f2fd82da3059bfd36859ef6253f6e5fa1765a3113f75c73d1f3",
+      "src\\one_shape_bo\\physical.py": "1b9a37b95aa194fa627ac5f9e8e6fc4651aff8900ac40904f7f68f6f1af9ad4f",
+      "src\\one_shape_bo\\plot_evaluation.py": "9f65e61e807666c388076ca6f78bd2603907e80d2bcf649194a43fbc41bd45b7",
+      "src\\one_shape_bo\\records.py": "d3f1dbe9780cd005b9062d50ad74640745474cbd2d18d37f7dfda09840a9be1d",
+      "src\\one_shape_bo\\restart_budget_study.py": "a75f59692a12906ade27792ffd4eaa55b56a0667c2c5cdf5520171d12f27651c",
+      "src\\one_shape_bo\\runtime.py": "4d712836f0f9396b1523a10c87caaebd42bc91f35637380b67e9757b4e94d4f2",
+      "src\\one_shape_bo\\sampling.py": "2b345475559ef7f4a500ccc061fbf48f69417c038b487384c8afe419e5e83e0f",
+      "src\\one_shape_bo\\shapes.py": "102751c1b03ef6fa9945dc210045ad97bd5cc84e22c59efd265c2cc6cfecd8f7"
+    },
+    "tracked_status": null
+  }
+}

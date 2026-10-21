@@ -1,0 +1,63 @@
+{
+  "acquisition_weight": 0.55,
+  "adaptive_restart_allocation": false,
+  "allocations": [
+    [
+      1,
+      4
+    ],
+    [
+      8,
+      7
+    ],
+    [
+      4,
+      11
+    ],
+    [
+      5,
+      10
+    ],
+    [
+      10,
+      5
+    ],
+    [
+      10,
+      10
+    ]
+  ],
+  "decision_file": "C:\\bo_studies\\M1_Investigation_2\\numerical_noise_study\\decision.json",
+  "fit_after_bo_iterations": [
+    5,
+    20,
+    30,
+    40
+  ],
+  "global_score_scaling": "roundwise_remaining_eligible_pool",
+  "initialization_id": 0,
+  "local_start_strategy": "archive",
+  "minimum_restart_distance": 0.02,
+  "noise_candidate": "fixed_1e-05",
+  "novelty_weight": 0.45,
+  "numerical_study_directory": "C:\\bo_studies\\M1_Investigation_2\\numerical_noise_study",
+  "optimizer_maxiter": 250,
+  "optimizer_timeout_seconds": 60.0,
+  "physical_evaluations": false,
+  "raw_pool_multiplier": 3,
+  "run_directories": {
+    "101": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_101",
+    "102": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_102",
+    "103": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_103",
+    "104": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_104",
+    "105": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_105",
+    "106": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_106",
+    "107": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_107",
+    "108": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_108",
+    "109": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_109",
+    "110": "C:\\bo_studies\\M1_Investigation_2\\source_runs\\Seed_110"
+  },
+  "schema_version": 1,
+  "selected_standardized_noise_variance": 1e-05,
+  "source_substitution": false
+}

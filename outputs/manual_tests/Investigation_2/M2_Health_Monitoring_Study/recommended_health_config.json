@@ -1,0 +1,28 @@
+{
+  "automatic_runtime_default_change": false,
+  "calibration": {
+    "adverse_definition": "fit failure OR fitting warning OR absolute one-step standardized residual > 2.576",
+    "maximum_cross_validated_false_positive_rate": 0.1,
+    "representative_probe": "deduplicated feasible source-archive designs",
+    "validation": "leave-one-seed-out"
+  },
+  "health_mean_spread_min": null,
+  "health_nu_min": null,
+  "health_nu_min_not_applicable_reason": "Current runtime uses signal variance, not nu, for prescribed noise.",
+  "health_posterior_std_min": null,
+  "health_predictive_window": 3,
+  "health_predictive_z_max": 2.6465363070778936,
+  "health_signal_variance_min": null,
+  "limitations": [
+    "Probe points are archived feasible designs, not the exact runtime restart pools.",
+    "The selected variance is held fixed on the standardized scale by converting it separately at each fit.",
+    "Recommendations require engineering review before becoming package defaults."
+  ],
+  "noise_mode": "prescribed",
+  "optimization_config_overrides": {
+    "health_predictive_window": 3,
+    "health_predictive_z_max": 2.6465363070778936
+  },
+  "selected_standardized_observation_noise_variance": 1e-05,
+  "status": "provisional"
+}

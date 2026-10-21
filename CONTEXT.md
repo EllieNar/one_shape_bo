@@ -783,3 +783,63 @@ study. With the 60-second per-start timeout, conservative upper bounds are about
 faster. The short scientific study is not required before the full study; a
 one-seed, one-snapshot smoke run is the more efficient way to validate paths,
 device setup and checkpointing before starting the resumable full study.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      19/10/26 at 08:46 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Global acquisition/novelty-weight study
+
+The acquisition and novelty configuration values affect global restart
+selection only, and only their normalized ratio is identifiable. The manual
+`global_restart_weight_study` therefore parameterizes the comparison by
+acquisition fraction `alpha`, with novelty fraction `1 - alpha`, while leaving
+the production selector unchanged. Its controlled frozen-GP stage uses no local
+starts, one shared raw global pool per seed/snapshot/budget, the same fixed
+LogEI and constraints, and the current greedy roundwise score normalization.
+Novelty is recomputed after every selected global start exactly as in
+production.
+
+Every unique start selected by any tested weight is optimized once and
+reused across comparisons. The primary offline result is paired feasible-LogEI
+regret against the best endpoint in that shared union. Diversity, endpoint
+duplicates, failures, shortfalls and runtime remain diagnostics rather than
+surrogate measures of final compliance. Snapshot results are aggregated
+within seed before inference because snapshots from one BO trajectory are not
+independent.
+
+Frozen acquisition results are screening evidence only. The study nominates at
+most two challengers and never changes runtime defaults. A proposed default
+must be confirmed on independent seeds by sequential BO runs in which the
+weights are the only changed configuration. A global-only arm isolates the
+selector mechanism; an optional fixed mixed global/archive arm tests whether
+the effect survives the intended production allocation. Final compliance is
+the primary sequential outcome. The sequential archive analyzer verifies exact
+paired burn-in data, equal non-weight configuration, source provenance and BO
+evaluation counts. Its decision procedure retains the current
+0.55/0.45 setting or returns insufficient evidence when a challenger is not
+clearly better under a predeclared practical margin. Results obtained solely
+from the existing triangle archives cannot justify a package-wide default for
+ellipses or other geometric regimes.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      19/10/26 at 13:59 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Standardized prescribed observation noise
+
+The numerical-noise study selects fixed variance on the standardized
+GP-output scale, whereas `OptimizationConfig.observation_noise_variance`
+previously passed its value directly in raw pre-standardization
+`-log(compliance)` units. Applying the study's value directly therefore gave a
+different effective noise level as the training-response variance changed.
+
+`observation_noise_variance` now denotes standardized GP-output variance. At
+each production GP fit it is multiplied by that fit's training-response sample
+variance before constructing the fixed-noise model. `None` continues to select
+the learned homoskedastic model, and the lower-level GP factory retains its raw
+response-unit interface for controlled offline studies. Persistent fit records
+store both the requested standardized value and the converted raw value so the
+conversion can be audited exactly.

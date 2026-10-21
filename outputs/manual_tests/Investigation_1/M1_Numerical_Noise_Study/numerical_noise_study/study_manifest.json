@@ -1,0 +1,78 @@
+{
+  "created_at_utc": "2026-10-16T17:15:04.497712+00:00",
+  "failed_fit_count": 0,
+  "finished_at_utc": "2026-10-16T17:19:16.473556+00:00",
+  "fit_count": 240,
+  "schema_version": 1,
+  "skipped_snapshots": [],
+  "software": {
+    "device": "cpu",
+    "packages": {
+      "botorch": "0.17.2",
+      "gpytorch": "1.15.2",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "torch": "2.14.1"
+    }
+  },
+  "source_archives": {
+    "0": {
+      "archive_sha256": "11165005e472c0c926973b4ff2fe0e4de26a79c8dfdc8bf9fbbac9d215a6ff27",
+      "configuration_sha256": "c41f2542f96e870d243fdb505bb4bc4e6ad8423069d729d248329fb5ba9263dc",
+      "directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_0",
+      "gaussian_source_sha256": null,
+      "run_id": "20261016T151354.008938Z-5941f92d"
+    },
+    "15": {
+      "archive_sha256": "0be0003260d397c6680e701a2344013c67e30e5f475b6aee961ab8ce2ca7d0d1",
+      "configuration_sha256": "397f7d3ea7cddc8faa013ff4578f808780a7e743b6e626ab657f29a8b7f2f63a",
+      "directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_15",
+      "gaussian_source_sha256": null,
+      "run_id": "20261016T153449.040862Z-6073c4c0"
+    },
+    "23": {
+      "archive_sha256": "c2046a19a93f9062421e3d3af7a09262d9a358850efa201d069f2e367805d0da",
+      "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+      "directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_23",
+      "gaussian_source_sha256": null,
+      "run_id": "20261016T155718.490871Z-f7932367"
+    },
+    "46": {
+      "archive_sha256": "a2a71068d7990c88f1961d3f7bee57a2feb8af6c36608210a52daaab23f72180",
+      "configuration_sha256": "1753a428558c43d3cd9710127cecf3012c849ac6ee7cdfcde65914e2889b5399",
+      "directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_46",
+      "gaussian_source_sha256": null,
+      "run_id": "20261016T162512.045876Z-7c8cf5e7"
+    },
+    "53": {
+      "archive_sha256": "f428cac74bb8b255216b212a593a5e15e44641f2d4693a7bdd01369aa5135ede",
+      "configuration_sha256": "4350bbfc2090393dad5f6b1f4691189c18987f5d28c147d51be029d833cfc1d0",
+      "directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\Seed_53",
+      "gaussian_source_sha256": null,
+      "run_id": "20261016T164643.817086Z-26863d75"
+    }
+  },
+  "status": "complete",
+  "study_id": "noise-20261016T171504.497712Z",
+  "study_source": {
+    "commit": null,
+    "dirty": null,
+    "source_sha256": {
+      "src\\one_shape_bo\\__init__.py": "7bdc5e3f522adcf61d20f0557d0880856ddc466ebc021f2fce5691c830140f79",
+      "src\\one_shape_bo\\__main__.py": "294917551667a90055f802faecabd2f7f55afc53940dd56f5a227872be9dac05",
+      "src\\one_shape_bo\\bayesian.py": "09282015be60699a8f34f5864672730a6a1c960ad579afcba6d5bff4b4e3a7c4",
+      "src\\one_shape_bo\\benchmark.py": "19273b5109ba2b2344b52e3cbf7ea689eb3a12985a2db52ca9189189bb72c78d",
+      "src\\one_shape_bo\\gaussian.py": "95eec1147c7b8bdff02cb8c35409beed7bd393fe5a99391ea85537e2f30e46a9",
+      "src\\one_shape_bo\\numerical_noise_study.py": "7c4cb244d830af329d9e14103c353fdf1365eb4266ada5aebe7baaf60f655f2d",
+      "src\\one_shape_bo\\optimization.py": "5da7c995d05f3ea7340a864846c025b8cde100e29e4dc6f58f3075b67a7e1b61",
+      "src\\one_shape_bo\\physical.py": "1b9a37b95aa194fa627ac5f9e8e6fc4651aff8900ac40904f7f68f6f1af9ad4f",
+      "src\\one_shape_bo\\plot_evaluation.py": "9f65e61e807666c388076ca6f78bd2603907e80d2bcf649194a43fbc41bd45b7",
+      "src\\one_shape_bo\\records.py": "a7e765bad6aeff5106a72166e1c7a5111e5e8b1a6384e083ed45690d93d3f2aa",
+      "src\\one_shape_bo\\runtime.py": "4d712836f0f9396b1523a10c87caaebd42bc91f35637380b67e9757b4e94d4f2",
+      "src\\one_shape_bo\\sampling.py": "be740682781eb5bbdd65ca2f5b747dbcae5d9c5b72b0c0343eda1e7f601390bd",
+      "src\\one_shape_bo\\shapes.py": "102751c1b03ef6fa9945dc210045ad97bd5cc84e22c59efd265c2cc6cfecd8f7"
+    },
+    "tracked_status": null
+  },
+  "successful_fit_count": 240
+}

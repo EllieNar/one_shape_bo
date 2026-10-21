@@ -1,0 +1,25 @@
+{
+  "automatic_runtime_default_change": false,
+  "best_frozen_screen": {
+    "acquisition_weight": 0.7,
+    "novelty_weight": 0.3
+  },
+  "challengers": [
+    {
+      "acquisition_weight": 0.7,
+      "novelty_weight": 0.3
+    },
+    {
+      "acquisition_weight": 1.0,
+      "novelty_weight": 0.0
+    }
+  ],
+  "incumbent": {
+    "acquisition_weight": 0.55,
+    "novelty_weight": 0.45
+  },
+  "primary_global_restart_budget": 10,
+  "requires_independent_sequential_confirmation": true,
+  "selection_rule": "Seed-level paired feasible-LogEI regret with a one-standard-error screen; at most two challengers proceed to independent sequential BO.",
+  "status": "provisional_screening"
+}

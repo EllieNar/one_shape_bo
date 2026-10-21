@@ -204,23 +204,30 @@ compliance. These diagnostics add no physical evaluations.
 By default, the GP retains its learned homoskedastic observation noise. Its
 signal fraction is monitored with an initial warning threshold of `0.01`; a
 warning is reported but does not change warm-starting. A deterministic FEM
-noise variance can instead be prescribed in pre-standardisation
-negative-log-compliance units:
+noise variance can instead be prescribed on the standardized GP-output scale:
 
 ```python
 config = OptimizationConfig(
-    observation_noise_variance=1e-8,
+    observation_noise_variance=1e-5,
     health_signal_variance_min=1e-4,
 )
 ```
+
+For every GP fit, the package converts this value to pre-standardization
+negative-log-compliance units by multiplying it by the sample variance of the
+current training responses. Thus a numerical-noise study's selected
+standardized variance can be supplied directly even though the response scale
+changes during BO. `gp_fits.csv` records both
+`prescribed_observation_noise_variance_standardized` and the resulting per-fit
+`prescribed_observation_noise_variance_raw_response`.
 
 When `warm_start_policy` is omitted or set to `None`, both learned-noise and
 prescribed-noise runs always warm-start after the unavoidable first cold fit;
 health warnings are report-only. Set `warm_start_policy="health_reset"` to make
 any enabled health warning force one cold fit at the next BO iteration. The
 appropriate positive prescribed variance and near-zero signal threshold should
-be obtained from a numerical-stability study; the example values above are
-illustrative, not recommended defaults. Optional posterior-mean,
+be obtained from a numerical-stability study; the example health threshold
+above is illustrative, not a recommended default. Optional posterior-mean,
 posterior-standard-deviation and rolling predictive-residual thresholds remain
 disabled until explicitly configured.
 
@@ -386,6 +393,84 @@ non-observed endpoints. The recommendation uses paired seed/snapshot LogEI
 regret and a one-standard-error rule, but remains provisional until candidate
 settings are confirmed with sequential multi-seed BO runs. `final_compliance`
 is explicitly not applicable because the frozen study does not evaluate FEM.
+
+### Global acquisition/novelty-weight study
+
+`one_shape_bo.global_restart_weight_study` isolates the weights used by the
+greedy global-start selector. Only their normalized ratio is identifiable, so
+the study sets `acquisition_weight=alpha` and `novelty_weight=1-alpha`. The
+frozen stage uses no local starts, adaptive allocation or source substitution.
+Every weight receives the same raw global pool, frozen GP, LogEI, constraints
+and optimizer settings. Each unique selected start is optimized once and reused
+across weight comparisons; no FEM evaluation is performed.
+
+Run the five-seed screening study from the M1 archives with:
+
+```bash
+python -m one_shape_bo.global_restart_weight_study run \
+  --run 0=outputs/manual_tests/M1_Numerical_Noise_Study/Seed_0 \
+  --run 15=outputs/manual_tests/M1_Numerical_Noise_Study/Seed_15 \
+  --run 23=outputs/manual_tests/M1_Numerical_Noise_Study/Seed_23 \
+  --run 46=outputs/manual_tests/M1_Numerical_Noise_Study/Seed_46 \
+  --run 53=outputs/manual_tests/M1_Numerical_Noise_Study/Seed_53 \
+  --numerical-study-dir outputs/manual_tests/M1_Numerical_Noise_Study/numerical_noise_study \
+  --output-dir outputs/manual_tests/M5_Global_Restart_Weight_Study/frozen \
+  --fit-after 0 5 10 20 \
+  --global-budget 10 \
+  --primary-global-budget 10
+python -m one_shape_bo.global_restart_weight_study summarize \
+  outputs/manual_tests/M5_Global_Restart_Weight_Study/frozen
+python -m one_shape_bo.global_restart_weight_study recommend \
+  outputs/manual_tests/M5_Global_Restart_Weight_Study/frozen
+```
+
+The summary first averages correlated snapshots within each seed, then compares
+weights across seeds. `recommended_global_weights.json` nominates at most two
+challengers; it never changes `OptimizationConfig` defaults and is not evidence
+of improved final compliance.
+
+Strong default-setting evidence requires completed sequential BO runs on new
+seeds. For each seed, run the incumbent and nominated weights with every other
+configuration value identical, `adaptive_restart_allocation=False`, and either
+`nl_rst=0` for a global-only isolation arm or one fixed mixed allocation for a
+deployment arm. Analyze the resulting directories from Python:
+
+```python
+from one_shape_bo.global_restart_weight_study import (
+    analyze_sequential_weight_confirmation,
+    decide_confirmed_global_restart_weights,
+)
+
+seeds = (101, 102, 103, 104, 105, 106, 107, 108, 109, 110)
+challenger = 0.70  # Replace with a nominated frozen-screen value.
+reviewed_margin = 0.01  # Require at least 1% lower compliance.
+runs = {
+    0.55: {seed: f"outputs/weight_confirmation/a055/Seed_{seed}" for seed in seeds},
+    challenger: {
+        seed: f"outputs/weight_confirmation/challenger/Seed_{seed}"
+        for seed in seeds
+    },
+}
+analyze_sequential_weight_confirmation(
+    runs,
+    "outputs/manual_tests/M5_Global_Restart_Weight_Study/sequential",
+    expected_seed_count=len(seeds),
+)
+decision = decide_confirmed_global_restart_weights(
+    "outputs/manual_tests/M5_Global_Restart_Weight_Study/sequential",
+    practical_relative_improvement=reviewed_margin,
+    minimum_seed_count=10,
+)
+print(decision)
+```
+
+The analyzer requires identical burn-in designs and responses within each
+paired seed, equal non-weight configuration and source revisions, and equal BO
+evaluation counts. A challenger is selected only when its seed-bootstrap 95%
+interval demonstrates the predeclared practical compliance improvement.
+Otherwise the result is `insufficient_evidence` and the incumbent remains
+unchanged. Conclusions from triangle archives do not automatically generalize
+to ellipses, other hole counts or other engineering configurations.
 
 The expected triangle image comes from a filtered, continuous-density topology
 optimizer. Its displayed thresholded geometry does not preserve the optimizer's

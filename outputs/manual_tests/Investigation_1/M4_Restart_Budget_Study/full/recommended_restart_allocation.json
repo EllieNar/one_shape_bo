@@ -1,0 +1,12 @@
+{
+  "adaptive_restart_allocation": false,
+  "automatic_runtime_default_change": false,
+  "global_fraction": 0.26666666666666666,
+  "local_start_strategy": "archive",
+  "ng_rst": 4,
+  "nl_rst": 11,
+  "requires_sequential_bo_confirmation": true,
+  "selection_rule": "Smallest restart total whose paired-regret one-standard-error interval overlaps that of the lowest mean feasible-LogEI regret; regret and runtime break ties.",
+  "status": "provisional",
+  "total_restarts": 15
+}

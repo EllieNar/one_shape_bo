@@ -1,0 +1,62 @@
+{
+  "candidate_assessments": [
+    {
+      "eligible": false,
+      "ineligibility_reasons": [
+        "heldout_rmse_inadequate_at_102_0",
+        "warning_fit_rate_above_threshold"
+      ],
+      "mean_heldout_nlpd": 3.7379826676037973,
+      "median_heldout_rmse": 0.45474257646253574,
+      "median_initialization_rmse_range": 1.9982015097480543e-05,
+      "noise_candidate": "fixed_1e-06",
+      "paired_group_count": 60,
+      "requested_standardized_noise_variance": 1e-06,
+      "se_heldout_nlpd": 1.0870043181889089,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.4666666666666667
+    },
+    {
+      "eligible": false,
+      "ineligibility_reasons": [
+        "heldout_rmse_inadequate_at_102_0"
+      ],
+      "mean_heldout_nlpd": 3.747629522503103,
+      "median_heldout_rmse": 0.45473276089977277,
+      "median_initialization_rmse_range": 1.5012721532328688e-05,
+      "noise_candidate": "fixed_1e-05",
+      "paired_group_count": 60,
+      "requested_standardized_noise_variance": 1e-05,
+      "se_heldout_nlpd": 1.0879144043028868,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.0
+    },
+    {
+      "eligible": false,
+      "ineligibility_reasons": [
+        "heldout_rmse_inadequate_at_102_0"
+      ],
+      "mean_heldout_nlpd": 3.7442286875725315,
+      "median_heldout_rmse": 0.45467870127925475,
+      "median_initialization_rmse_range": 1.7122474208382255e-05,
+      "noise_candidate": "fixed_1e-04",
+      "paired_group_count": 60,
+      "requested_standardized_noise_variance": 0.0001,
+      "se_heldout_nlpd": 1.087576554708658,
+      "success_rate": 1.0,
+      "warning_fit_rate": 0.0
+    }
+  ],
+  "eligibility_thresholds": {
+    "maximum_rmse_ratio_to_control": 1.25,
+    "maximum_warning_fit_rate": 0.25,
+    "minimum_latent_sd_ratio_to_control": 0.05,
+    "minimum_mean_spread_ratio_to_control": 0.25,
+    "minimum_success_rate": 0.95
+  },
+  "learned_noise_remains_control": true,
+  "rationale": "No fixed variance satisfied fit stability, paired held-out accuracy, and posterior-variation requirements.",
+  "selected_standardized_noise_variance": null,
+  "selection_is_provisional": true,
+  "status": "no_selection"
+}

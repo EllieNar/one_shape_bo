@@ -1,0 +1,4957 @@
+[
+  {
+    "archive_stop_exclusive": 105,
+    "bo_iteration": 1,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 1,
+    "gp_response_sample_variance": 0.09490420073453337,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": null,
+    "inherited_likelihood_noise_variance": null,
+    "inherited_mean_module_state": null,
+    "inherited_outputscales": null,
+    "initialization_type": "cold",
+    "kernel_outputscale_mean": 0.304776160488133,
+    "likelihood_observation_noise_variance": 0.00615484634393464,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.00615484634393464,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3332815297719069,
+        0.3333757997572632,
+        0.33337239117824674,
+        0.33336564162437987,
+        0.33325715577247395,
+        0.3334288531591306,
+        0.33337474849007265,
+        0.3330488543812071,
+        0.3335085330821127,
+        0.3341186544174122,
+        0.3335062999694234,
+        0.33359872777873567,
+        0.3338285159603689,
+        0.33376447722640995,
+        0.3331291083591606,
+        0.3334675452320748,
+        0.33342322688548404,
+        0.3335616498481424
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3497155590860318,
+        0.6239166567401926,
+        0.398555086705372,
+        0.5179066632384204,
+        0.12666540914355442,
+        0.565336056041303,
+        0.532966780443666,
+        0.51184151741944,
+        0.4636708880056284,
+        0.5078686053310387,
+        0.47128126961925687,
+        0.5002448432919345,
+        0.46665817777531127,
+        0.34204511207758004,
+        0.11292417008625774,
+        0.5285176172148319,
+        0.260539351202139,
+        0.4345909822315654
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.098845015448082e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151271374354162,
+      "kernels.1": 0.872806668875842
+    },
+    "posterior_mean_spread_ratio": 0.7926011303904233,
+    "posterior_std_ratio": 0.8459212825780626,
+    "predictive_rms_z": 1.2012545908191457,
+    "predictive_window_count": 1,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9431.351092852547,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9929976684083138,
+    "signal_to_noise_ratio": 141.8095751973942,
+    "signal_variance": 0.872816145438606,
+    "standardization_mean": [
+      -5.539090442168048
+    ],
+    "standardization_std": [
+      0.3080652540202049
+    ],
+    "state_file": "fit_states/fit_0001.pt",
+    "status": "success",
+    "train_count": 105,
+    "warm_start_source_fit_index": null,
+    "warm_start_state_reference": null,
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.142913077300497,
+    "withheld_predictive_mean": -4.967183666498364,
+    "withheld_predictive_std": 0.14628823244063605,
+    "withheld_standardized_residual": -1.2012545908191457
+  },
+  {
+    "archive_stop_exclusive": 106,
+    "bo_iteration": 2,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 2,
+    "gp_response_sample_variance": 0.09548107294366595,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3332815297719069,
+        0.3333757997572632,
+        0.33337239117824674,
+        0.33336564162437987,
+        0.33325715577247395,
+        0.3334288531591306,
+        0.33337474849007265,
+        0.3330488543812071,
+        0.3335085330821127,
+        0.3341186544174122,
+        0.3335062999694234,
+        0.33359872777873567,
+        0.3338285159603689,
+        0.33376447722640995,
+        0.3331291083591606,
+        0.3334675452320748,
+        0.33342322688548404,
+        0.3335616498481424
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3497155590860318,
+        0.6239166567401926,
+        0.398555086705372,
+        0.5179066632384204,
+        0.12666540914355442,
+        0.565336056041303,
+        0.532966780443666,
+        0.51184151741944,
+        0.4636708880056284,
+        0.5078686053310387,
+        0.47128126961925687,
+        0.5002448432919345,
+        0.46665817777531127,
+        0.34204511207758004,
+        0.11292417008625774,
+        0.5285176172148319,
+        0.260539351202139,
+        0.4345909822315654
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.00615484634393464,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.3415993821699483
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.098845015448082e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151271374354162,
+      "kernels.1": 0.872806668875842
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.2998539612146399,
+    "likelihood_observation_noise_variance": 0.00626883957445117,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.00626883957445117,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333337222982326,
+        0.33333396201843496,
+        0.33333364513167935,
+        0.33333384571583047,
+        0.33333220313221895,
+        0.33333260041626883,
+        0.33333519178954524,
+        0.33333541431269603,
+        0.3333328649268797,
+        0.3333279518483789,
+        0.33333299540187616,
+        0.3333316163712198,
+        0.3333301596991362,
+        0.33332903734136604,
+        0.3333334812041196,
+        0.3333347988438877,
+        0.33333239842692897,
+        0.33333203712602244
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3460632639248348,
+        0.5838502048743661,
+        0.4005879955543449,
+        0.48964054643967475,
+        0.11362731327414408,
+        0.516277528352554,
+        0.5223447447341708,
+        0.505353931369506,
+        0.4564871328123109,
+        0.5151793409920093,
+        0.4700528483228915,
+        0.4947205342993208,
+        0.4557219916084412,
+        0.3537008007198328,
+        0.11230773689854665,
+        0.5244163327494928,
+        0.25978535845119255,
+        0.43079619087528015
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.097101175702573e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151226362458412,
+      "kernels.1": 0.8580405229181599
+    },
+    "posterior_mean_spread_ratio": 0.8322638246192716,
+    "posterior_std_ratio": 0.8324706734313165,
+    "predictive_rms_z": 1.149980747328908,
+    "predictive_window_count": 2,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9429.625210899841,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9927470751482114,
+    "signal_to_noise_ratio": 136.87541170420192,
+    "signal_variance": 0.8580499976605979,
+    "standardization_mean": [
+      -5.535352919857978
+    ],
+    "standardization_std": [
+      0.30900011803179944
+    ],
+    "state_file": "fit_states/fit_0002.pt",
+    "status": "success",
+    "train_count": 106,
+    "warm_start_source_fit_index": 1,
+    "warm_start_state_reference": "fit_states/fit_0001.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.149085988693319,
+    "withheld_predictive_mean": -4.998749585051604,
+    "withheld_predictive_std": 0.13712928059497972,
+    "withheld_standardized_residual": -1.0963114733004642
+  },
+  {
+    "archive_stop_exclusive": 107,
+    "bo_iteration": 3,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 3,
+    "gp_response_sample_variance": 0.09597472064767165,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333337222982326,
+        0.33333396201843496,
+        0.33333364513167935,
+        0.33333384571583047,
+        0.33333220313221895,
+        0.33333260041626883,
+        0.33333519178954524,
+        0.33333541431269603,
+        0.3333328649268797,
+        0.3333279518483789,
+        0.33333299540187616,
+        0.3333316163712198,
+        0.3333301596991362,
+        0.33332903734136604,
+        0.3333334812041196,
+        0.3333347988438877,
+        0.33333239842692897,
+        0.33333203712602244
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3460632639248348,
+        0.5838502048743661,
+        0.4005879955543449,
+        0.48964054643967475,
+        0.11362731327414408,
+        0.516277528352554,
+        0.5223447447341708,
+        0.505353931369506,
+        0.4564871328123109,
+        0.5151793409920093,
+        0.4700528483228915,
+        0.4947205342993208,
+        0.4557219916084412,
+        0.3537008007198328,
+        0.11230773689854665,
+        0.5244163327494928,
+        0.25978535845119255,
+        0.43079619087528015
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.00626883957445117,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.3329373739066775
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.097101175702573e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151226362458412,
+      "kernels.1": 0.8580405229181599
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.29597666871723133,
+    "likelihood_observation_noise_variance": 0.006455418664035105,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.006455418664035105,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334302262847,
+        0.33333369918086514,
+        0.33333380719377076,
+        0.33333314839479006,
+        0.3333317728654447,
+        0.3333329287129443,
+        0.33333548088247555,
+        0.3333325875890358,
+        0.33333381073700297,
+        0.3333318094420133,
+        0.33333399428484806,
+        0.33333297238079357,
+        0.33333275913633686,
+        0.33333115974293603,
+        0.3333323841724672,
+        0.3333356124994721,
+        0.3333328491934638,
+        0.33333324111000384
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3429692909472812,
+        0.554930979674818,
+        0.39648430079174724,
+        0.4432868790658082,
+        0.10797863079902577,
+        0.5006292796961238,
+        0.5194007281781676,
+        0.46785860937157286,
+        0.45440651400174636,
+        0.5123179620010261,
+        0.4715144847216955,
+        0.48538368955664624,
+        0.4553138407847751,
+        0.36599870201168394,
+        0.11284785995101554,
+        0.525207352134158,
+        0.2630595831611151,
+        0.43066776286596836
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.096266912263148e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151202318347498,
+      "kernels.1": 0.8464088867013068
+    },
+    "posterior_mean_spread_ratio": 0.7877297049388049,
+    "posterior_std_ratio": 0.825927153360089,
+    "predictive_rms_z": 0.9660243225458082,
+    "predictive_window_count": 3,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9424.414422520358,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9924309800333966,
+    "signal_to_noise_ratio": 131.1175006027555,
+    "signal_variance": 0.846418360572662,
+    "standardization_mean": [
+      -5.531742948538681
+    ],
+    "standardization_std": [
+      0.3097978706312741
+    ],
+    "state_file": "fit_states/fit_0003.pt",
+    "status": "success",
+    "train_count": 107,
+    "warm_start_source_fit_index": 2,
+    "warm_start_state_reference": "fit_states/fit_0002.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -4.988448639071162,
+    "withheld_predictive_mean": -5.064793374934085,
+    "withheld_predictive_std": 0.19410530165488316,
+    "withheld_standardized_residual": 0.39331607746945124
+  },
+  {
+    "archive_stop_exclusive": 108,
+    "bo_iteration": 4,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 4,
+    "gp_response_sample_variance": 0.0978108042221723,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334302262847,
+        0.33333369918086514,
+        0.33333380719377076,
+        0.33333314839479006,
+        0.3333317728654447,
+        0.3333329287129443,
+        0.33333548088247555,
+        0.3333325875890358,
+        0.33333381073700297,
+        0.3333318094420133,
+        0.33333399428484806,
+        0.33333297238079357,
+        0.33333275913633686,
+        0.33333115974293603,
+        0.3333323841724672,
+        0.3333356124994721,
+        0.3333328491934638,
+        0.33333324111000384
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3429692909472812,
+        0.554930979674818,
+        0.39648430079174724,
+        0.4432868790658082,
+        0.10797863079902577,
+        0.5006292796961238,
+        0.5194007281781676,
+        0.46785860937157286,
+        0.45440651400174636,
+        0.5123179620010261,
+        0.4715144847216955,
+        0.48538368955664624,
+        0.4553138407847751,
+        0.36599870201168394,
+        0.11284785995101554,
+        0.525207352134158,
+        0.2630595831611151,
+        0.43066776286596836
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.006455418664035105,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.3377268733202914
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.096266912263148e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151202318347498,
+      "kernels.1": 0.8464088867013068
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.29020843107345456,
+    "likelihood_observation_noise_variance": 0.0063808145090152755,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.0063808145090152755,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334157555614,
+        0.33333372778819226,
+        0.33333384697915797,
+        0.3333331369714511,
+        0.33333173046080156,
+        0.33333303683071486,
+        0.33333573927576027,
+        0.3333325252219617,
+        0.333333923108135,
+        0.3333320489275523,
+        0.3333341428661082,
+        0.33333311587897363,
+        0.33333303192753677,
+        0.3333313723812811,
+        0.33333228799609327,
+        0.3333362932981577,
+        0.3333329135022686,
+        0.3333333416440109
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3436139156407485,
+        0.555050318383915,
+        0.3983066811951206,
+        0.4427970641453617,
+        0.10974969499773864,
+        0.5032972067517458,
+        0.5252934594401049,
+        0.4675370925037201,
+        0.45557751149287357,
+        0.5133476442951219,
+        0.47420979095368737,
+        0.4873819837883498,
+        0.46125844493895307,
+        0.3738949436197415,
+        0.11473817454941067,
+        0.5475663759849776,
+        0.2642796080049892,
+        0.4349611821325687
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.0957314447065e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151187492751696,
+      "kernels.1": 0.829104322561402
+    },
+    "posterior_mean_spread_ratio": 0.771737612962577,
+    "posterior_std_ratio": 0.8402598455380388,
+    "predictive_rms_z": 0.8783103002238146,
+    "predictive_window_count": 4,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9468.213833120233,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.992362829837894,
+    "signal_to_noise_ratio": 129.93855168525602,
+    "signal_variance": 0.8291137958737128,
+    "standardization_mean": [
+      -5.526712445673241
+    ],
+    "standardization_std": [
+      0.31274718899163945
+    ],
+    "state_file": "fit_states/fit_0004.pt",
+    "status": "success",
+    "train_count": 108,
+    "warm_start_source_fit_index": 3,
+    "warm_start_state_reference": "fit_states/fit_0003.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.071363552890229,
+    "withheld_predictive_mean": -4.999626176118934,
+    "withheld_predictive_std": 0.13411621282982128,
+    "withheld_standardized_residual": -0.5348896696204992
+  },
+  {
+    "archive_stop_exclusive": 109,
+    "bo_iteration": 5,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 5,
+    "gp_response_sample_variance": 0.09880737444549238,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334157555614,
+        0.33333372778819226,
+        0.33333384697915797,
+        0.3333331369714511,
+        0.33333173046080156,
+        0.33333303683071486,
+        0.33333573927576027,
+        0.3333325252219617,
+        0.333333923108135,
+        0.3333320489275523,
+        0.3333341428661082,
+        0.33333311587897363,
+        0.33333303192753677,
+        0.3333313723812811,
+        0.33333228799609327,
+        0.3333362932981577,
+        0.3333329135022686,
+        0.3333333416440109
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3436139156407485,
+        0.555050318383915,
+        0.3983066811951206,
+        0.4427970641453617,
+        0.10974969499773864,
+        0.5032972067517458,
+        0.5252934594401049,
+        0.4675370925037201,
+        0.45557751149287357,
+        0.5133476442951219,
+        0.47420979095368737,
+        0.4873819837883498,
+        0.46125844493895307,
+        0.3738949436197415,
+        0.11473817454941067,
+        0.5475663759849776,
+        0.2642796080049892,
+        0.4349611821325687
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.0063808145090152755,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.3550317809020377
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.0957314447065e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151187492751696,
+      "kernels.1": 0.829104322561402
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.28547979501205784,
+    "likelihood_observation_noise_variance": 0.006444511352336796,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.006444511352336796,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333348379393113,
+        0.33333413271832707,
+        0.33333384153657236,
+        0.3333332091820327,
+        0.33333153841126595,
+        0.33333300853059616,
+        0.3333358768452919,
+        0.3333324517451189,
+        0.3333340056532082,
+        0.33333190477478625,
+        0.33333422972086707,
+        0.3333331356277902,
+        0.33333326100776633,
+        0.3333313731214084,
+        0.33333222687559844,
+        0.3333365849832253,
+        0.3333329086267753,
+        0.33333330783766046
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.34818782832566625,
+        0.5623496578027488,
+        0.39966297176939153,
+        0.44988801979205556,
+        0.10900921281180215,
+        0.5047528228543131,
+        0.5253615504854758,
+        0.469831354675673,
+        0.45875270933484213,
+        0.5135438405610538,
+        0.47570544488429245,
+        0.48973985733718894,
+        0.4642682789609198,
+        0.3704568774999573,
+        0.11494585208004811,
+        0.5467527463311765,
+        0.26417506004534763,
+        0.4336172997177468
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.095052877445908e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041511695086355015,
+      "kernels.1": 0.8149185948969411
+    },
+    "posterior_mean_spread_ratio": 0.7486071559179929,
+    "posterior_std_ratio": 0.8307711952300648,
+    "predictive_rms_z": 0.7901861292667625,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9482.764892120082,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9921539730954563,
+    "signal_to_noise_ratio": 126.45304243360287,
+    "signal_variance": 0.8149280675008803,
+    "standardization_mean": [
+      -5.5225349328954145
+    ],
+    "standardization_std": [
+      0.3143364033094041
+    ],
+    "state_file": "fit_states/fit_0005.pt",
+    "status": "success",
+    "train_count": 109,
+    "warm_start_source_fit_index": 4,
+    "warm_start_state_reference": "fit_states/fit_0004.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.013131105742518,
+    "withheld_predictive_mean": -5.043176911147865,
+    "withheld_predictive_std": 0.1577981578082192,
+    "withheld_standardized_residual": 0.19040656635461242
+  },
+  {
+    "archive_stop_exclusive": 110,
+    "bo_iteration": 6,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 6,
+    "gp_response_sample_variance": 0.10025990530911705,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333348379393113,
+        0.33333413271832707,
+        0.33333384153657236,
+        0.3333332091820327,
+        0.33333153841126595,
+        0.33333300853059616,
+        0.3333358768452919,
+        0.3333324517451189,
+        0.3333340056532082,
+        0.33333190477478625,
+        0.33333422972086707,
+        0.3333331356277902,
+        0.33333326100776633,
+        0.3333313731214084,
+        0.33333222687559844,
+        0.3333365849832253,
+        0.3333329086267753,
+        0.33333330783766046
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.34818782832566625,
+        0.5623496578027488,
+        0.39966297176939153,
+        0.44988801979205556,
+        0.10900921281180215,
+        0.5047528228543131,
+        0.5253615504854758,
+        0.469831354675673,
+        0.45875270933484213,
+        0.5135438405610538,
+        0.47570544488429245,
+        0.48973985733718894,
+        0.4642682789609198,
+        0.3704568774999573,
+        0.11494585208004811,
+        0.5467527463311765,
+        0.26417506004534763,
+        0.4336172997177468
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.006444511352336796,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.36805281548955
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.095052877445908e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041511695086355015,
+      "kernels.1": 0.8149185948969411
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.27973160554372173,
+    "likelihood_observation_noise_variance": 0.0063480515874288984,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.0063480515874288984,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334970401858,
+        0.3333341844070215,
+        0.33333389840875727,
+        0.33333321455764386,
+        0.3333314727156459,
+        0.3333329550471382,
+        0.33333598250579244,
+        0.3333324062873884,
+        0.33333401822639325,
+        0.3333318507507671,
+        0.3333345511491267,
+        0.33333311388572323,
+        0.3333335042992197,
+        0.3333314279144363,
+        0.3333322003002698,
+        0.333337102963372,
+        0.3333329114750953,
+        0.3333333223706232
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3482691376603758,
+        0.5611903713795493,
+        0.40274923526372686,
+        0.45025537134317317,
+        0.1090358589150809,
+        0.5028101987035036,
+        0.5293806159184928,
+        0.4683379180244604,
+        0.45842825308801927,
+        0.515713796623587,
+        0.49551486185726856,
+        0.4888724246654256,
+        0.47706879977431876,
+        0.3743741381100334,
+        0.11493972085764173,
+        0.5668540145745359,
+        0.2647508831923637,
+        0.435331161044991
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.094508232513672e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041511558293844175,
+      "kernels.1": 0.7976741638290885
+    },
+    "posterior_mean_spread_ratio": 0.7510998313935169,
+    "posterior_std_ratio": 0.8099165915223553,
+    "predictive_rms_z": 0.5806670496357953,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9513.092522071765,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9921047246190677,
+    "signal_to_noise_ratio": 125.65802669974981,
+    "signal_variance": 0.7976836358645297,
+    "standardization_mean": [
+      -5.517903989012207
+    ],
+    "standardization_std": [
+      0.3166384457217996
+    ],
+    "state_file": "fit_states/fit_0006.pt",
+    "status": "success",
+    "train_count": 110,
+    "warm_start_source_fit_index": 5,
+    "warm_start_state_reference": "fit_states/fit_0005.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.089422121280346,
+    "withheld_predictive_mean": -5.074489673841543,
+    "withheld_predictive_std": 0.17959500546992258,
+    "withheld_standardized_residual": -0.08314511530947441
+  },
+  {
+    "archive_stop_exclusive": 111,
+    "bo_iteration": 7,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 7,
+    "gp_response_sample_variance": 0.10100247604768678,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334970401858,
+        0.3333341844070215,
+        0.33333389840875727,
+        0.33333321455764386,
+        0.3333314727156459,
+        0.3333329550471382,
+        0.33333598250579244,
+        0.3333324062873884,
+        0.33333401822639325,
+        0.3333318507507671,
+        0.3333345511491267,
+        0.33333311388572323,
+        0.3333335042992197,
+        0.3333314279144363,
+        0.3333322003002698,
+        0.333337102963372,
+        0.3333329114750953,
+        0.3333333223706232
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3482691376603758,
+        0.5611903713795493,
+        0.40274923526372686,
+        0.45025537134317317,
+        0.1090358589150809,
+        0.5028101987035036,
+        0.5293806159184928,
+        0.4683379180244604,
+        0.45842825308801927,
+        0.515713796623587,
+        0.49551486185726856,
+        0.4888724246654256,
+        0.47706879977431876,
+        0.3743741381100334,
+        0.11493972085764173,
+        0.5668540145745359,
+        0.2647508831923637,
+        0.435331161044991
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.0063480515874288984,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.38109571361008865
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.094508232513672e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041511558293844175,
+      "kernels.1": 0.7976741638290885
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.276250623363256,
+    "likelihood_observation_noise_variance": 0.006305384653596295,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.006305384653596295,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333335015749743,
+        0.3333342293159596,
+        0.3333339870025805,
+        0.3333332104142062,
+        0.33333139213806307,
+        0.3333328648577135,
+        0.3333362016582871,
+        0.3333323925095403,
+        0.3333340456058091,
+        0.33333177567431493,
+        0.3333350160362243,
+        0.33333309143703976,
+        0.3333339405835659,
+        0.3333314887554369,
+        0.3333321789076127,
+        0.3333375681739944,
+        0.3333330028740133,
+        0.3333333309787004
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3469940003041286,
+        0.5616169024285168,
+        0.40574949337813104,
+        0.4510816450101102,
+        0.10955232949467328,
+        0.5018806337173743,
+        0.5340257073345414,
+        0.4671063434556998,
+        0.4600694197126152,
+        0.5160110598698127,
+        0.5009506595091197,
+        0.4881268170047088,
+        0.4875067887861394,
+        0.3724926778571359,
+        0.11501338754639924,
+        0.5697532697265517,
+        0.2814285582247317,
+        0.4347361722167671
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.093115630511272e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151121511975068,
+      "kernels.1": 0.7872315618543868
+    },
+    "posterior_mean_spread_ratio": 0.8311229253182774,
+    "posterior_std_ratio": 0.7745492745966885,
+    "predictive_rms_z": 0.3128232694175033,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9517.874453198472,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9920541703449188,
+    "signal_to_noise_ratio": 124.85218201355744,
+    "signal_variance": 0.7872410324362964,
+    "standardization_mean": [
+      -5.514043792005615
+    ],
+    "standardization_std": [
+      0.31780886716340495
+    ],
+    "state_file": "fit_states/fit_0007.pt",
+    "status": "success",
+    "train_count": 111,
+    "warm_start_source_fit_index": 6,
+    "warm_start_state_reference": "fit_states/fit_0006.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.039351786297957,
+    "withheld_predictive_mean": -5.029195310094472,
+    "withheld_predictive_std": 0.13925106799537507,
+    "withheld_standardized_residual": -0.07293643308949162
+  },
+  {
+    "archive_stop_exclusive": 112,
+    "bo_iteration": 8,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 8,
+    "gp_response_sample_variance": 0.10210444115499413,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333335015749743,
+        0.3333342293159596,
+        0.3333339870025805,
+        0.3333332104142062,
+        0.33333139213806307,
+        0.3333328648577135,
+        0.3333362016582871,
+        0.3333323925095403,
+        0.3333340456058091,
+        0.33333177567431493,
+        0.3333350160362243,
+        0.33333309143703976,
+        0.3333339405835659,
+        0.3333314887554369,
+        0.3333321789076127,
+        0.3333375681739944,
+        0.3333330028740133,
+        0.3333333309787004
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3469940003041286,
+        0.5616169024285168,
+        0.40574949337813104,
+        0.4510816450101102,
+        0.10955232949467328,
+        0.5018806337173743,
+        0.5340257073345414,
+        0.4671063434556998,
+        0.4600694197126152,
+        0.5160110598698127,
+        0.5009506595091197,
+        0.4881268170047088,
+        0.4875067887861394,
+        0.3724926778571359,
+        0.11501338754639924,
+        0.5697532697265517,
+        0.2814285582247317,
+        0.4347361722167671
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.006305384653596295,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.394244874342833
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.093115630511272e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151121511975068,
+      "kernels.1": 0.7872315618543868
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.27192805082843247,
+    "likelihood_observation_noise_variance": 0.006231476809843773,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.006231476809843773,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333335148185558,
+        0.33333416317690584,
+        0.33333407119410163,
+        0.3333332880314458,
+        0.3333313449635037,
+        0.3333329893707677,
+        0.3333362846326791,
+        0.33333241535102376,
+        0.3333342727442725,
+        0.33333178029427835,
+        0.3333349974194829,
+        0.33333306423911113,
+        0.33333394229357777,
+        0.33333148961462483,
+        0.3333321680844694,
+        0.3333380256037843,
+        0.3333329752680069,
+        0.33333334306728857
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3476173223432956,
+        0.5642423108054108,
+        0.4115172343176362,
+        0.4588384832481302,
+        0.11046361558514403,
+        0.5087173363232644,
+        0.5381035571725029,
+        0.46944166739378707,
+        0.469498635794088,
+        0.5176191876576808,
+        0.5031213471577944,
+        0.48955344961960073,
+        0.4907043902310455,
+        0.37017463027119013,
+        0.11576275384424957,
+        0.5802861920190655,
+        0.2807803384739098,
+        0.4353240946110135
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.092066312675239e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151096679394983,
+      "kernels.1": 0.7742640936250348
+    },
+    "posterior_mean_spread_ratio": 0.7799339552771791,
+    "posterior_std_ratio": 0.805402510145198,
+    "predictive_rms_z": 0.8147328040486387,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9535.633530317244,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9920160966411321,
+    "signal_to_noise_ratio": 124.25201709628472,
+    "signal_variance": 0.7742735631118103,
+    "standardization_mean": [
+      -5.509805470526081
+    ],
+    "standardization_std": [
+      0.3195378555899037
+    ],
+    "state_file": "fit_states/fit_0008.pt",
+    "status": "success",
+    "train_count": 112,
+    "warm_start_source_fit_index": 7,
+    "warm_start_state_reference": "fit_states/fit_0007.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.275677620026614,
+    "withheld_predictive_mean": -5.03239455116209,
+    "withheld_predictive_std": 0.14082727342234916,
+    "withheld_standardized_residual": -1.7275280771424422
+  },
+  {
+    "archive_stop_exclusive": 113,
+    "bo_iteration": 9,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 9,
+    "gp_response_sample_variance": 0.10167789038002495,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333335148185558,
+        0.33333416317690584,
+        0.33333407119410163,
+        0.3333332880314458,
+        0.3333313449635037,
+        0.3333329893707677,
+        0.3333362846326791,
+        0.33333241535102376,
+        0.3333342727442725,
+        0.33333178029427835,
+        0.3333349974194829,
+        0.33333306423911113,
+        0.33333394229357777,
+        0.33333148961462483,
+        0.3333321680844694,
+        0.3333380256037843,
+        0.3333329752680069,
+        0.33333334306728857
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3476173223432956,
+        0.5642423108054108,
+        0.4115172343176362,
+        0.4588384832481302,
+        0.11046361558514403,
+        0.5087173363232644,
+        0.5381035571725029,
+        0.46944166739378707,
+        0.469498635794088,
+        0.5176191876576808,
+        0.5031213471577944,
+        0.48955344961960073,
+        0.4907043902310455,
+        0.37017463027119013,
+        0.11576275384424957,
+        0.5802861920190655,
+        0.2807803384739098,
+        0.4353240946110135
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.006231476809843773,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.40824280653213996
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.092066312675239e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151096679394983,
+      "kernels.1": 0.7742640936250348
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.2729385417421805,
+    "likelihood_observation_noise_variance": 0.00701912636753454,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.00701912636753454,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333331113201274,
+        0.33333274318592304,
+        0.33333414613443246,
+        0.3333330933686068,
+        0.33333174279865746,
+        0.33333288795920274,
+        0.3333355220218185,
+        0.33333217870907994,
+        0.3333343532338706,
+        0.3333325482042993,
+        0.33333494313355605,
+        0.33333260586448493,
+        0.3333340805927944,
+        0.3333301237570802,
+        0.3333321554836722,
+        0.3333379828640402,
+        0.33333294503580313,
+        0.33333304894711546
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.31317376184602996,
+        0.558645306352508,
+        0.41047499110807706,
+        0.45809115201854955,
+        0.11568373046816223,
+        0.5037275552718485,
+        0.5431745637648204,
+        0.48039786536344936,
+        0.4733531955801239,
+        0.5019498811796301,
+        0.5018889372731872,
+        0.48795057737937814,
+        0.489820881484906,
+        0.31366006485277764,
+        0.11472973113881012,
+        0.5796425060255744,
+        0.29981075545509817,
+        0.4044643465098945
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.090675715563668e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151059367059418,
+      "kernels.1": 0.7772959408802319
+    },
+    "posterior_mean_spread_ratio": 0.8407460235354339,
+    "posterior_std_ratio": 0.8058703069663913,
+    "predictive_rms_z": 10.448743644554854,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 9488.524288226097,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.9910507372244788,
+    "signal_to_noise_ratio": 110.74104784757152,
+    "signal_variance": 0.7773054089152933,
+    "standardization_mean": [
+      -5.507733542645556
+    ],
+    "standardization_std": [
+      0.3188697075296193
+    ],
+    "state_file": "fit_states/fit_0009.pt",
+    "status": "success",
+    "train_count": 113,
+    "warm_start_source_fit_index": 8,
+    "warm_start_state_reference": "fit_states/fit_0008.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -7.5115318353531295,
+    "withheld_predictive_mean": -4.969731605128084,
+    "withheld_predictive_std": 0.10909432070924532,
+    "withheld_standardized_residual": -23.29910680684625
+  },
+  {
+    "archive_stop_exclusive": 114,
+    "bo_iteration": 10,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 10,
+    "gp_response_sample_variance": 0.135999205319833,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333331113201274,
+        0.33333274318592304,
+        0.33333414613443246,
+        0.3333330933686068,
+        0.33333174279865746,
+        0.33333288795920274,
+        0.3333355220218185,
+        0.33333217870907994,
+        0.3333343532338706,
+        0.3333325482042993,
+        0.33333494313355605,
+        0.33333260586448493,
+        0.3333340805927944,
+        0.3333301237570802,
+        0.3333321554836722,
+        0.3333379828640402,
+        0.33333294503580313,
+        0.33333304894711546
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.31317376184602996,
+        0.558645306352508,
+        0.41047499110807706,
+        0.45809115201854955,
+        0.11568373046816223,
+        0.5037275552718485,
+        0.5431745637648204,
+        0.48039786536344936,
+        0.4733531955801239,
+        0.5019498811796301,
+        0.5018889372731872,
+        0.48795057737937814,
+        0.489820881484906,
+        0.31366006485277764,
+        0.11472973113881012,
+        0.5796425060255744,
+        0.29981075545509817,
+        0.4044643465098945
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.00701912636753454,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.4206234373828197
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.090675715563668e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04151059367059418,
+      "kernels.1": 0.7772959408802319
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.10857928049702459,
+    "likelihood_observation_noise_variance": 0.6317067105003868,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.6317067105003868,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333347819319037,
+        0.3333353971111797,
+        0.3333330213465187,
+        0.333331234434219,
+        0.3333317757250223,
+        0.3333348394538605,
+        0.33333725037774137,
+        0.33333311374047186,
+        0.33333428923322206,
+        0.3333332688029042,
+        0.33333461153610655,
+        0.3333313766114607,
+        0.3333318860029045,
+        0.33333299217357226,
+        0.3333316497660007,
+        0.3333375451394023,
+        0.33333267901648916,
+        0.33333282605170816
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3391604693444362,
+        0.4327682132630902,
+        0.33621554791200803,
+        0.3163161069445487,
+        0.21389890354063035,
+        0.4210597763960118,
+        0.44120923025865655,
+        0.38380110610694834,
+        0.38119568835583734,
+        0.3795527202667656,
+        0.39154402032295116,
+        0.304253014357057,
+        0.3235658520823267,
+        0.37743940169351675,
+        0.17936516518254078,
+        0.4464040562458313,
+        0.30435687528236,
+        0.3590670295592323
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.084768288902944e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041506455064329144,
+      "kernels.1": 0.28422230165845574
+    },
+    "posterior_mean_spread_ratio": 0.24015083738027312,
+    "posterior_std_ratio": 0.5097395352553662,
+    "predictive_rms_z": 10.449832163336222,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 30985.617464457668,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.3103175284916967,
+    "signal_to_noise_ratio": 0.4499426059256613,
+    "signal_variance": 0.2842317635032714,
+    "standardization_mean": [
+      -5.5253107206517615
+    ],
+    "standardization_std": [
+      0.36878070085056375
+    ],
+    "state_file": "fit_states/fit_0010.pt",
+    "status": "success",
+    "train_count": 114,
+    "warm_start_source_fit_index": 9,
+    "warm_start_state_reference": "fit_states/fit_0009.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.075360410324414,
+    "withheld_predictive_mean": -5.200268030233085,
+    "withheld_predictive_std": 0.3225131819507813,
+    "withheld_standardized_residual": 0.3872946189459401
+  },
+  {
+    "archive_stop_exclusive": 115,
+    "bo_iteration": 11,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 11,
+    "gp_response_sample_variance": 0.13656671054555977,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333347819319037,
+        0.3333353971111797,
+        0.3333330213465187,
+        0.333331234434219,
+        0.3333317757250223,
+        0.3333348394538605,
+        0.33333725037774137,
+        0.33333311374047186,
+        0.33333428923322206,
+        0.3333332688029042,
+        0.33333461153610655,
+        0.3333313766114607,
+        0.3333318860029045,
+        0.33333299217357226,
+        0.3333316497660007,
+        0.3333375451394023,
+        0.33333267901648916,
+        0.33333282605170816
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3391604693444362,
+        0.4327682132630902,
+        0.33621554791200803,
+        0.3163161069445487,
+        0.21389890354063035,
+        0.4210597763960118,
+        0.44120923025865655,
+        0.38380110610694834,
+        0.38119568835583734,
+        0.3795527202667656,
+        0.39154402032295116,
+        0.304253014357057,
+        0.3235658520823267,
+        0.37743940169351675,
+        0.17936516518254078,
+        0.4464040562458313,
+        0.30435687528236,
+        0.3590670295592323
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.6317067105003868,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.16180678377539537
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.084768288902944e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041506455064329144,
+      "kernels.1": 0.28422230165845574
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.11267281810307418,
+    "likelihood_observation_noise_variance": 0.6129346595732021,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.6129346595732021,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334692748176,
+        0.33333541025310676,
+        0.33333300196078997,
+        0.3333311289508253,
+        0.33333182275518725,
+        0.33333474481504327,
+        0.3333373559092066,
+        0.33333302093283984,
+        0.3333343500405729,
+        0.33333327666323986,
+        0.3333345574220386,
+        0.3333313210704291,
+        0.3333319410325197,
+        0.33333297029056536,
+        0.3333316933861881,
+        0.33333765039654534,
+        0.3333326765667468,
+        0.3333327219645659
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33925245801392856,
+        0.43602601817034736,
+        0.335978419190796,
+        0.31152487773329396,
+        0.20863216131371784,
+        0.4239755746792564,
+        0.4460713753654911,
+        0.3857598772970787,
+        0.38522807551352434,
+        0.38373472388817287,
+        0.39379403404711383,
+        0.30310073930250525,
+        0.3283993270081662,
+        0.38046677574851906,
+        0.17381710679382895,
+        0.4515167809426862,
+        0.3028338411669865,
+        0.3590153374608784
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.080914882050316e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04150357447147885,
+      "kernels.1": 0.29650579892286166
+    },
+    "posterior_mean_spread_ratio": 0.2839480584948755,
+    "posterior_std_ratio": 0.5192546894085556,
+    "predictive_rms_z": 10.45109123037681,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 30827.27224045852,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.3260380273979945,
+    "signal_to_noise_ratio": 0.48376323984458625,
+    "signal_variance": 0.2965152567281708,
+    "standardization_mean": [
+      -5.521398109257611
+    ],
+    "standardization_std": [
+      0.3695493343865739
+    ],
+    "state_file": "fit_states/fit_0011.pt",
+    "status": "success",
+    "train_count": 115,
+    "warm_start_source_fit_index": 10,
+    "warm_start_state_reference": "fit_states/fit_0010.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.07596124997185,
+    "withheld_predictive_mean": -5.195262298270775,
+    "withheld_predictive_std": 0.3205773330328087,
+    "withheld_standardized_residual": 0.37214436582362914
+  },
+  {
+    "archive_stop_exclusive": 116,
+    "bo_iteration": 12,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 12,
+    "gp_response_sample_variance": 0.13708963941151978,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334692748176,
+        0.33333541025310676,
+        0.33333300196078997,
+        0.3333311289508253,
+        0.33333182275518725,
+        0.33333474481504327,
+        0.3333373559092066,
+        0.33333302093283984,
+        0.3333343500405729,
+        0.33333327666323986,
+        0.3333345574220386,
+        0.3333313210704291,
+        0.3333319410325197,
+        0.33333297029056536,
+        0.3333316933861881,
+        0.33333765039654534,
+        0.3333326765667468,
+        0.3333327219645659
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33925245801392856,
+        0.43602601817034736,
+        0.335978419190796,
+        0.31152487773329396,
+        0.20863216131371784,
+        0.4239755746792564,
+        0.4460713753654911,
+        0.3857598772970787,
+        0.38522807551352434,
+        0.38373472388817287,
+        0.39379403404711383,
+        0.30310073930250525,
+        0.3283993270081662,
+        0.38046677574851906,
+        0.17381710679382895,
+        0.4515167809426862,
+        0.3028338411669865,
+        0.3590153374608784
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.6129346595732021,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.17633325176544137
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.080914882050316e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04150357447147885,
+      "kernels.1": 0.29650579892286166
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.11594070387847889,
+    "likelihood_observation_noise_variance": 0.5972127049877181,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.5972127049877181,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334617086804,
+        0.3333353968335001,
+        0.33333299256177445,
+        0.3333310681573035,
+        0.3333318503092261,
+        0.33333462322760926,
+        0.33333745987376673,
+        0.33333296278538993,
+        0.33333439143359994,
+        0.3333332724970109,
+        0.3333346448869745,
+        0.333331273928198,
+        0.33333196084878525,
+        0.33333296319950984,
+        0.33333172445001297,
+        0.3333377531682494,
+        0.3333326947415557,
+        0.33333264029757653
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.339324917512256,
+        0.43553821023951395,
+        0.3351688188693951,
+        0.30403799311409374,
+        0.2047554360871717,
+        0.42328562305904904,
+        0.4503425505948546,
+        0.3861127424717687,
+        0.3876498641858115,
+        0.3859095818373803,
+        0.3986895365666739,
+        0.30057044908053854,
+        0.3278226098991599,
+        0.3817096286048477,
+        0.17662776678824024,
+        0.45541533032406684,
+        0.30274780529846057,
+        0.35773460559615555
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.077991902993455e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041501453038807555,
+      "kernels.1": 0.30631158060472613
+    },
+    "posterior_mean_spread_ratio": 0.2249727928902171,
+    "posterior_std_ratio": 0.5402574282526269,
+    "predictive_rms_z": 10.870460546694146,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 30669.55398207108,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.3390255633765052,
+    "signal_to_noise_ratio": 0.51291781435357,
+    "signal_variance": 0.30632103534648375,
+    "standardization_mean": [
+      -5.517558136332734
+    ],
+    "standardization_std": [
+      0.37025618078773487
+    ],
+    "state_file": "fit_states/fit_0012.pt",
+    "status": "success",
+    "train_count": 116,
+    "warm_start_source_fit_index": 11,
+    "warm_start_state_reference": "fit_states/fit_0011.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -7.265194782040001,
+    "withheld_predictive_mean": -5.167800844839197,
+    "withheld_predictive_std": 0.3136616619418008,
+    "withheld_standardized_residual": -6.6868036221461145
+  },
+  {
+    "archive_stop_exclusive": 117,
+    "bo_iteration": 13,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 13,
+    "gp_response_sample_variance": 0.1620123949565722,
+    "health_action": "none",
+    "health_warning_reasons": [],
+    "health_warning_triggered": false,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334617086804,
+        0.3333353968335001,
+        0.33333299256177445,
+        0.3333310681573035,
+        0.3333318503092261,
+        0.33333462322760926,
+        0.33333745987376673,
+        0.33333296278538993,
+        0.33333439143359994,
+        0.3333332724970109,
+        0.3333346448869745,
+        0.333331273928198,
+        0.33333196084878525,
+        0.33333296319950984,
+        0.33333172445001297,
+        0.3333377531682494,
+        0.3333326947415557,
+        0.33333264029757653
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.339324917512256,
+        0.43553821023951395,
+        0.3351688188693951,
+        0.30403799311409374,
+        0.2047554360871717,
+        0.42328562305904904,
+        0.4503425505948546,
+        0.3861127424717687,
+        0.3876498641858115,
+        0.3859095818373803,
+        0.3986895365666739,
+        0.30057044908053854,
+        0.3278226098991599,
+        0.3817096286048477,
+        0.17662776678824024,
+        0.45541533032406684,
+        0.30274780529846057,
+        0.35773460559615555
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.5972127049877181,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.18875128876958863
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.077991902993455e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041501453038807555,
+      "kernels.1": 0.30631158060472613
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.024141659684098704,
+    "likelihood_observation_noise_variance": 0.886116018775504,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.886116018775504,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334622190595,
+        0.33333748623020587,
+        0.3333337160502684,
+        0.33333085802667783,
+        0.3333313243238604,
+        0.33333494431326993,
+        0.33333637710663816,
+        0.33333451974233136,
+        0.33333397115970015,
+        0.33333341949993905,
+        0.3333375343941641,
+        0.3333319501779596,
+        0.33332886188134336,
+        0.33333369624039544,
+        0.33333140176874715,
+        0.3333386102629625,
+        0.33333256845350795,
+        0.33333448614501215
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33380782028233974,
+        0.3478824290181404,
+        0.3348927543082011,
+        0.3253092075919463,
+        0.3259463135795129,
+        0.339556562139113,
+        0.3440639867774707,
+        0.338095791909236,
+        0.3358726976057973,
+        0.33429907110213714,
+        0.34728191339596914,
+        0.32902677198131075,
+        0.31709112413699697,
+        0.3353548631838419,
+        0.32667555160017014,
+        0.3508925074916954,
+        0.33072993064299,
+        0.33770854172102166
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 9.075554168183607e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04149802318488182,
+      "kernels.1": 0.030917880313246108
+    },
+    "posterior_mean_spread_ratio": 0.036964365576758515,
+    "posterior_std_ratio": 0.1750961527720006,
+    "predictive_rms_z": 11.859528171367788,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 41854.0471784032,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 0.0337250495764044,
+    "signal_to_noise_ratio": 0.03490212548883733,
+    "signal_variance": 0.03092733248497158,
+    "standardization_mean": [
+      -5.532495201680659
+    ],
+    "standardization_std": [
+      0.40250763341404117
+    ],
+    "state_file": "fit_states/fit_0013.pt",
+    "status": "success",
+    "train_count": 117,
+    "warm_start_source_fit_index": 12,
+    "warm_start_state_reference": "fit_states/fit_0012.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -9.64069935529473,
+    "withheld_predictive_mean": -5.503944733242253,
+    "withheld_predictive_std": 0.38509885265753063,
+    "withheld_standardized_residual": -10.742059067444957
+  },
+  {
+    "archive_stop_exclusive": 118,
+    "bo_iteration": 14,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 14,
+    "gp_response_sample_variance": 0.30365599030819007,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334622190595,
+        0.33333748623020587,
+        0.3333337160502684,
+        0.33333085802667783,
+        0.3333313243238604,
+        0.33333494431326993,
+        0.33333637710663816,
+        0.33333451974233136,
+        0.33333397115970015,
+        0.33333341949993905,
+        0.3333375343941641,
+        0.3333319501779596,
+        0.33332886188134336,
+        0.33333369624039544,
+        0.33333140176874715,
+        0.3333386102629625,
+        0.33333256845350795,
+        0.33333448614501215
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33380782028233974,
+        0.3478824290181404,
+        0.3348927543082011,
+        0.3253092075919463,
+        0.3259463135795129,
+        0.339556562139113,
+        0.3440639867774707,
+        0.338095791909236,
+        0.3358726976057973,
+        0.33429907110213714,
+        0.34728191339596914,
+        0.32902677198131075,
+        0.31709112413699697,
+        0.3353548631838419,
+        0.32667555160017014,
+        0.3508925074916954,
+        0.33072993064299,
+        0.33770854172102166
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.886116018775504,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -0.02381938755181208
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 9.075554168183607e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04149802318488182,
+      "kernels.1": 0.030917880313246108
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809103268905767,
+    "likelihood_observation_noise_variance": 0.915335064958713,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.915335064958713,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333341693415935,
+        0.3333238710152914,
+        0.3333315022881585,
+        0.3333138350358348,
+        0.33333122867696136,
+        0.3333280708308499,
+        0.3333344246542145,
+        0.3333341266775635,
+        0.33333340921713267,
+        0.33333319825135427,
+        0.3333351570992335,
+        0.33333114067919734,
+        0.33333092168873724,
+        0.33333232892957854,
+        0.3333326633909414,
+        0.3333341604460731,
+        0.33333302788132435,
+        0.3333339342194579
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333142311253555,
+        0.33341969215574074,
+        0.33336403011123344,
+        0.3333858929457254,
+        0.3333484264408833,
+        0.33340120536127643,
+        0.3332941511005873,
+        0.33330671284441826,
+        0.33332592448582066,
+        0.3333227048725376,
+        0.3332860717141718,
+        0.3333565407924814,
+        0.3332966039264802,
+        0.3333388590478607,
+        0.3333314869077465,
+        0.3333036472135966,
+        0.3333340514921089,
+        0.3333168164025724
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959670835864457e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418334811270295,
+      "kernels.1": 1.5324611140363645e-08
+    },
+    "posterior_mean_spread_ratio": 7.430477633508101e-06,
+    "posterior_std_ratio": 0.003057124925139611,
+    "predictive_rms_z": 5.6877641512746555,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1972739.0474154467,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0210462838544704e-05,
+    "signal_to_noise_ratio": 1.021056709316057e-05,
+    "signal_variance": 9.346090093483428e-06,
+    "standardization_mean": [
+      -5.567310491118066
+    ],
+    "standardization_std": [
+      0.5510498982017782
+    ],
+    "state_file": "fit_states/fit_0014.pt",
+    "status": "success",
+    "train_count": 118,
+    "warm_start_source_fit_index": 13,
+    "warm_start_state_reference": "fit_states/fit_0013.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -6.182051202356666,
+    "withheld_predictive_mean": -5.5673057656517875,
+    "withheld_predictive_std": 0.5272094589190041,
+    "withheld_standardized_residual": -1.1660364325885944
+  },
+  {
+    "archive_stop_exclusive": 119,
+    "bo_iteration": 15,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 15,
+    "gp_response_sample_variance": 0.3042583163241218,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333341693415935,
+        0.3333238710152914,
+        0.3333315022881585,
+        0.3333138350358348,
+        0.33333122867696136,
+        0.3333280708308499,
+        0.3333344246542145,
+        0.3333341266775635,
+        0.33333340921713267,
+        0.33333319825135427,
+        0.3333351570992335,
+        0.33333114067919734,
+        0.33333092168873724,
+        0.33333232892957854,
+        0.3333326633909414,
+        0.3333341604460731,
+        0.33333302788132435,
+        0.3333339342194579
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333142311253555,
+        0.33341969215574074,
+        0.33336403011123344,
+        0.3333858929457254,
+        0.3333484264408833,
+        0.33340120536127643,
+        0.3332941511005873,
+        0.33330671284441826,
+        0.33332592448582066,
+        0.3333227048725376,
+        0.3332860717141718,
+        0.3333565407924814,
+        0.3332966039264802,
+        0.3333388590478607,
+        0.3333314869077465,
+        0.3333036472135966,
+        0.3333340514921089,
+        0.3333168164025724
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.915335064958713,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -1.6892802427024357e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959670835864457e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418334811270295,
+      "kernels.1": 1.5324611140363645e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809095076415936,
+    "likelihood_observation_noise_variance": 0.9159707531305473,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9159707531305473,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334175021128,
+        0.33332386506165956,
+        0.33333149069965434,
+        0.3333138201100642,
+        0.3333312254554925,
+        0.3333280603244966,
+        0.33333441712444506,
+        0.3333341253643258,
+        0.3333333926245538,
+        0.3333331946686826,
+        0.3333351581360526,
+        0.33333113553379784,
+        0.33333092274363313,
+        0.3333323215532342,
+        0.3333326648359145,
+        0.333334161376044,
+        0.3333330262099998,
+        0.333333930764983
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333148543245744,
+        0.33341687358101263,
+        0.3333630284982132,
+        0.33338417692734307,
+        0.33334793392827305,
+        0.33339899041399884,
+        0.3332954291633932,
+        0.33330758121096477,
+        0.33332616614474486,
+        0.3333230515646063,
+        0.3332876133153264,
+        0.3333557835315211,
+        0.3332978018146045,
+        0.33333867871723655,
+        0.3333315471060333,
+        0.3333046155720306,
+        0.3333340280445536,
+        0.33331735520953526
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959635360480712e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418310269276275,
+      "kernels.1": 1.5324611052729622e-08
+    },
+    "posterior_mean_spread_ratio": 5.261868467911344e-06,
+    "posterior_std_ratio": 0.003057119287958425,
+    "predictive_rms_z": 5.685697559936156,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1956066.7779206831,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.02033362265454e-05,
+    "signal_to_noise_ratio": 1.0203440335677813e-05,
+    "signal_variance": 9.346052928793411e-06,
+    "standardization_mean": [
+      -5.572476379447802
+    ],
+    "standardization_std": [
+      0.5515961532898157
+    ],
+    "state_file": "fit_states/fit_0015.pt",
+    "status": "success",
+    "train_count": 119,
+    "warm_start_source_fit_index": 14,
+    "warm_start_state_reference": "fit_states/fit_0014.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.667607768558115,
+    "withheld_predictive_mean": -5.57247216653349,
+    "withheld_predictive_std": 0.5279152988173048,
+    "withheld_standardized_residual": -0.1802099735274925
+  },
+  {
+    "archive_stop_exclusive": 120,
+    "bo_iteration": 16,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 16,
+    "gp_response_sample_variance": 0.30177694025991997,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334175021128,
+        0.33332386506165956,
+        0.33333149069965434,
+        0.3333138201100642,
+        0.3333312254554925,
+        0.3333280603244966,
+        0.33333441712444506,
+        0.3333341253643258,
+        0.3333333926245538,
+        0.3333331946686826,
+        0.3333351581360526,
+        0.33333113553379784,
+        0.33333092274363313,
+        0.3333323215532342,
+        0.3333326648359145,
+        0.333334161376044,
+        0.3333330262099998,
+        0.333333930764983
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333148543245744,
+        0.33341687358101263,
+        0.3333630284982132,
+        0.33338417692734307,
+        0.33334793392827305,
+        0.33339899041399884,
+        0.3332954291633932,
+        0.33330758121096477,
+        0.33332616614474486,
+        0.3333230515646063,
+        0.3332876133153264,
+        0.3333557835315211,
+        0.3332978018146045,
+        0.33333867871723655,
+        0.3333315471060333,
+        0.3333046155720306,
+        0.3333340280445536,
+        0.33331735520953526
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9159707531305473,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -3.0184546266834657e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959635360480712e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418310269276275,
+      "kernels.1": 1.5324611052729622e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809086872087914,
+    "likelihood_observation_noise_variance": 0.9166081663530619,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9166081663530619,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334181095444,
+        0.33332385680363447,
+        0.33333147921177,
+        0.3333138000152636,
+        0.33333122170496604,
+        0.3333280486458887,
+        0.3333344089686245,
+        0.3333341240538041,
+        0.33333337652976675,
+        0.33333319129675704,
+        0.333335160251413,
+        0.33333112954002025,
+        0.33333092099856976,
+        0.3333323148594401,
+        0.3333326661804324,
+        0.3333341628483225,
+        0.33333302404849713,
+        0.3333339275155439
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333315453477366,
+        0.3334141638188062,
+        0.33336206554135017,
+        0.3333825271364572,
+        0.33334746042108826,
+        0.33339686096736676,
+        0.3332966579185843,
+        0.333308416074485,
+        0.33332639847879814,
+        0.3333233848796245,
+        0.33328909544818064,
+        0.3333550554935962,
+        0.33329895348433664,
+        0.3333385053460392,
+        0.33333160498136305,
+        0.3333055465713366,
+        0.33333400550083775,
+        0.3333178732273753
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959599497424088e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141828569215535,
+      "kernels.1": 1.5324610963984832e-08
+    },
+    "posterior_mean_spread_ratio": 6.350025600437514e-06,
+    "posterior_std_ratio": 0.003057116620120339,
+    "predictive_rms_z": 5.683272560291645,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1939752.0395035408,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0196199869573485e-05,
+    "signal_to_noise_ratio": 1.0196303833125297e-05,
+    "signal_variance": 9.346015360059675e-06,
+    "standardization_mean": [
+      -5.573269141023721
+    ],
+    "standardization_std": [
+      0.5493422796944725
+    ],
+    "state_file": "fit_states/fit_0016.pt",
+    "status": "success",
+    "train_count": 120,
+    "warm_start_source_fit_index": 15,
+    "warm_start_state_reference": "fit_states/fit_0015.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.586598792400752,
+    "withheld_predictive_mean": -5.573265521774979,
+    "withheld_predictive_std": 0.5259410881755132,
+    "withheld_standardized_residual": -0.02535126257586332
+  },
+  {
+    "archive_stop_exclusive": 121,
+    "bo_iteration": 17,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 17,
+    "gp_response_sample_variance": 0.29926360085091513,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333334181095444,
+        0.33332385680363447,
+        0.33333147921177,
+        0.3333138000152636,
+        0.33333122170496604,
+        0.3333280486458887,
+        0.3333344089686245,
+        0.3333341240538041,
+        0.33333337652976675,
+        0.33333319129675704,
+        0.333335160251413,
+        0.33333112954002025,
+        0.33333092099856976,
+        0.3333323148594401,
+        0.3333326661804324,
+        0.3333341628483225,
+        0.33333302404849713,
+        0.3333339275155439
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333315453477366,
+        0.3334141638188062,
+        0.33336206554135017,
+        0.3333825271364572,
+        0.33334746042108826,
+        0.33339686096736676,
+        0.3332966579185843,
+        0.333308416074485,
+        0.33332639847879814,
+        0.3333233848796245,
+        0.33328909544818064,
+        0.3333550554935962,
+        0.33329895348433664,
+        0.3333385053460392,
+        0.33333160498136305,
+        0.3333055465713366,
+        0.33333400550083775,
+        0.3333178732273753
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9166081663530619,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -3.6539017440444225e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959599497424088e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141828569215535,
+      "kernels.1": 1.5324610963984832e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809078656006129,
+    "likelihood_observation_noise_variance": 0.9172359669722121,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9172359669722121,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.333333418722521,
+        0.33332384667383996,
+        0.3333314676510158,
+        0.3333137761711032,
+        0.3333312175984294,
+        0.33332803554390106,
+        0.33333440136947273,
+        0.3333341230632272,
+        0.3333333609817621,
+        0.3333331879757831,
+        0.33333516265798474,
+        0.33333112305819906,
+        0.33333091876611326,
+        0.3333323082603174,
+        0.33333266722555144,
+        0.3333341636893563,
+        0.33333302183311236,
+        0.3333339245229867
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333160296663056,
+        0.33341155796459265,
+        0.33336113949866414,
+        0.3333809405905709,
+        0.3333470050633948,
+        0.3333948131672678,
+        0.33329783958835557,
+        0.3333092189442636,
+        0.3333266219081012,
+        0.33332370541982936,
+        0.33329052078901306,
+        0.3333543553626729,
+        0.3333000610205813,
+        0.3333383386198227,
+        0.33333166063802033,
+        0.3333064418918963,
+        0.33333398382095725,
+        0.33331837139247755
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959563482751187e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418261079924766,
+      "kernels.1": 1.5324610874819682e-08
+    },
+    "posterior_mean_spread_ratio": 5.8743166239349944e-06,
+    "posterior_std_ratio": 0.0030571108280290594,
+    "predictive_rms_z": 5.268363322716848,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1923756.1889810825,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0189180038500552e-05,
+    "signal_to_noise_ratio": 1.0189283858948256e-05,
+    "signal_variance": 9.345977633116755e-06,
+    "standardization_mean": [
+      -5.573379303431796
+    ],
+    "standardization_std": [
+      0.5470499070934162
+    ],
+    "state_file": "fit_states/fit_0017.pt",
+    "status": "success",
+    "train_count": 121,
+    "warm_start_source_fit_index": 16,
+    "warm_start_state_reference": "fit_states/fit_0016.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -8.030453394467704,
+    "withheld_predictive_mean": -5.573377711999179,
+    "withheld_predictive_std": 0.5239256962490715,
+    "withheld_standardized_residual": -4.689740740069455
+  },
+  {
+    "archive_stop_exclusive": 122,
+    "bo_iteration": 18,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 18,
+    "gp_response_sample_variance": 0.3462757011385334,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.333333418722521,
+        0.33332384667383996,
+        0.3333314676510158,
+        0.3333137761711032,
+        0.3333312175984294,
+        0.33332803554390106,
+        0.33333440136947273,
+        0.3333341230632272,
+        0.3333333609817621,
+        0.3333331879757831,
+        0.33333516265798474,
+        0.33333112305819906,
+        0.33333091876611326,
+        0.3333323082603174,
+        0.33333266722555144,
+        0.3333341636893563,
+        0.33333302183311236,
+        0.3333339245229867
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333160296663056,
+        0.33341155796459265,
+        0.33336113949866414,
+        0.3333809405905709,
+        0.3333470050633948,
+        0.3333948131672678,
+        0.33329783958835557,
+        0.3333092189442636,
+        0.3333266219081012,
+        0.33332370541982936,
+        0.33329052078901306,
+        0.3333543553626729,
+        0.3333000610205813,
+        0.3333383386198227,
+        0.33333166063802033,
+        0.3333064418918963,
+        0.33333398382095725,
+        0.33331837139247755
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9172359669722121,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -3.9705791559177505e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959563482751187e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418261079924766,
+      "kernels.1": 1.5324610874819682e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.01380907042948462,
+    "likelihood_observation_noise_variance": 0.9178539780043143,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9178539780043143,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333341309602066,
+        0.33332386871307673,
+        0.33333146586054113,
+        0.3333138182641469,
+        0.3333312259049337,
+        0.3333280379878237,
+        0.3333343874414021,
+        0.3333341456059821,
+        0.3333333513940936,
+        0.33333317464422213,
+        0.3333351719301232,
+        0.333331004786893,
+        0.3333309308523921,
+        0.3333322811465954,
+        0.3333326737279963,
+        0.3333341771367818,
+        0.3333330246993731,
+        0.3333338868552413
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333165837938983,
+        0.33340905150582917,
+        0.3333602487640391,
+        0.33337941462746074,
+        0.333346567079168,
+        0.3333928434517934,
+        0.333298976229814,
+        0.33330999126593314,
+        0.3333268368333248,
+        0.3333240137294585,
+        0.3332918918442503,
+        0.3333536817214934,
+        0.3333011263878182,
+        0.3333381782112576,
+        0.3333317141833469,
+        0.3333073031240991,
+        0.3333339629757244,
+        0.3333188505175737
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959530624276054e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418236433218784,
+      "kernels.1": 1.5324610794913162e-08
+    },
+    "posterior_mean_spread_ratio": 6.201628919407002e-06,
+    "posterior_std_ratio": 0.0030571032844919107,
+    "predictive_rms_z": 2.180462622043294,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1966054.6436099554,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0182281990093324e-05,
+    "signal_to_noise_ratio": 1.0182385670015548e-05,
+    "signal_variance": 9.345943192797896e-06,
+    "standardization_mean": [
+      -5.5935192549976644
+    ],
+    "standardization_std": [
+      0.5884519531266197
+    ],
+    "state_file": "fit_states/fit_0018.pt",
+    "status": "success",
+    "train_count": 122,
+    "warm_start_source_fit_index": 17,
+    "warm_start_state_reference": "fit_states/fit_0017.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.243407463551852,
+    "withheld_predictive_mean": -5.593515117291801,
+    "withheld_predictive_std": 0.5637674751139671,
+    "withheld_standardized_residual": 0.6210142819416349
+  },
+  {
+    "archive_stop_exclusive": 123,
+    "bo_iteration": 19,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 19,
+    "gp_response_sample_variance": 0.34443394699179913,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333341309602066,
+        0.33332386871307673,
+        0.33333146586054113,
+        0.3333138182641469,
+        0.3333312259049337,
+        0.3333280379878237,
+        0.3333343874414021,
+        0.3333341456059821,
+        0.3333333513940936,
+        0.33333317464422213,
+        0.3333351719301232,
+        0.333331004786893,
+        0.3333309308523921,
+        0.3333322811465954,
+        0.3333326737279963,
+        0.3333341771367818,
+        0.3333330246993731,
+        0.3333338868552413
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333165837938983,
+        0.33340905150582917,
+        0.3333602487640391,
+        0.33337941462746074,
+        0.333346567079168,
+        0.3333928434517934,
+        0.333298976229814,
+        0.33330999126593314,
+        0.3333268368333248,
+        0.3333240137294585,
+        0.3332918918442503,
+        0.3333536817214934,
+        0.3333011263878182,
+        0.3333381782112576,
+        0.3333317141833469,
+        0.3333073031240991,
+        0.3333339629757244,
+        0.3333188505175737
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9178539780043143,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -4.382500312458582e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959530624276054e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418236433218784,
+      "kernels.1": 1.5324610794913162e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809062191930205,
+    "likelihood_observation_noise_variance": 0.9184630786799968,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9184630786799968,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333340757813723,
+        0.3333238882171093,
+        0.3333314639303369,
+        0.33331385496440064,
+        0.33333123791292635,
+        0.33332803780752074,
+        0.333334382682626,
+        0.3333341645665185,
+        0.3333333426738399,
+        0.33333316224773557,
+        0.3333351872496357,
+        0.33333089739328614,
+        0.33333094648229517,
+        0.3333322500715487,
+        0.3333326792136105,
+        0.33333420612165304,
+        0.3333330304511545,
+        0.33333385006987093
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333171169326703,
+        0.33340664001821724,
+        0.3333593917705833,
+        0.3333779464688795,
+        0.33334614569152377,
+        0.33339094836060773,
+        0.3333000698453877,
+        0.3333107343358472,
+        0.33332704361956833,
+        0.33332431036344073,
+        0.33329321099555176,
+        0.3333530336081454,
+        0.3333021514196142,
+        0.3333380238697182,
+        0.3333317656993788,
+        0.3333081317702261,
+        0.3333339429251156,
+        0.3333193114967547
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959498710500453e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418211752469396,
+      "kernels.1": 1.532461071779281e-08
+    },
+    "posterior_mean_spread_ratio": 6.1003278058520125e-06,
+    "posterior_std_ratio": 0.0030570971280861493,
+    "predictive_rms_z": 2.1172552752657277,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1950411.9057532733,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0175493009689866e-05,
+    "signal_to_noise_ratio": 1.0175596551401444e-05,
+    "signal_variance": 9.345909736005728e-06,
+    "standardization_mean": [
+      -5.590672817668837
+    ],
+    "standardization_std": [
+      0.5868849520918041
+    ],
+    "state_file": "fit_states/fit_0019.pt",
+    "status": "success",
+    "train_count": 123,
+    "warm_start_source_fit_index": 18,
+    "warm_start_state_reference": "fit_states/fit_0018.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.611744288728526,
+    "withheld_predictive_mean": -5.5906674300536645,
+    "withheld_predictive_std": 0.5624527378760613,
+    "withheld_standardized_residual": -0.0374731195272555
+  },
+  {
+    "archive_stop_exclusive": 124,
+    "bo_iteration": 20,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 20,
+    "gp_response_sample_variance": 0.3416372517007429,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333340757813723,
+        0.3333238882171093,
+        0.3333314639303369,
+        0.33331385496440064,
+        0.33333123791292635,
+        0.33332803780752074,
+        0.333334382682626,
+        0.3333341645665185,
+        0.3333333426738399,
+        0.33333316224773557,
+        0.3333351872496357,
+        0.33333089739328614,
+        0.33333094648229517,
+        0.3333322500715487,
+        0.3333326792136105,
+        0.33333420612165304,
+        0.3333330304511545,
+        0.33333385006987093
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333171169326703,
+        0.33340664001821724,
+        0.3333593917705833,
+        0.3333779464688795,
+        0.33334614569152377,
+        0.33339094836060773,
+        0.3333000698453877,
+        0.3333107343358472,
+        0.33332704361956833,
+        0.33332431036344073,
+        0.33329321099555176,
+        0.3333530336081454,
+        0.3333021514196142,
+        0.3333380238697182,
+        0.3333317656993788,
+        0.3333081317702261,
+        0.3333339429251156,
+        0.3333193114967547
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9184630786799968,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -4.610437049272117e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959498710500453e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418211752469396,
+      "kernels.1": 1.532461071779281e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809053943126823,
+    "likelihood_observation_noise_variance": 0.9190633422432867,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9190633422432867,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333340225591956,
+        0.33332390511622856,
+        0.33333146164157573,
+        0.33331388640958587,
+        0.3333312487388006,
+        0.33332803658860416,
+        0.33333437802318894,
+        0.3333341832966991,
+        0.33333333362031375,
+        0.3333331501767898,
+        0.3333352022021868,
+        0.333330792653163,
+        0.33333096046907873,
+        0.3333322199653296,
+        0.3333326842384364,
+        0.33333423374782367,
+        0.3333330356681359,
+        0.333333814568078
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333317629999099,
+        0.3334043193585975,
+        0.33335856704672623,
+        0.3333765335938053,
+        0.3333457401688341,
+        0.3333891246414492,
+        0.3333011222951805,
+        0.33331144943430513,
+        0.3333272426196074,
+        0.33332459582971163,
+        0.3332944804940597,
+        0.333352409896377,
+        0.33330313786509186,
+        0.33333787533886,
+        0.3333318152754487,
+        0.33330892922265604,
+        0.33333392362885794,
+        0.33331975512166334
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959466611696991e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141818703815813,
+      "kernels.1": 1.5324610640153446e-08
+    },
+    "posterior_mean_spread_ratio": 6.0026174924128035e-06,
+    "posterior_std_ratio": 0.003057094243472707,
+    "predictive_rms_z": 2.118595740213359,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1934748.1478742603,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0168810592496534e-05,
+    "signal_to_noise_ratio": 1.0168913998256913e-05,
+    "signal_variance": 9.345876086222542e-06,
+    "standardization_mean": [
+      -5.59084274888706
+    ],
+    "standardization_std": [
+      0.584497435153263
+    ],
+    "state_file": "fit_states/fit_0020.pt",
+    "status": "success",
+    "train_count": 124,
+    "warm_start_source_fit_index": 19,
+    "warm_start_state_reference": "fit_states/fit_0019.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.452594999723384,
+    "withheld_predictive_mean": -5.590838204142565,
+    "withheld_predictive_std": 0.5603476306951808,
+    "withheld_standardized_residual": 0.24670971526670576
+  },
+  {
+    "archive_stop_exclusive": 125,
+    "bo_iteration": 21,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 21,
+    "gp_response_sample_variance": 0.3390350120953145,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333340225591956,
+        0.33332390511622856,
+        0.33333146164157573,
+        0.33331388640958587,
+        0.3333312487388006,
+        0.33332803658860416,
+        0.33333437802318894,
+        0.3333341832966991,
+        0.33333333362031375,
+        0.3333331501767898,
+        0.3333352022021868,
+        0.333330792653163,
+        0.33333096046907873,
+        0.3333322199653296,
+        0.3333326842384364,
+        0.33333423374782367,
+        0.3333330356681359,
+        0.333333814568078
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333317629999099,
+        0.3334043193585975,
+        0.33335856704672623,
+        0.3333765335938053,
+        0.3333457401688341,
+        0.3333891246414492,
+        0.3333011222951805,
+        0.33331144943430513,
+        0.3333272426196074,
+        0.33332459582971163,
+        0.3332944804940597,
+        0.333352409896377,
+        0.33330313786509186,
+        0.33333787533886,
+        0.3333318152754487,
+        0.33330892922265604,
+        0.33333392362885794,
+        0.33331975512166334
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9190633422432867,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -4.760761574261855e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959466611696991e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141818703815813,
+      "kernels.1": 1.5324610640153446e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809045683404549,
+    "likelihood_observation_noise_variance": 0.9196547630687757,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9196547630687757,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333339706889864,
+        0.33332391914764387,
+        0.3333314589418159,
+        0.3333139122259501,
+        0.3333312599641012,
+        0.33332803437809194,
+        0.3333343784530659,
+        0.3333342001146435,
+        0.3333333270104243,
+        0.33333313876593396,
+        0.33333522111171837,
+        0.3333306933812962,
+        0.3333309740666862,
+        0.33333219238641437,
+        0.3333326885346541,
+        0.3333342622345947,
+        0.3333330413751971,
+        0.33333378117191503
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333318123862234,
+        0.3334020855870497,
+        0.33335777319341847,
+        0.3333751736041707,
+        0.3333453498260342,
+        0.33338736919932127,
+        0.3333021353713302,
+        0.3333121377704583,
+        0.33332743417560645,
+        0.3333248706128433,
+        0.3332957024983155,
+        0.333351809533419,
+        0.333304087398141,
+        0.3333377323695691,
+        0.33333186299514267,
+        0.3333096968367196,
+        0.3333339050559701,
+        0.3333201821458483
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.95943485369364e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141816229074939,
+      "kernels.1": 1.5324610563533e-08
+    },
+    "posterior_mean_spread_ratio": 6.712530722215813e-06,
+    "posterior_std_ratio": 0.003057086008258231,
+    "predictive_rms_z": 2.156532945757619,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1919445.8369560312,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0162234994819758e-05,
+    "signal_to_noise_ratio": 1.0162338266889324e-05,
+    "signal_variance": 9.345842791060854e-06,
+    "standardization_mean": [
+      -5.589736766893751
+    ],
+    "standardization_std": [
+      0.5822671312166904
+    ],
+    "state_file": "fit_states/fit_0021.pt",
+    "status": "success",
+    "train_count": 125,
+    "warm_start_source_fit_index": 20,
+    "warm_start_state_reference": "fit_states/fit_0020.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -6.092771610617382,
+    "withheld_predictive_mean": -5.58973315345969,
+    "withheld_predictive_std": 0.5583890509662951,
+    "withheld_standardized_residual": -0.900874500112747
+  },
+  {
+    "archive_stop_exclusive": 126,
+    "bo_iteration": 22,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 22,
+    "gp_response_sample_variance": 0.3383310181414096,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333339706889864,
+        0.33332391914764387,
+        0.3333314589418159,
+        0.3333139122259501,
+        0.3333312599641012,
+        0.33332803437809194,
+        0.3333343784530659,
+        0.3333342001146435,
+        0.3333333270104243,
+        0.33333313876593396,
+        0.33333522111171837,
+        0.3333306933812962,
+        0.3333309740666862,
+        0.33333219238641437,
+        0.3333326885346541,
+        0.3333342622345947,
+        0.3333330413751971,
+        0.33333378117191503
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333318123862234,
+        0.3334020855870497,
+        0.33335777319341847,
+        0.3333751736041707,
+        0.3333453498260342,
+        0.33338736919932127,
+        0.3333021353713302,
+        0.3333121377704583,
+        0.33332743417560645,
+        0.3333248706128433,
+        0.3332957024983155,
+        0.333351809533419,
+        0.333304087398141,
+        0.3333377323695691,
+        0.33333186299514267,
+        0.3333096968367196,
+        0.3333339050559701,
+        0.3333201821458483
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9196547630687757,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -4.87795195267295e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.95943485369364e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141816229074939,
+      "kernels.1": 1.5324610563533e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809037412405247,
+    "likelihood_observation_noise_variance": 0.9202377816641141,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9202377816641141,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333921354286,
+        0.3333239342290482,
+        0.33333145674551135,
+        0.3333139389969005,
+        0.3333312680446723,
+        0.33332801576900606,
+        0.33333437898328355,
+        0.33333417939348386,
+        0.33333332180542463,
+        0.3333331167191755,
+        0.33333523455400715,
+        0.3333305937621769,
+        0.33333099146542666,
+        0.33333216977482033,
+        0.3333326940153841,
+        0.3333342767339817,
+        0.33333304740607156,
+        0.33333375038796476
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.333331859935176,
+        0.3333999349630859,
+        0.3333570088815016,
+        0.3333738642307807,
+        0.33334497400283275,
+        0.33338567906383776,
+        0.33330311076198227,
+        0.33331280043631867,
+        0.3333276186067541,
+        0.33332513515391865,
+        0.33329687903852245,
+        0.3333512315033229,
+        0.33330500161620075,
+        0.3333375947265181,
+        0.33333190894167913,
+        0.333310435872687,
+        0.3333338871750303,
+        0.33332059328565283
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959401914731743e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418137510690525,
+      "kernels.1": 1.5324610483479535e-08
+    },
+    "posterior_mean_spread_ratio": 5.656846855302734e-06,
+    "posterior_std_ratio": 0.0030570806026034947,
+    "predictive_rms_z": 0.6626119608070418,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1904092.5705690796,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0155759237633296e-05,
+    "signal_to_noise_ratio": 1.0155862378126458e-05,
+    "signal_variance": 9.345808265733126e-06,
+    "standardization_mean": [
+      -5.593729106923304
+    ],
+    "standardization_std": [
+      0.5816622887392732
+    ],
+    "state_file": "fit_states/fit_0022.pt",
+    "status": "success",
+    "train_count": 126,
+    "warm_start_source_fit_index": 21,
+    "warm_start_state_reference": "fit_states/fit_0021.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -6.133495369826613,
+    "withheld_predictive_mean": -5.593726798933081,
+    "withheld_predictive_std": 0.5579857951047292,
+    "withheld_standardized_residual": -0.9673518136643998
+  },
+  {
+    "archive_stop_exclusive": 127,
+    "bo_iteration": 23,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 23,
+    "gp_response_sample_variance": 0.3379399270675242,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333921354286,
+        0.3333239342290482,
+        0.33333145674551135,
+        0.3333139389969005,
+        0.3333312680446723,
+        0.33332801576900606,
+        0.33333437898328355,
+        0.33333417939348386,
+        0.33333332180542463,
+        0.3333331167191755,
+        0.33333523455400715,
+        0.3333305937621769,
+        0.33333099146542666,
+        0.33333216977482033,
+        0.3333326940153841,
+        0.3333342767339817,
+        0.33333304740607156,
+        0.33333375038796476
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.333331859935176,
+        0.3333999349630859,
+        0.3333570088815016,
+        0.3333738642307807,
+        0.33334497400283275,
+        0.33338567906383776,
+        0.33330311076198227,
+        0.33331280043631867,
+        0.3333276186067541,
+        0.33332513515391865,
+        0.33329687903852245,
+        0.3333512315033229,
+        0.33330500161620075,
+        0.3333375947265181,
+        0.33333190894167913,
+        0.333310435872687,
+        0.3333338871750303,
+        0.33332059328565283
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9202377816641141,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -4.941639511255463e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959401914731743e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418137510690525,
+      "kernels.1": 1.5324610483479535e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809029130425803,
+    "likelihood_observation_noise_variance": 0.9208123431780354,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9208123431780354,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333876321574,
+        0.3333239549564727,
+        0.33333145653742996,
+        0.33331395624115706,
+        0.3333312760172451,
+        0.33332800095795223,
+        0.33333437909700103,
+        0.3333341549119403,
+        0.33333330187949745,
+        0.3333330927926291,
+        0.3333352449633463,
+        0.3333304916820381,
+        0.3333310113563244,
+        0.33333212840329796,
+        0.3333327001123269,
+        0.3333342925762351,
+        0.3333330546046696,
+        0.3333337159577245
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333319057258104,
+        0.3333978639298059,
+        0.3333562728475324,
+        0.33337260328621837,
+        0.333344612082019,
+        0.3333840514687853,
+        0.3333040500804524,
+        0.333313438586559,
+        0.3333277961908273,
+        0.33332538990592936,
+        0.33329801206569726,
+        0.33335067484540853,
+        0.33330588202999406,
+        0.333337462141275,
+        0.33333195319014414,
+        0.33331114757992886,
+        0.33333386995785824,
+        0.3333209892110606
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959368250073935e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418112698416935,
+      "kernels.1": 1.532461040132443e-08
+    },
+    "posterior_mean_spread_ratio": 6.0812901310067885e-06,
+    "posterior_std_ratio": 0.0030570746704669605,
+    "predictive_rms_z": 1.3883252383466413,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1888990.529751563,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.014938407348978e-05,
+    "signal_to_noise_ratio": 1.0149487084532351e-05,
+    "signal_variance": 9.34577298436344e-06,
+    "standardization_mean": [
+      -5.597979234977661
+    ],
+    "standardization_std": [
+      0.5813260075616128
+    ],
+    "state_file": "fit_states/fit_0023.pt",
+    "status": "success",
+    "train_count": 127,
+    "warm_start_source_fit_index": 22,
+    "warm_start_state_reference": "fit_states/fit_0022.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -7.158686147690364,
+    "withheld_predictive_mean": -5.597975459306123,
+    "withheld_predictive_std": 0.5578372651173718,
+    "withheld_standardized_residual": -2.797788505678014
+  },
+  {
+    "archive_stop_exclusive": 128,
+    "bo_iteration": 24,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 24,
+    "gp_response_sample_variance": 0.35430871766138405,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333876321574,
+        0.3333239549564727,
+        0.33333145653742996,
+        0.33331395624115706,
+        0.3333312760172451,
+        0.33332800095795223,
+        0.33333437909700103,
+        0.3333341549119403,
+        0.33333330187949745,
+        0.3333330927926291,
+        0.3333352449633463,
+        0.3333304916820381,
+        0.3333310113563244,
+        0.33333212840329796,
+        0.3333327001123269,
+        0.3333342925762351,
+        0.3333330546046696,
+        0.3333337159577245
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333319057258104,
+        0.3333978639298059,
+        0.3333562728475324,
+        0.33337260328621837,
+        0.333344612082019,
+        0.3333840514687853,
+        0.3333040500804524,
+        0.333313438586559,
+        0.3333277961908273,
+        0.33332538990592936,
+        0.33329801206569726,
+        0.33335067484540853,
+        0.33330588202999406,
+        0.333337462141275,
+        0.33333195319014414,
+        0.33331114757992886,
+        0.33333386995785824,
+        0.3333209892110606
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9208123431780354,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.032435341684965e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959368250073935e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041418112698416935,
+      "kernels.1": 1.532461040132443e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809020837095676,
+    "likelihood_observation_noise_variance": 0.9213788697229133,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9213788697229133,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333338396642737,
+        0.3333239931881055,
+        0.3333314602547472,
+        0.3333140084444644,
+        0.3333312793897463,
+        0.33332800033881466,
+        0.3333343547911513,
+        0.333334152367607,
+        0.3333332684958455,
+        0.33333294993983564,
+        0.3333352231312707,
+        0.33333035889749496,
+        0.33333103690573,
+        0.3333320967009953,
+        0.3333327084553466,
+        0.3333342829324745,
+        0.33333305825769555,
+        0.33333368314861
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333319498337891,
+        0.33339586911380803,
+        0.3333555638895645,
+        0.3333713887811753,
+        0.33334426346335105,
+        0.3333824837655833,
+        0.33330495482252753,
+        0.33331405330945574,
+        0.333327967220704,
+        0.3333256350857087,
+        0.3332991033834539,
+        0.3333501386002041,
+        0.33330673008539363,
+        0.33333733444553654,
+        0.3333319958157371,
+        0.3333118330771051,
+        0.33333385336819016,
+        0.3333213705791392
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959332327827715e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141808785434889,
+      "kernels.1": 1.532461031258781e-08
+    },
+    "posterior_mean_spread_ratio": 5.645324097685317e-06,
+    "posterior_std_ratio": 0.0030570696418839804,
+    "predictive_rms_z": 1.6244642107666332,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1879883.785428918,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0143102760395466e-05,
+    "signal_to_noise_ratio": 1.0143205643972633e-05,
+    "signal_variance": 9.34573535161058e-06,
+    "standardization_mean": [
+      -5.610172257733228
+    ],
+    "standardization_std": [
+      0.5952383704545466
+    ],
+    "state_file": "fit_states/fit_0024.pt",
+    "status": "success",
+    "train_count": 128,
+    "warm_start_source_fit_index": 23,
+    "warm_start_state_reference": "fit_states/fit_0023.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -6.6880019709498875,
+    "withheld_predictive_mean": -5.610169712566397,
+    "withheld_predictive_std": 0.5713631743863955,
+    "withheld_standardized_residual": -1.886422343443831
+  },
+  {
+    "archive_stop_exclusive": 129,
+    "bo_iteration": 25,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 25,
+    "gp_response_sample_variance": 0.36054623809684605,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333338396642737,
+        0.3333239931881055,
+        0.3333314602547472,
+        0.3333140084444644,
+        0.3333312793897463,
+        0.33332800033881466,
+        0.3333343547911513,
+        0.333334152367607,
+        0.3333332684958455,
+        0.33333294993983564,
+        0.3333352231312707,
+        0.33333035889749496,
+        0.33333103690573,
+        0.3333320967009953,
+        0.3333327084553466,
+        0.3333342829324745,
+        0.33333305825769555,
+        0.33333368314861
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333319498337891,
+        0.33339586911380803,
+        0.3333555638895645,
+        0.3333713887811753,
+        0.33334426346335105,
+        0.3333824837655833,
+        0.33330495482252753,
+        0.33331405330945574,
+        0.333327967220704,
+        0.3333256350857087,
+        0.3332991033834539,
+        0.3333501386002041,
+        0.33330673008539363,
+        0.33333733444553654,
+        0.3333319958157371,
+        0.3333118330771051,
+        0.33333385336819016,
+        0.3333213705791392
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9213788697229133,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.003444382767703e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959332327827715e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141808785434889,
+      "kernels.1": 1.532461031258781e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.01380901253298545,
+    "likelihood_observation_noise_variance": 0.9219371945870234,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9219371945870234,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333813446006,
+        0.3333240185392174,
+        0.3333314558833696,
+        0.33331404384102237,
+        0.3333312803975047,
+        0.3333280078711876,
+        0.3333343259673631,
+        0.3333341191361574,
+        0.33333322904036755,
+        0.33333278861331206,
+        0.3333352009544701,
+        0.3333302172007733,
+        0.3333310643767763,
+        0.33333205674809324,
+        0.33333271989645025,
+        0.333334277826988,
+        0.33333306303360527,
+        0.3333336494633824
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333199233077,
+        0.33339394723531923,
+        0.33335488084066106,
+        0.3333702186626206,
+        0.33334392758703574,
+        0.33338097340784084,
+        0.33330582648406815,
+        0.33331464550832546,
+        0.3333281319855346,
+        0.33332587126170976,
+        0.33330015480942704,
+        0.3333496219383281,
+        0.3333075471461379,
+        0.3333372114023103,
+        0.33333203688879026,
+        0.3333124935232297,
+        0.3333338373871834,
+        0.33332173800203047
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.95929542635037e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141806297891978,
+      "kernels.1": 1.532461022100655e-08
+    },
+    "posterior_mean_spread_ratio": 5.938862216755431e-06,
+    "posterior_std_ratio": 0.0030570632447036723,
+    "predictive_rms_z": 2.402732195255075,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1866258.2588808923,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0136918238134108e-05,
+    "signal_to_noise_ratio": 1.0137020996287125e-05,
+    "signal_variance": 9.345696698786705e-06,
+    "standardization_mean": [
+      -5.618527526827931
+    ],
+    "standardization_std": [
+      0.6004550258735837
+    ],
+    "state_file": "fit_states/fit_0025.pt",
+    "status": "success",
+    "train_count": 129,
+    "warm_start_source_fit_index": 24,
+    "warm_start_state_reference": "fit_states/fit_0024.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -7.905314372470074,
+    "withheld_predictive_mean": -5.618525379072949,
+    "withheld_predictive_std": 0.576545190581177,
+    "withheld_standardized_residual": -3.966365569873134
+  },
+  {
+    "archive_stop_exclusive": 130,
+    "bo_iteration": 26,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 26,
+    "gp_response_sample_variance": 0.39797741430628325,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.3333333813446006,
+        0.3333240185392174,
+        0.3333314558833696,
+        0.33331404384102237,
+        0.3333312803975047,
+        0.3333280078711876,
+        0.3333343259673631,
+        0.3333341191361574,
+        0.33333322904036755,
+        0.33333278861331206,
+        0.3333352009544701,
+        0.3333302172007733,
+        0.3333310643767763,
+        0.33333205674809324,
+        0.33333271989645025,
+        0.333334277826988,
+        0.33333306303360527,
+        0.3333336494633824
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333199233077,
+        0.33339394723531923,
+        0.33335488084066106,
+        0.3333702186626206,
+        0.33334392758703574,
+        0.33338097340784084,
+        0.33330582648406815,
+        0.33331464550832546,
+        0.3333281319855346,
+        0.33332587126170976,
+        0.33330015480942704,
+        0.3333496219383281,
+        0.3333075471461379,
+        0.3333372114023103,
+        0.33333203688879026,
+        0.3333124935232297,
+        0.3333338373871834,
+        0.33332173800203047
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9219371945870234,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.0391797947603765e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.95929542635037e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141806297891978,
+      "kernels.1": 1.532461022100655e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013809004218834466,
+    "likelihood_observation_noise_variance": 0.922487427422723,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.922487427422723,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337975642324,
+        0.33332407979263373,
+        0.33333145591836955,
+        0.333314144033104,
+        0.3333312858888192,
+        0.33332790868176315,
+        0.33333421502377786,
+        0.3333340826811701,
+        0.33333316656259504,
+        0.3333326456266088,
+        0.33333514543248116,
+        0.3333300830029264,
+        0.3333311131051582,
+        0.33333204834349367,
+        0.3333327357458954,
+        0.33333427082489003,
+        0.33333307301444204,
+        0.3333336258098299
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333203328460004,
+        0.3333920953058523,
+        0.3333542226311378,
+        0.33336909120049896,
+        0.33334360392836393,
+        0.33337951778549335,
+        0.3333066663236493,
+        0.3333152161755746,
+        0.33332829071951214,
+        0.3333260988744155,
+        0.33330116796523096,
+        0.33334912406301304,
+        0.3333083345493662,
+        0.33333709288330016,
+        0.3333320764770982,
+        0.33331312996154483,
+        0.3333338219962901,
+        0.3333220920850732
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959259323853361e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141803807256942,
+      "kernels.1": 1.5324610131784673e-08
+    },
+    "posterior_mean_spread_ratio": 5.63524252666259e-06,
+    "posterior_std_ratio": 0.0030570548776278315,
+    "predictive_rms_z": 2.3747747185348684,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1891640.0348821229,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0130830969243774e-05,
+    "signal_to_noise_ratio": 1.0130933604019678e-05,
+    "signal_variance": 9.345658877762528e-06,
+    "standardization_mean": [
+      -5.636118194871332
+    ],
+    "standardization_std": [
+      0.6308545112038776
+    ],
+    "state_file": "fit_states/fit_0026.pt",
+    "status": "success",
+    "train_count": 130,
+    "warm_start_source_fit_index": 25,
+    "warm_start_state_reference": "fit_states/fit_0025.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.406394650227072,
+    "withheld_predictive_mean": -5.6361152638023935,
+    "withheld_predictive_std": 0.605914911852626,
+    "withheld_standardized_residual": 0.3791301535605638
+  },
+  {
+    "archive_stop_exclusive": 131,
+    "bo_iteration": 27,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 27,
+    "gp_response_sample_variance": 0.39531889619889554,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337975642324,
+        0.33332407979263373,
+        0.33333145591836955,
+        0.333314144033104,
+        0.3333312858888192,
+        0.33332790868176315,
+        0.33333421502377786,
+        0.3333340826811701,
+        0.33333316656259504,
+        0.3333326456266088,
+        0.33333514543248116,
+        0.3333300830029264,
+        0.3333311131051582,
+        0.33333204834349367,
+        0.3333327357458954,
+        0.33333427082489003,
+        0.33333307301444204,
+        0.3333336258098299
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333203328460004,
+        0.3333920953058523,
+        0.3333542226311378,
+        0.33336909120049896,
+        0.33334360392836393,
+        0.33337951778549335,
+        0.3333066663236493,
+        0.3333152161755746,
+        0.33332829071951214,
+        0.3333260988744155,
+        0.33330116796523096,
+        0.33334912406301304,
+        0.3333083345493662,
+        0.33333709288330016,
+        0.3333320764770982,
+        0.33331312996154483,
+        0.3333338219962901,
+        0.3333220920850732
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.922487427422723,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.048278638322119e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959259323853361e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141803807256942,
+      "kernels.1": 1.5324610131784673e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013808995894628308,
+    "likelihood_observation_noise_variance": 0.923030007164701,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.923030007164701,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337817154196,
+        0.33332413647380793,
+        0.33333145540335235,
+        0.33331424060992393,
+        0.33333129094130665,
+        0.33332781219273666,
+        0.3333341081082196,
+        0.3333340477446778,
+        0.3333331071402434,
+        0.3333325078516513,
+        0.33333509624356683,
+        0.33332995996163756,
+        0.33333115855691814,
+        0.33333203953200474,
+        0.33333275218980674,
+        0.3333342629959697,
+        0.3333330822247437,
+        0.333333602590641
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333320727581584,
+        0.3333903103302453,
+        0.33335358821328914,
+        0.33336800449695636,
+        0.3333432919679736,
+        0.3333781147867481,
+        0.3333074758139057,
+        0.3333157662198502,
+        0.33332844371792003,
+        0.33332631826096853,
+        0.33330214451715406,
+        0.33334864419486504,
+        0.3333090934952568,
+        0.3333369786467952,
+        0.33333211463657714,
+        0.3333137433980885,
+        0.3333338071609693,
+        0.3333224333706737
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959223549000976e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141801313572588,
+      "kernels.1": 1.532461004354126e-08
+    },
+    "posterior_mean_spread_ratio": 5.640082796242597e-06,
+    "posterior_std_ratio": 0.0030570502900080865,
+    "predictive_rms_z": 2.3353589369115877,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1877493.8162172048,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.01248352732461e-05,
+    "signal_to_noise_ratio": 1.0124937786573341e-05,
+    "signal_variance": 9.345621397682943e-06,
+    "standardization_mean": [
+      -5.63436458002672
+    ],
+    "standardization_std": [
+      0.6287439035083328
+    ],
+    "state_file": "fit_states/fit_0027.pt",
+    "status": "success",
+    "train_count": 131,
+    "warm_start_source_fit_index": 26,
+    "warm_start_state_reference": "fit_states/fit_0026.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.686680617494091,
+    "withheld_predictive_mean": -5.634361679217403,
+    "withheld_predictive_std": 0.604065309417234,
+    "withheld_standardized_residual": -0.08661139360438055
+  },
+  {
+    "archive_stop_exclusive": 132,
+    "bo_iteration": 28,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 28,
+    "gp_response_sample_variance": 0.3923219293055599,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337817154196,
+        0.33332413647380793,
+        0.33333145540335235,
+        0.33331424060992393,
+        0.33333129094130665,
+        0.33332781219273666,
+        0.3333341081082196,
+        0.3333340477446778,
+        0.3333331071402434,
+        0.3333325078516513,
+        0.33333509624356683,
+        0.33332995996163756,
+        0.33333115855691814,
+        0.33333203953200474,
+        0.33333275218980674,
+        0.3333342629959697,
+        0.3333330822247437,
+        0.333333602590641
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333320727581584,
+        0.3333903103302453,
+        0.33335358821328914,
+        0.33336800449695636,
+        0.3333432919679736,
+        0.3333781147867481,
+        0.3333074758139057,
+        0.3333157662198502,
+        0.33332844371792003,
+        0.33332631826096853,
+        0.33330214451715406,
+        0.33334864419486504,
+        0.3333090934952568,
+        0.3333369786467952,
+        0.33333211463657714,
+        0.3333137433980885,
+        0.3333338071609693,
+        0.3333224333706737
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.923030007164701,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.05326125296221e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959223549000976e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141801313572588,
+      "kernels.1": 1.532461004354126e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013808987560327097,
+    "likelihood_observation_noise_variance": 0.9235651001941082,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9235651001941082,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337666696905,
+        0.33332418993915486,
+        0.3333314544236777,
+        0.33331432994363397,
+        0.33333129541892886,
+        0.3333277172897872,
+        0.33333400401917745,
+        0.3333340140820449,
+        0.33333304944109554,
+        0.3333323738012003,
+        0.33333504856770785,
+        0.3333298388617997,
+        0.33333120220354917,
+        0.33333203079323726,
+        0.33333276794831784,
+        0.33333425446561693,
+        0.333333091092514,
+        0.33333358020148596
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333321108132214,
+        0.3333885895206934,
+        0.3333529765962347,
+        0.3333669568475874,
+        0.3333429912183853,
+        0.3333767622174551,
+        0.3333082562166331,
+        0.33331629649952765,
+        0.3333285912175402,
+        0.3333265297617465,
+        0.3333030859812891,
+        0.3333481815689056,
+        0.3333098251709047,
+        0.33333686851523675,
+        0.3333321514245822,
+        0.33331433479073047,
+        0.3333337928587617,
+        0.3333227623924261
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.95918758968895e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041417988168781644,
+      "kernels.1": 1.5324609954777753e-08
+    },
+    "posterior_mean_spread_ratio": 5.936482423318827e-06,
+    "posterior_std_ratio": 0.0030570445354261597,
+    "predictive_rms_z": 1.9817334121578138,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1863347.2363565653,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0118928439346891e-05,
+    "signal_to_noise_ratio": 1.0119030833095767e-05,
+    "signal_variance": 9.345583725235362e-06,
+    "standardization_mean": [
+      -5.6347609136438965
+    ],
+    "standardization_std": [
+      0.6263560722987843
+    ],
+    "state_file": "fit_states/fit_0028.pt",
+    "status": "success",
+    "train_count": 132,
+    "warm_start_source_fit_index": 27,
+    "warm_start_state_reference": "fit_states/fit_0027.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -5.900195588524584,
+    "withheld_predictive_mean": -5.634758540444545,
+    "withheld_predictive_std": 0.6019456025072679,
+    "withheld_standardized_residual": -0.4409651752158686
+  },
+  {
+    "archive_stop_exclusive": 133,
+    "bo_iteration": 29,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 29,
+    "gp_response_sample_variance": 0.3898795345799612,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337666696905,
+        0.33332418993915486,
+        0.3333314544236777,
+        0.33331432994363397,
+        0.33333129541892886,
+        0.3333277172897872,
+        0.33333400401917745,
+        0.3333340140820449,
+        0.33333304944109554,
+        0.3333323738012003,
+        0.33333504856770785,
+        0.3333298388617997,
+        0.33333120220354917,
+        0.33333203079323726,
+        0.33333276794831784,
+        0.33333425446561693,
+        0.333333091092514,
+        0.33333358020148596
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333321108132214,
+        0.3333885895206934,
+        0.3333529765962347,
+        0.3333669568475874,
+        0.3333429912183853,
+        0.3333767622174551,
+        0.3333082562166331,
+        0.33331629649952765,
+        0.3333285912175402,
+        0.3333265297617465,
+        0.3333030859812891,
+        0.3333481815689056,
+        0.3333098251709047,
+        0.33333686851523675,
+        0.3333321514245822,
+        0.33331433479073047,
+        0.3333337928587617,
+        0.3333227623924261
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9235651001941082,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.0882597638937476e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.95918758968895e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041417988168781644,
+      "kernels.1": 1.5324609954777753e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013808979215986339,
+    "likelihood_observation_noise_variance": 0.9240928277725113,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9240928277725113,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337358891285,
+        0.33332424268765276,
+        0.33333145348687293,
+        0.3333144081618464,
+        0.33333129946289186,
+        0.3333276233007213,
+        0.33333390038045,
+        0.3333339815745322,
+        0.33333299025982166,
+        0.33333224284848484,
+        0.3333350029947299,
+        0.3333297146462397,
+        0.33333124155083177,
+        0.333332023714737,
+        0.33333278331577854,
+        0.3333342462292288,
+        0.3333330994417965,
+        0.3333335592948129
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333321475057005,
+        0.33338693022293125,
+        0.3333523868365297,
+        0.3333659466276342,
+        0.3333427012155573,
+        0.3333754579875919,
+        0.33330900873208325,
+        0.3333168078327394,
+        0.333328733440686,
+        0.33332673370244126,
+        0.3333039938111839,
+        0.3333477354625823,
+        0.33331053070081984,
+        0.3333367623213679,
+        0.33333218689835564,
+        0.3333149050537135,
+        0.3333337790672675,
+        0.33332307965925506
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959151223586623e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041417963172125566,
+      "kernels.1": 1.5324609864843368e-08
+    },
+    "posterior_mean_spread_ratio": 5.117168365533291e-06,
+    "posterior_std_ratio": 0.0030570368544591614,
+    "predictive_rms_z": 3.2667697964186524,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 1849285.3836932685,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.011310859201507e-05,
+    "signal_to_noise_ratio": 1.0113210868014793e-05,
+    "signal_variance": 9.345545628883483e-06,
+    "standardization_mean": [
+      -5.6367566630790895
+    ],
+    "standardization_std": [
+      0.6244033428641788
+    ],
+    "state_file": "fit_states/fit_0029.pt",
+    "status": "success",
+    "train_count": 133,
+    "warm_start_source_fit_index": 28,
+    "warm_start_state_reference": "fit_states/fit_0028.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -9.301721909160793,
+    "withheld_predictive_mean": -5.6367552863181825,
+    "withheld_predictive_std": 0.6002403895095587,
+    "withheld_standardized_residual": -6.105831408374839
+  },
+  {
+    "archive_stop_exclusive": 134,
+    "bo_iteration": 30,
+    "configuration_sha256": "f9e74a0ccde30dec158e224a2247be8a652a214900d3d4eff8236ff3cf1a60b2",
+    "failure_message": null,
+    "failure_type": null,
+    "fit_index": 30,
+    "gp_response_sample_variance": 0.48718669350036964,
+    "health_action": "warn_only",
+    "health_warning_reasons": [
+      "signal_fraction_nu_below_threshold"
+    ],
+    "health_warning_triggered": true,
+    "inherited_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337358891285,
+        0.33332424268765276,
+        0.33333145348687293,
+        0.3333144081618464,
+        0.33333129946289186,
+        0.3333276233007213,
+        0.33333390038045,
+        0.3333339815745322,
+        0.33333299025982166,
+        0.33333224284848484,
+        0.3333350029947299,
+        0.3333297146462397,
+        0.33333124155083177,
+        0.333332023714737,
+        0.33333278331577854,
+        0.3333342462292288,
+        0.3333330994417965,
+        0.3333335592948129
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.3333321475057005,
+        0.33338693022293125,
+        0.3333523868365297,
+        0.3333659466276342,
+        0.3333427012155573,
+        0.3333754579875919,
+        0.33330900873208325,
+        0.3333168078327394,
+        0.333328733440686,
+        0.33332673370244126,
+        0.3333039938111839,
+        0.3333477354625823,
+        0.33331053070081984,
+        0.3333367623213679,
+        0.33333218689835564,
+        0.3333149050537135,
+        0.3333337790672675,
+        0.33332307965925506
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "inherited_likelihood_noise_variance": 0.9240928277725113,
+    "inherited_mean_module_state": {
+      "raw_constant": [
+        -5.159437459717411e-06
+      ]
+    },
+    "inherited_outputscales": {
+      "kernels.0": 8.959151223586623e-06,
+      "kernels.0.base_kernel.kernels.1": 0.041417963172125566,
+      "kernels.1": 1.5324609864843368e-08
+    },
+    "initialization_type": "warm",
+    "kernel_outputscale_mean": 0.013808970863782835,
+    "likelihood_observation_noise_variance": 0.9246125779460336,
+    "next_fit_forced_cold": false,
+    "noise_mode": "learned",
+    "not_applicable": {},
+    "observation_noise_variance": 0.9246125779460336,
+    "post_fit_lengthscales": {
+      "kernels.0.base_kernel.kernels.0": [
+        0.33333337333580193,
+        0.3333243174746889,
+        0.3333314678800228,
+        0.33331454472524946,
+        0.33333128268517337,
+        0.3333275590198472,
+        0.33333372422403557,
+        0.33333396042506247,
+        0.3333329242263801,
+        0.3333321252356416,
+        0.3333349760759389,
+        0.3333295934814639,
+        0.3333313067753967,
+        0.3333320234326853,
+        0.3333328073717562,
+        0.3333342491654571,
+        0.33333310993129933,
+        0.33333351867693584
+      ],
+      "kernels.0.base_kernel.kernels.1.base_kernel": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ],
+      "kernels.1.base_kernel.kernels.0": [
+        0.33333218289899297,
+        0.33338532994716047,
+        0.3333518180620973,
+        0.3333649724167619,
+        0.3333424214829887,
+        0.33337420015950975,
+        0.3333097343810239,
+        0.33331730101535806,
+        0.33332887059485644,
+        0.33332693041139166,
+        0.333304869416854,
+        0.33334730520737654,
+        0.3333112112103451,
+        0.333336659912296,
+        0.3333322211273989,
+        0.33331545507368004,
+        0.3333337657700159,
+        0.3333233856179451
+      ],
+      "kernels.1.base_kernel.kernels.1": [
+        0.6931481805599428,
+        0.6931481805599428,
+        0.6931481805599428
+      ]
+    },
+    "post_fit_outputscales": {
+      "kernels.0": 8.959120529868082e-06,
+      "kernels.0.base_kernel.kernels.1": 0.04141793814620885,
+      "kernels.1": 1.5324609791526965e-08
+    },
+    "posterior_mean_spread_ratio": 5.222531878241708e-06,
+    "posterior_std_ratio": 0.0030570356614413917,
+    "predictive_rms_z": 2.7844146765887823,
+    "predictive_window_count": 5,
+    "prescribed_observation_noise_variance": null,
+    "raw_compliance_sample_variance": 2659291.2032245225,
+    "representative_point_count": 45,
+    "signal_fraction_nu": 1.0107388979750635e-05,
+    "signal_to_noise_ratio": 1.0107491140095197e-05,
+    "signal_variance": 9.345513439610114e-06,
+    "standardization_mean": [
+      -5.664107149990147
+    ],
+    "standardization_std": [
+      0.6979876026838655
+    ],
+    "state_file": "fit_states/fit_0030.pt",
+    "status": "success",
+    "train_count": 134,
+    "warm_start_source_fit_index": 29,
+    "warm_start_state_reference": "fit_states/fit_0029.pt:model_state",
+    "warning_count": 0,
+    "warnings": [],
+    "withheld_observed_response": -6.380068739788528,
+    "withheld_predictive_mean": -5.66410226757518,
+    "withheld_predictive_std": 0.6711657750073802,
+    "withheld_standardized_residual": -1.0667505687480483
+  }
+]

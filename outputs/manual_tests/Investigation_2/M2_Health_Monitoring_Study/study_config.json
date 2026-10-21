@@ -1,0 +1,26 @@
+{
+  "fixed_noise_conversion": "raw variance per fit = selected standardized variance * sample variance of that fit's -log(compliance) responses",
+  "numerical_study_directory": "C:\\bo_studies\\M1_Investigation_2",
+  "predictive_windows": [
+    3,
+    5,
+    10
+  ],
+  "replay_initialization": "production_warm_with_independent_cold_reference",
+  "representative_probe": "deduplicated feasible source-archive designs",
+  "schema_version": 1,
+  "selected_standardized_noise_variance": 1e-05,
+  "selection_source": "explicit_argument",
+  "source_runs": {
+    "101": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_101",
+    "102": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_102",
+    "103": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_103",
+    "104": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_104",
+    "105": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_105",
+    "106": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_106",
+    "107": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_107",
+    "108": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_108",
+    "109": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_109",
+    "110": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\source_runs\\Seed_110"
+  }
+}

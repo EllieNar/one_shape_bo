@@ -1,0 +1,53 @@
+{
+  "acquisition_fractions": [
+    0.0,
+    0.1,
+    0.2,
+    0.3,
+    0.4,
+    0.45,
+    0.5,
+    0.55,
+    0.6,
+    0.7,
+    0.8,
+    0.9,
+    1.0
+  ],
+  "adaptive_restart_allocation": false,
+  "decision_file": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\numerical_noise_study\\decision.json",
+  "fit_after_bo_iterations": [
+    0,
+    5,
+    10,
+    20
+  ],
+  "global_restart_budgets": [
+    10
+  ],
+  "global_restart_selection_strategy": "greedy_dynamic_novelty",
+  "global_score_scaling": "roundwise_remaining_eligible_pool",
+  "incumbent_acquisition_fraction": 0.55,
+  "initialization_id": 0,
+  "local_restarts": 0,
+  "minimum_restart_distance": 0.02,
+  "noise_candidate": "fixed_1e-05",
+  "novelty_fraction_rule": "1 - acquisition_fraction",
+  "numerical_study_directory": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\numerical_noise_study",
+  "optimizer_maxiter": 250,
+  "optimizer_timeout_seconds": 60.0,
+  "physical_evaluations": false,
+  "primary_global_restart_budget": 10,
+  "raw_pool_multiplier": 3,
+  "reference_log_ei_tolerance": 1e-08,
+  "run_directories": {
+    "0": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\Seed_0",
+    "15": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\Seed_15",
+    "23": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\Seed_23",
+    "46": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\Seed_46",
+    "53": "C:\\Users\\pemb6626\\OneDrive - Nexus365\\Documents\\POSTDOC\\Code\\Topology_Optimisation\\Bayesian_Optimisation_Part3\\261008_Package_Plan\\outputs\\Manual_Tests\\M1_Numerical_Noise_Study\\Seed_53"
+  },
+  "schema_version": 1,
+  "selected_standardized_noise_variance": 1e-05,
+  "source_substitution": false
+}

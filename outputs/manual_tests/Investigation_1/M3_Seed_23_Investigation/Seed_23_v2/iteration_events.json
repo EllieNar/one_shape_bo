@@ -1,0 +1,461 @@
+[
+  {
+    "bo_iteration": 1,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "elapsed_seconds": 60.116881699999794,
+        "global_selection_step": 4,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.910331630505528,
+        "normalized_novelty_score": 0.7850263081266128,
+        "rank_score": 0.8539442354350162,
+        "raw_acquisition_value": -5.906081079607907,
+        "raw_novelty_distance": 0.5025611057317164,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "reserve_start": false,
+        "restart_index": 3,
+        "source": "global"
+      }
+    ],
+    "optimizer_runtime_seconds": 94.17047970001295,
+    "ranking_runtime_seconds": 0.28290420000848826,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 2,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 41.70983449999767,
+    "ranking_runtime_seconds": 0.29730009999184404,
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 3,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 45.20194819998869,
+    "ranking_runtime_seconds": 0.23910399999294896,
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 4,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 10,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 6,
+        "archive_rank": 30,
+        "elapsed_seconds": 15.083492899997509,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.4409956066445704,
+        "rank_score": 0.4409956066445704,
+        "raw_acquisition_value": -7034.452619046463,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 48.528726499993354,
+    "ranking_runtime_seconds": 0.25704190001124516,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 5,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 39.519220999995014,
+    "ranking_runtime_seconds": 0.2954096000030404,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 6,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 6,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 37.136047499996494,
+    "ranking_runtime_seconds": 0.3182727999956114,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 7,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 41.066823800007114,
+    "ranking_runtime_seconds": 0.25192199999582954,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 8,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 5,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 41.79491870000493,
+    "ranking_runtime_seconds": 0.2802448000002187,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 9,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 38.69480890000705,
+    "ranking_runtime_seconds": 0.2608108999993419,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 10,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 48.78850879998936,
+    "ranking_runtime_seconds": 0.26471660000970587,
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 11,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 41.03823360000388,
+    "ranking_runtime_seconds": 0.26203139999415725,
+    "status": "evaluated",
+    "winner_source": "global",
+    "winner_start_method": "global"
+  },
+  {
+    "bo_iteration": 12,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 53.330412800001795,
+    "ranking_runtime_seconds": 0.26060229999711737,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 13,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 57.51047569999355,
+    "ranking_runtime_seconds": 0.27965900000708643,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 14,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 44.81246810000448,
+    "ranking_runtime_seconds": 0.25570690000313334,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 15,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 39.790423899990856,
+    "ranking_runtime_seconds": 0.2730152000003727,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 16,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 8,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 42.08873689999746,
+    "ranking_runtime_seconds": 0.24451530000078492,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 17,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 50,
+        "archive_rank": 23,
+        "elapsed_seconds": 9.923036000007414,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.4905858433416624,
+        "rank_score": 0.4905858433416624,
+        "raw_acquisition_value": -7302.834283965459,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 12,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 42.74251460000232,
+    "ranking_runtime_seconds": 0.2511116999958176,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 18,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 8,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 44.420752499994705,
+    "ranking_runtime_seconds": 0.2828175999893574,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 19,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 61,
+        "archive_rank": 41,
+        "elapsed_seconds": 9.813744800005225,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.07141065916257433,
+        "rank_score": 0.07141065916257433,
+        "raw_acquisition_value": -13306.25631806153,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 44.19167249999009,
+    "ranking_runtime_seconds": 0.24854480000794865,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 20,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 8,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 26,
+        "archive_rank": 39,
+        "elapsed_seconds": 6.84585280000465,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.13802365325628352,
+        "rank_score": 0.13802365325628352,
+        "raw_acquisition_value": -12259.850696558207,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 38.40327690000413,
+    "ranking_runtime_seconds": 0.26419370000076015,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 21,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 8,
+        "archive_rank": 42,
+        "elapsed_seconds": 14.202847199994721,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.0229724853354784,
+        "rank_score": 0.0229724853354784,
+        "raw_acquisition_value": -13147.866356856046,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 13,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 66.28362679999555,
+    "ranking_runtime_seconds": 0.2850624999991851,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 22,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 69.45246190000034,
+    "ranking_runtime_seconds": 0.34429690000251867,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 23,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 10,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 56.44444950000616,
+    "ranking_runtime_seconds": 0.3198735000041779,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 24,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 8,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [
+      {
+        "anchor_index": 50,
+        "archive_rank": 29,
+        "elapsed_seconds": 10.775824500000454,
+        "global_selection_strategy": "greedy_dynamic_novelty",
+        "normalized_acquisition_score": 0.40920181160006525,
+        "rank_score": 0.40920181160006525,
+        "raw_acquisition_value": -9435.8049352407,
+        "reason": "Candidate generation failed for all `fixed_features`.",
+        "restart_index": 12,
+        "source": "local",
+        "start_method": "archive"
+      }
+    ],
+    "optimizer_runtime_seconds": 51.10495350000565,
+    "ranking_runtime_seconds": 0.37552729999879375,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 25,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 50.95223700000497,
+    "ranking_runtime_seconds": 0.3296063000016147,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 26,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 45.46501929999795,
+    "ranking_runtime_seconds": 0.3277885999996215,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 27,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 55.44848700000148,
+    "ranking_runtime_seconds": 0.36465509999834467,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 28,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 9,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 47.62689169999794,
+    "ranking_runtime_seconds": 0.3537002999946708,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 29,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 7,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 56.82693150000705,
+    "ranking_runtime_seconds": 0.34855419999803416,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  },
+  {
+    "bo_iteration": 30,
+    "duplicate_observed_count": 0,
+    "duplicate_within_batch_count": 8,
+    "duplicate_within_iteration_count": 0,
+    "optimizer_failures": [],
+    "optimizer_runtime_seconds": 54.925253100009286,
+    "ranking_runtime_seconds": 0.3797935999900801,
+    "status": "evaluated",
+    "winner_source": "local",
+    "winner_start_method": "archive"
+  }
+]
