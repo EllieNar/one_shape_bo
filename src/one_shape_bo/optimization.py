@@ -44,6 +44,7 @@ from .sampling import (
     feasible_mask,
     model_kernel_distance,
     rank_initial_condition_pool,
+    sample_burn_in_feasible,
     sample_local_feasible,
     sample_stratified_feasible,
     select_archive_local_conditions,
@@ -94,6 +95,8 @@ class OptimizationConfig:
     seed: int = 0
     output_dir: str | Path | None = None
     audit_reference: bool = True
+    bx_left: float | None = None
+    bx_right: float | None = None
 
     @property
     def dimension(self):
@@ -123,6 +126,14 @@ class OptimizationConfig:
     def resolved_restart_ranking_weights(self):
         total = self.acquisition_weight + self.novelty_weight
         return self.acquisition_weight / total, self.novelty_weight / total
+
+    @property
+    def resolved_bx_left(self):
+        return self.bx if self.bx_left is None else self.bx_left
+
+    @property
+    def resolved_bx_right(self):
+        return self.bx if self.bx_right is None else self.bx_right
 
 class StagnationRestartController:
     """Shift a fixed restart budget toward global starts after stagnation."""
@@ -250,6 +261,25 @@ def _validate_ellipse_feature_configuration(config):
             "ellipse_feature_mode='shape_matrix' is available only when "
             "htype=1; triangle runs must use ellipse_feature_mode='raw'."
         )
+
+
+def _validate_geometry_configuration(config):
+    values = {
+        "bx_left": config.resolved_bx_left,
+        "bx_right": config.resolved_bx_right,
+        "by": config.by,
+        "smin": config.smin,
+        "amin": config.amin,
+    }
+    for name, value in values.items():
+        if not math.isfinite(value) or value < 0:
+            raise ValueError(f"{name} must be finite and non-negative.")
+    if config.resolved_bx_left + config.resolved_bx_right >= config.xsize:
+        raise ValueError("bx_left + bx_right must be less than xsize.")
+    if 2 * config.by >= config.ysize:
+        raise ValueError("2 * by must be less than ysize.")
+    if not 0.0 <= config.solid_max <= 1.0:
+        raise ValueError("solid_max must lie in [0, 1].")
 
 
 def _representative_feasible_points(global_conditions, local_conditions, dimension):
@@ -638,6 +668,7 @@ def run_optimization(config: OptimizationConfig | None = None):
     _validate_health_configuration(config)
     _validate_restart_ranking_configuration(config)
     _validate_ellipse_feature_configuration(config)
+    _validate_geometry_configuration(config)
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -671,6 +702,8 @@ def run_optimization(config: OptimizationConfig | None = None):
                 config.global_restart_selection_strategy
             ),
             "ellipse_feature_mode": config.ellipse_feature_mode,
+            "resolved_bx_left": config.resolved_bx_left,
+            "resolved_bx_right": config.resolved_bx_right,
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -691,6 +724,8 @@ def run_optimization(config: OptimizationConfig | None = None):
             config.amin,
             config.raster_tolerance,
             tri_q_min=config.tri_q_min,
+            bx_left=config.resolved_bx_left,
+            bx_right=config.resolved_bx_right,
         )
         log.write("Bayesian optimization run")
         local_radius_label = (
@@ -712,7 +747,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"{'learned' if config.observation_noise_variance is None else 'prescribed'} "
             f"warm_start_policy={config.resolved_warm_start_policy}"
         )
-        x_train = sample_stratified_feasible(
+        x_train, burn_in_sampling = sample_burn_in_feasible(
             config.resolved_burn_in,
             config.nholes,
             config.htype,
@@ -720,6 +755,14 @@ def run_optimization(config: OptimizationConfig | None = None):
             config.amin,
             area_strategies=(AREA_NEAR_EQUAL, AREA_BROAD),
             generator=generator,
+            return_diagnostics=True,
+        )
+        recorder.record_burn_in_sampling(burn_in_sampling)
+        log.write(
+            "burn-in sampling complete "
+            f"accepted={burn_in_sampling['accepted']}/"
+            f"{burn_in_sampling['requested']} attempts="
+            f"{sum(item['candidate_attempts'] for item in burn_in_sampling['strata'])}"
         )
         y_train, raster_train = evaluate_designs(
             x_train,

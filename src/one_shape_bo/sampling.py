@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from collections.abc import Iterable, Sequence
+import math
 
 import torch
 
@@ -193,6 +194,478 @@ def _area_weights(nholes: int, strategy: str, generator=None):
     raise ValueError(f"Unknown area strategy: {strategy!r}.")
 
 
+def burn_in_feasibility_limits(constraints, shape_types):
+    """Return cheap necessary packing checks for strict burn-in sampling.
+
+    These checks can prove that a request is impossible, but passing them does
+    not guarantee that a particular set of shapes can be packed.
+    """
+    shape_types = tuple(int(value) for value in shape_types)
+    if len(shape_types) != constraints.nholes:
+        raise ValueError("shape_types must contain one entry per hole.")
+    xmin, xmax, ymin, ymax = constraints.box
+    width, height = xmax - xmin, ymax - ymin
+    interior_area = width * height
+    domain_area = constraints.xsize * constraints.ysize
+    minimum_void = (1.0 - constraints.solid_max) * domain_area
+    required_void = max(minimum_void, constraints.nholes * constraints.amin)
+    failures = []
+    if width <= 0 or height <= 0:
+        failures.append("the usable rectangle has non-positive extent")
+    if required_void > interior_area + 1e-12:
+        failures.append(
+            "required void area exceeds the usable rectangular area"
+        )
+
+    triangle_area_limit = 0.5 * interior_area
+    ellipse_area_limit = 0.25 * math.pi * interior_area
+    if 0 in shape_types and constraints.amin > triangle_area_limit + 1e-12:
+        failures.append("amin exceeds the maximum area of an inscribed triangle")
+    if 1 in shape_types and constraints.amin > ellipse_area_limit + 1e-12:
+        failures.append("amin exceeds the maximum area of an inscribed ellipse")
+
+    clearance_left = None
+    clearance_right = None
+    if constraints.nholes > 1 and width > 0 and height > 0:
+        # Pairwise clearance s implies disjoint s/2 parallel bodies.  Steiner's
+        # formula and the isoperimetric inequality give this necessary bound.
+        remaining_area = required_void - (constraints.nholes - 1) * constraints.amin
+        root_area_sum_lower = math.sqrt(max(remaining_area, 0.0)) + (
+            constraints.nholes - 1
+        ) * math.sqrt(constraints.amin)
+        clearance = constraints.smin
+        clearance_left = (
+            required_void
+            + clearance * math.sqrt(math.pi) * root_area_sum_lower
+            + constraints.nholes * math.pi * clearance**2 / 4.0
+        )
+        clearance_right = (
+            interior_area
+            + clearance * (width + height)
+            + math.pi * clearance**2 / 4.0
+        )
+        if clearance_left > clearance_right + 1e-12:
+            failures.append(
+                "the clearance-expanded-hole area exceeds the expanded usable area"
+            )
+
+    return {
+        "usable_width": float(width),
+        "usable_height": float(height),
+        "usable_area": float(interior_area),
+        "minimum_void_area_from_solid_max": float(minimum_void),
+        "minimum_void_area_from_amin": float(
+            constraints.nholes * constraints.amin
+        ),
+        "required_void_area": float(required_void),
+        "smin": float(constraints.smin),
+        "clearance_area_lower_bound": clearance_left,
+        "clearance_available_area_upper_bound": clearance_right,
+        "necessary_conditions_passed": not failures,
+        "failures": failures,
+    }
+
+
+def _burn_in_target_areas(constraints, strategy, generator=None):
+    """Draw one feasible total-area allocation for the burn-in-only sampler."""
+    domain_area = constraints.xsize * constraints.ysize
+    xmin, xmax, ymin, ymax = constraints.box
+    interior_area = (xmax - xmin) * (ymax - ymin)
+    minimum_void = (1.0 - constraints.solid_max) * domain_area
+    minimum_total = constraints.nholes * constraints.amin
+    lower = max(minimum_void, minimum_total)
+    preferred_upper = min(interior_area, minimum_void + 0.02 * domain_area)
+    upper = max(lower, preferred_upper)
+    if lower > interior_area + 1e-12:
+        return None
+    if upper > interior_area:
+        upper = interior_area
+    interior_sample = 0.05 + 0.90 * _rand(generator=generator)
+    target_void = lower + interior_sample * (upper - lower)
+    weights = _area_weights(constraints.nholes, strategy, generator)
+    return constraints.amin + (
+        target_void - minimum_total
+    ) * weights / weights.sum()
+
+
+def _burn_in_options(points, anchors, shape_type):
+    """Translate one normalized shape template to candidate anchor locations."""
+    count = anchors.shape[0]
+    if shape_type == 0:
+        vertices = points[1:].reshape(3, 2).unsqueeze(0) + anchors.unsqueeze(1)
+        p0 = vertices[:, 0, :]
+        edge_1 = 0.5 * (vertices[:, 1, :] - p0 + 1.0)
+        edge_2 = 0.5 * (vertices[:, 2, :] - p0 + 1.0)
+        return torch.cat(
+            (points[0].expand(count, 1), p0, edge_1, edge_2), dim=1
+        )
+    options = points.unsqueeze(0).expand(count, -1).clone()
+    options[:, 1:3] += anchors
+    return options
+
+
+def _line_intersection(first_normal, first_constant, second_normal, second_constant):
+    matrix = torch.stack((first_normal, second_normal))
+    determinant = torch.linalg.det(matrix)
+    if torch.abs(determinant) <= 1e-12:
+        return None
+    constants = torch.stack((first_constant, second_constant))
+    return torch.linalg.solve(matrix, constants)
+
+
+def _inset_partition_triangle(vertices, clearance):
+    """Inset the two internal edges of a CCW rectangular partition cell."""
+    edges = vertices.roll(-1, dims=0) - vertices
+    normals = torch.stack((-edges[:, 1], edges[:, 0]), dim=1)
+    normals = normals / torch.linalg.vector_norm(
+        normals, dim=1, keepdim=True
+    ).clamp_min(1e-12)
+    constants = (normals * vertices).sum(dim=1)
+    constants = constants.clone()
+    constants[1:] += clearance
+    points = (
+        _line_intersection(normals[2], constants[2], normals[0], constants[0]),
+        _line_intersection(normals[0], constants[0], normals[1], constants[1]),
+        _line_intersection(normals[1], constants[1], normals[2], constants[2]),
+    )
+    if any(point is None for point in points):
+        return None
+    result = torch.stack(points)
+    edge_1, edge_2 = result[1] - result[0], result[2] - result[0]
+    if edge_1[0] * edge_2[1] - edge_1[1] * edge_2[0] <= 0:
+        return None
+    return result
+
+
+def _structured_triangle_burn_in_candidate(areas, constraints, generator=None):
+    """Pack three triangles in separated cells of a four-way partition."""
+    if constraints.nholes != 3:
+        return None
+    xmin, xmax, ymin, ymax = constraints.box
+    boundary_guard = 0.05
+    xmin, xmax = xmin + boundary_guard, xmax - boundary_guard
+    ymin, ymax = ymin + boundary_guard, ymax - boundary_guard
+    width, height = xmax - xmin, ymax - ymin
+    jitter = 0.08 * (2.0 * _rand((2,), generator=generator) - 1.0)
+    centre = torch.tensor(
+        [
+            xmin + width * (0.5 + float(jitter[0].item())),
+            ymin + height * (0.5 + float(jitter[1].item())),
+        ],
+        **TENSOR_KWARGS,
+    )
+    corners = [
+        torch.tensor(value, **TENSOR_KWARGS)
+        for value in (
+            (xmin, ymin),
+            (xmax, ymin),
+            (xmax, ymax),
+            (xmin, ymax),
+        )
+    ]
+    cells = (
+        torch.stack((corners[0], corners[1], centre)),
+        torch.stack((corners[1], corners[2], centre)),
+        torch.stack((corners[2], corners[3], centre)),
+        torch.stack((corners[3], corners[0], centre)),
+    )
+    clearance = 0.5 * (constraints.smin + 0.01)
+    inset = [
+        _inset_partition_triangle(vertices, clearance) for vertices in cells
+    ]
+    valid_cells = [vertices for vertices in inset if vertices is not None]
+    if len(valid_cells) < constraints.nholes:
+        return None
+    capacities = []
+    for vertices in valid_cells:
+        first, second = vertices[1] - vertices[0], vertices[2] - vertices[0]
+        capacities.append(
+            0.5 * torch.abs(first[0] * second[1] - first[1] * second[0])
+        )
+    cell_order = torch.randperm(
+        len(valid_cells), generator=generator, device=DEVICE
+    ).tolist()
+    selected = cell_order[: constraints.nholes]
+    selected.sort(key=lambda index: float(capacities[index].item()), reverse=True)
+    area_order = torch.argsort(areas, descending=True).tolist()
+    output = [None] * constraints.nholes
+    for hole_index, cell_index in zip(area_order, selected):
+        capacity = capacities[cell_index]
+        if areas[hole_index] > capacity:
+            return None
+        vertices = valid_cells[cell_index]
+        centroid = vertices.mean(dim=0)
+        scale = torch.sqrt(areas[hole_index] / capacity)
+        output[hole_index] = centroid + scale * (vertices - centroid)
+    normalized = torch.stack(output) / torch.tensor(
+        [constraints.xsize, constraints.ysize], **TENSOR_KWARGS
+    )
+    return canonicalize_triangles(constraints.nholes, normalized)
+
+
+def _structured_ellipse_burn_in_candidate(areas, constraints, generator=None):
+    """Pack axis-aligned ellipses into separated randomized vertical cells."""
+    xmin, xmax, ymin, ymax = constraints.box
+    boundary_guard = 0.05
+    xmin, xmax = xmin + boundary_guard, xmax - boundary_guard
+    ymin, ymax = ymin + boundary_guard, ymax - boundary_guard
+    width, height = xmax - xmin, ymax - ymin
+    clearance = constraints.smin + 0.01
+    free_width = width - (constraints.nholes - 1) * clearance
+    if free_width <= 0:
+        return None
+    minimum_widths = 4.0 * areas / (math.pi * height)
+    spare = free_width - float(minimum_widths.sum().item())
+    if spare < 0:
+        return None
+    slack_weights = _rand((constraints.nholes,), generator=generator)
+    cell_widths = minimum_widths + spare * slack_weights / slack_weights.sum()
+    hole_order = torch.randperm(
+        constraints.nholes, generator=generator, device=DEVICE
+    ).tolist()
+    cursor = xmin
+    ellipses = [None] * constraints.nholes
+    for hole_index in hole_order:
+        cell_width = cell_widths[hole_index]
+        radius_x = 0.5 * cell_width
+        radius_y = areas[hole_index] / (math.pi * radius_x)
+        if radius_y > 0.5 * height:
+            return None
+        quality = torch.minimum(radius_x, radius_y) / torch.maximum(
+            radius_x, radius_y
+        )
+        if quality < constraints.quality_min:
+            return None
+        centre_x = cursor + radius_x
+        vertical_slack = height - 2.0 * radius_y
+        centre_y = ymin + radius_y + _rand(generator=generator) * vertical_slack
+        ellipses[hole_index] = torch.stack(
+            (
+                centre_x / constraints.xsize,
+                centre_y / constraints.ysize,
+                radius_x / constraints.xsize,
+                radius_y / constraints.ysize,
+                areas.new_zeros(()),
+            )
+        )
+        cursor += cell_width + clearance
+    return canonicalize_ellipses(constraints.nholes, torch.stack(ellipses))
+
+
+def _structured_burn_in_candidate(areas, constraints, shape_types, generator=None):
+    if not shape_types:
+        return None
+    if all(shape == 0 for shape in shape_types):
+        return _structured_triangle_burn_in_candidate(
+            areas, constraints, generator=generator
+        )
+    if all(shape == 1 for shape in shape_types):
+        return _structured_ellipse_burn_in_candidate(
+            areas, constraints, generator=generator
+        )
+    return None
+
+
+def burn_in_shape_candidate(
+    feature_map,
+    constraints,
+    amin,
+    *,
+    area_strategy=AREA_BROAD,
+    placement_restarts: int = 4,
+    template_retries: int = 4,
+    anchor_batches: int = 4,
+    anchors_per_batch: int = 256,
+    shape_trials: int = 200,
+    dir_trials: int = 200,
+    generator=None,
+):
+    """Construct one burn-in candidate with bounded placement backtracking.
+
+    This function is deliberately separate from ``random_shape_candidate`` so
+    BO/global-pool sampling retains its established behavior.
+    """
+    if float(amin) != float(constraints.amin):
+        raise ValueError("amin must match constraints.amin.")
+    shape_types = [
+        int(feature_map[7 * hole]) for hole in range(constraints.nholes)
+    ]
+    areas = _burn_in_target_areas(
+        constraints, area_strategy, generator=generator
+    )
+    if areas is None:
+        return None, "area"
+    placement_order = torch.argsort(areas, descending=True)
+
+    generated_any_template = False
+    for _ in range(int(placement_restarts)):
+        placed = {}
+        placement_failed = False
+        for index_tensor in placement_order:
+            index = int(index_tensor.item())
+            shape_type = shape_types[index]
+            selected = None
+            for _ in range(int(template_retries)):
+                points = random_shape_area(
+                    areas[index],
+                    constraints,
+                    shape_type,
+                    shape_trials,
+                    normalise=True,
+                    generator=generator,
+                )
+                if points is None:
+                    continue
+                generated_any_template = True
+                anchor_min = anchor_point(points, False, constraints, True)
+                anchor_max = anchor_point(points, True, constraints, True)
+                if bool((anchor_min > anchor_max).any()):
+                    continue
+                for _ in range(int(anchor_batches)):
+                    anchors = anchor_min + (anchor_max - anchor_min) * _rand(
+                        (anchors_per_batch, 2), generator=generator
+                    )
+                    options = _burn_in_options(points, anchors, shape_type)
+                    valid = torch.ones(
+                        anchors_per_batch, dtype=torch.bool, device=DEVICE
+                    )
+                    for other_points in placed.values():
+                        valid &= separating_axis_theorem_batch(
+                            options,
+                            other_points,
+                            constraints.xsize,
+                            constraints.ysize,
+                            dir_trials,
+                        ) >= constraints.smin
+                    choices = torch.nonzero(valid, as_tuple=False).flatten()
+                    if choices.numel():
+                        position = torch.randint(
+                            choices.numel(),
+                            (),
+                            generator=generator,
+                            device=DEVICE,
+                        )
+                        selected = options[choices[position]]
+                        break
+                if selected is not None:
+                    break
+            if selected is None:
+                placement_failed = True
+                break
+            placed[index] = selected
+        if not placement_failed:
+            candidate = torch.stack(
+                [placed[index] for index in range(constraints.nholes)]
+            ).reshape(-1)
+            return canonicalise_design(candidate, constraints.nholes), None
+    structured = _structured_burn_in_candidate(
+        areas, constraints, shape_types, generator=generator
+    )
+    if structured is not None:
+        return structured, None
+    return None, "placement" if generated_any_template else "shape"
+
+
+def sample_burn_in_feasible(
+    number: int,
+    nholes: int,
+    htype: int,
+    constraints,
+    amin,
+    *,
+    area_strategies: Sequence[str] = (AREA_NEAR_EQUAL, AREA_BROAD),
+    max_candidate_attempts_per_stratum: int = 5000,
+    generator=None,
+    return_diagnostics: bool = False,
+):
+    """Collect the complete initial GP design using the burn-in-only sampler."""
+    feature_maps = fixed_features(nholes, htype)
+    if len(feature_maps) != 1:
+        raise ValueError("Burn-in sampling requires one fixed shape configuration.")
+    feature_map = feature_maps[0]
+    shape_types = [int(feature_map[7 * hole]) for hole in range(nholes)]
+    limits = burn_in_feasibility_limits(constraints, shape_types)
+    if not limits["necessary_conditions_passed"]:
+        raise ValueError(
+            "Burn-in geometry fails necessary feasibility checks: "
+            + "; ".join(limits["failures"])
+        )
+
+    quotient, remainder = divmod(number, len(area_strategies))
+    batches = []
+    stratum_records = []
+    for stratum_index, strategy in enumerate(area_strategies):
+        quota = quotient + int(stratum_index < remainder)
+        accepted = []
+        failures = {
+            "area": 0,
+            "shape": 0,
+            "placement": 0,
+            "encoding": 0,
+            "analytical": 0,
+            "raster": 0,
+        }
+        attempts = 0
+        while len(accepted) < quota and attempts < max_candidate_attempts_per_stratum:
+            attempts += 1
+            candidate, failure = burn_in_shape_candidate(
+                feature_map,
+                constraints,
+                amin,
+                area_strategy=strategy,
+                generator=generator,
+            )
+            if candidate is None:
+                failures[failure] += 1
+                continue
+            if not torch.isfinite(candidate).all() or bool(
+                ((candidate < 0.0) | (candidate > 1.0)).any()
+            ):
+                failures["encoding"] += 1
+                continue
+            if not feasible_mask(candidate.unsqueeze(0), constraints)[0]:
+                failures["analytical"] += 1
+                continue
+            raster_valid, _ = rasterized_volume_feasibility(
+                candidate.unsqueeze(0), constraints
+            )
+            if not raster_valid[0]:
+                failures["raster"] += 1
+                continue
+            accepted.append(candidate)
+
+        record = {
+            "area_strategy": strategy,
+            "requested": quota,
+            "accepted": len(accepted),
+            "candidate_attempts": attempts,
+            "rejections": failures,
+        }
+        stratum_records.append(record)
+        if len(accepted) != quota:
+            raise RuntimeError(
+                "Could not complete the burn-in stratum "
+                f"{strategy!r}: accepted {len(accepted)}/{quota} after "
+                f"{attempts} attempts; rejections={failures}."
+            )
+        if accepted:
+            batches.append(torch.stack(accepted))
+
+    designs = (
+        torch.cat(batches)
+        if batches
+        else torch.empty((0, 7 * constraints.nholes), **TENSOR_KWARGS)
+    )
+    diagnostics = {
+        "sampler": "burn_in_clearance_aware",
+        "requested": int(number),
+        "accepted": int(len(designs)),
+        "limits": limits,
+        "strata": stratum_records,
+    }
+    return (designs, diagnostics) if return_diagnostics else designs
+
+
 def random_shape_candidate(
     feature_map,
     constraints,
@@ -210,9 +683,8 @@ def random_shape_candidate(
     shape_types = [int(feature_map[7 * hole]) for hole in range(nholes)]
     domain_area = constraints.xsize * constraints.ysize
     minimum_void = (1.0 - constraints.solid_max) * domain_area
-    interior_area = (constraints.xsize - 2 * constraints.bx) * (
-        constraints.ysize - 2 * constraints.by
-    )
+    xmin, xmax, ymin, ymax = constraints.box
+    interior_area = (xmax - xmin) * (ymax - ymin)
     if minimum_void > interior_area:
         return None
     maximum_void = min(interior_area, minimum_void + 0.02 * domain_area)

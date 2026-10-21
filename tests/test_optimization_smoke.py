@@ -117,6 +117,20 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     )
     monkeypatch.setattr(
         optimization,
+        "sample_burn_in_feasible",
+        lambda *args, **kwargs: (
+            initial_x,
+            {
+                "sampler": "test",
+                "requested": len(initial_x),
+                "accepted": len(initial_x),
+                "limits": {},
+                "strata": [{"candidate_attempts": len(initial_x)}],
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        optimization,
         "_sample_restart_pool",
         lambda *args, **kwargs: (
             start.unsqueeze(0),
@@ -213,7 +227,10 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert archive["burn_in_index"].tolist() == [1, 2, -1]
     assert archive["bo_iteration"].tolist() == [-1, -1, 1]
     assert (tmp_path / "gp_fits.json").exists()
+    assert (tmp_path / "burn_in_sampling.json").exists()
     assert (tmp_path / "fit_states" / "fit_0001.pt").exists()
+    manifest = json.loads((tmp_path / "run_manifest.json").read_text())
+    assert manifest["burn_in_sampling"] == "burn_in_sampling.json"
     fit_records = json.loads((tmp_path / "gp_fits.json").read_text())
     expected_raw_noise = 1e-5 * float(
         torch.var(-torch.log(torch.tensor([10.0, 12.0], dtype=torch.double))).item()

@@ -250,6 +250,8 @@ def _constraints(configuration):
         configuration["amin"],
         configuration["raster_tolerance"],
         tri_q_min=configuration.get("tri_q_min", 0.10),
+        bx_left=configuration.get("bx_left"),
+        bx_right=configuration.get("bx_right"),
     )
 
 

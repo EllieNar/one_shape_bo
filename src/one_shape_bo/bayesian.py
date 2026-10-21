@@ -119,6 +119,8 @@ class Bounds:
         raster_tolerance,
         quality_min=None,
         tri_q_min=None,
+        bx_left=None,
+        bx_right=None,
     ):
         if quality_min is None:
             quality_min = tri_q_min
@@ -126,10 +128,12 @@ class Bounds:
             raise ValueError("quality_min (or tri_q_min) is required.")
         self.xsize, self.ysize, self.nholes = xsize, ysize, nholes
         self.bx, self.by = bx, by
+        self.bx_left = bx if bx_left is None else bx_left
+        self.bx_right = bx if bx_right is None else bx_right
         self.solid_max, self.smin, self.amin = solid_max, smin, amin
         self.quality_min = float(quality_min)
         self.raster_tolerance = raster_tolerance
-        self.box = (bx, xsize - bx, by, ysize - by)
+        self.box = (self.bx_left, xsize - self.bx_right, by, ysize - by)
         self.box_bounds = torch.stack(
             (
                 torch.zeros(7 * nholes, **TENSOR_KWARGS),

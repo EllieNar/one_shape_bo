@@ -291,6 +291,7 @@ class RunRecorder:
             "run_manifest.json",
             ARCHIVE_NAME,
             "evaluations.csv",
+            "burn_in_sampling.json",
             "burn_in_summary.json",
             "gp_fits.json",
             "gp_fits.csv",
@@ -541,6 +542,14 @@ class RunRecorder:
             csv_rows, self.evaluation_fields, self.output_dir / "evaluations.csv"
         )
         self.manifest["evaluation_count"] = len(self.rows)
+        atomic_json_write(self.manifest, self.output_dir / "run_manifest.json")
+
+    def record_burn_in_sampling(self, diagnostics):
+        """Persist cheap sampling diagnostics before physical evaluation."""
+        atomic_json_write(
+            diagnostics, self.output_dir / "burn_in_sampling.json"
+        )
+        self.manifest["burn_in_sampling"] = "burn_in_sampling.json"
         atomic_json_write(self.manifest, self.output_dir / "run_manifest.json")
 
     def record_burn_in_summary(self):

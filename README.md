@@ -61,6 +61,30 @@ result = run_optimization(
 )
 ```
 
+Horizontal boundary margins can be asymmetric while retaining the legacy
+`bx` fallback:
+
+```python
+config = OptimizationConfig(
+    bx_left=5.0,
+    bx_right=2.5,
+    smin=5.0,
+)
+```
+
+If either side is `None`, that side uses `bx`; therefore existing configurations
+remain symmetric and unchanged. Margins and `smin` are physical mesh-unit
+distances. Before sampling, the driver rejects provably impossible usable-area
+or clearance requests. Passing these necessary checks does not prove that every
+requested packing is feasible.
+
+Initial training designs use a dedicated strict burn-in sampler. It preserves
+the near-equal/broad area quotas, retries difficult joint placements, and uses
+clearance-aware constructive fallbacks for all-triangle or all-ellipse burn-ins.
+Every proposal still passes the common analytical and raster checks. BO global
+restart pools continue to use the existing `sample_stratified_feasible` path;
+the burn-in retry/partition policy is not used during evaluation iterations.
+
 `local_start_strategy="radius"` remains the default. The archive strategy is
 experimental pending a separately run multi-seed comparison; selecting it does
 not alter the GP, LogEI acquisition policy, or physical model, and does not add
@@ -103,6 +127,8 @@ Each run also has a stable ID and a replayable, versioned record:
   the corresponding lossless tensor row.
 - `burn_in_summary.json` records the actual burn-in range, best and worst designs,
   and raw/transformed sample variances.
+- `burn_in_sampling.json` records usable-area/clearance preflight values, exact
+  stratum quotas, candidate attempts, and rejection causes without rerunning FEM.
 - `gp_fits.json`, `gp_fits.csv`, and `fit_states/` record the exact archive prefix
   used by each fit, fitted state and hyperparameters, outcome scaling, likelihood
   observation noise, RNG states, and fitting warnings or failures. Fit summaries

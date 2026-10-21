@@ -167,12 +167,12 @@ def anchor_point(points, maximum: bool, constraints, normalise: bool):
     xmin, xmax, ymin, ymax = constraints.box
     if normalise:
         domain_min = points.new_tensor(
-            [constraints.bx / constraints.xsize, constraints.by / constraints.ysize]
+            [xmin / constraints.xsize, ymin / constraints.ysize]
         )
         domain_max = points.new_tensor(
             [
-                1.0 - constraints.bx / constraints.xsize,
-                1.0 - constraints.by / constraints.ysize,
+                xmax / constraints.xsize,
+                ymax / constraints.ysize,
             ]
         )
     else:

@@ -881,3 +881,44 @@ limit, invariant novelty distance, fit-state round trips and triangle-path
 isolation. A direct construction check also confirmed that the default triangle
 GP retains identical training inputs, state-dictionary keys and initial state
 values to the pre-WP6 factory definition.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      21/10/26 at 12:02 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Asymmetric horizontal margins and isolated burn-in sampling
+
+`OptimizationConfig` now accepts `bx_left` and `bx_right`; either omitted side
+falls back to the legacy `bx`, preserving existing symmetric configurations.
+Containment, normalized anchor limits and sampler usable-area calculations use
+the resolved interval `[bx_left, xsize - bx_right]`. Archived study
+reconstruction reads the side-specific values when present and otherwise uses
+legacy `bx`.
+
+Larger margins and positive inter-hole clearance can make the initial design
+packing extremely sparse or impossible. A burn-in preflight now checks usable
+extent, required void area, per-shape area limits and a necessary convex-body
+clearance-area bound before expensive rejection sampling. These conditions are
+necessary rather than sufficient. The target-area interval begins at the
+larger of the solid-fraction requirement and `nholes * amin`, avoiding proposals
+that cannot satisfy the minimum hole areas.
+
+Initial GP designs now use the separate `sample_burn_in_feasible` path. It keeps
+the exact near-equal/broad quotas, performs bounded joint-placement retries and
+has clearance-aware constructive fallbacks for all-triangle and all-ellipse
+burn-ins. Returned designs are still filtered by the common analytical and
+raster feasibility functions. BO iteration/global restart sampling deliberately
+continues to use the pre-existing `sample_stratified_feasible` and
+`random_shape_candidate` path, so the new burn-in placement policy does not
+change evaluation-iteration sampling. `burn_in_sampling.json` records the
+preflight quantities, attempts and rejection causes.
+
+The required seed-0 acceptance gate used otherwise-default geometry with three
+holes, `smin=5`, `bx_left=5` and `bx_right=2.5`. The sampler collected the full
+105-point burn-in for triangles in 56.43 seconds and for ellipses in 10.73
+seconds. Each run filled 53 near-equal and 52 broad-area designs, and every
+returned design passed analytical and raster feasibility. The approved rollback
+condition was therefore not triggered. Twenty-six targeted tests and the full
+82-test repository suite passed; the only warning was the existing upstream
+PyTorch `torch.jit.script` deprecation.
