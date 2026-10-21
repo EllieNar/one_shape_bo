@@ -18,9 +18,15 @@ from botorch.acquisition import LogExpectedImprovement
 
 from .bayesian import Acquisition, Bounds
 from .benchmark import audit_reference_image
+from .ellipse_features import (
+    RAW_ELLIPSE_FEATURES,
+    SHAPE_MATRIX_ELLIPSE_FEATURES,
+    validate_ellipse_feature_mode,
+)
 from .gaussian import (
     Pred_Objective_Multi_Task,
     compliance_to_gp_response,
+    standardized_to_raw_noise_variance,
     warm_start_metadata,
 )
 from .physical import (
@@ -56,6 +62,7 @@ class OptimizationConfig:
     solid_max: float = 0.5
     nholes: int = 3
     htype: int = 0
+    ellipse_feature_mode: str = RAW_ELLIPSE_FEATURES
     tri_q_min: float = 0.10
     raw_pool_multiplier: int = 3
     ng_rst: int = 10
@@ -233,6 +240,18 @@ def _validate_restart_ranking_configuration(config):
         )
 
 
+def _validate_ellipse_feature_configuration(config):
+    validate_ellipse_feature_mode(config.ellipse_feature_mode)
+    if (
+        config.htype == 0
+        and config.ellipse_feature_mode == SHAPE_MATRIX_ELLIPSE_FEATURES
+    ):
+        raise ValueError(
+            "ellipse_feature_mode='shape_matrix' is available only when "
+            "htype=1; triangle runs must use ellipse_feature_mode='raw'."
+        )
+
+
 def _representative_feasible_points(global_conditions, local_conditions, dimension):
     pools = [pool for pool in (global_conditions, local_conditions) if len(pool)]
     if not pools:
@@ -316,6 +335,12 @@ def _assess_gp_health(
         {
             "noise_mode": model.noise_mode,
             "prescribed_observation_noise_variance": (
+                model.prescribed_observation_noise_variance
+            ),
+            "prescribed_observation_noise_variance_standardized": (
+                config.observation_noise_variance
+            ),
+            "prescribed_observation_noise_variance_raw_response": (
                 model.prescribed_observation_noise_variance
             ),
             "withheld_predictive_mean": withheld_predictive_mean,
@@ -612,6 +637,7 @@ def run_optimization(config: OptimizationConfig | None = None):
         raise ValueError("local_start_strategy must be 'radius' or 'archive'.")
     _validate_health_configuration(config)
     _validate_restart_ranking_configuration(config)
+    _validate_ellipse_feature_configuration(config)
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -631,6 +657,11 @@ def run_optimization(config: OptimizationConfig | None = None):
                 if config.observation_noise_variance is None
                 else "prescribed"
             ),
+            "observation_noise_variance_scale": (
+                None
+                if config.observation_noise_variance is None
+                else "standardized_gp_output"
+            ),
             "warm_start_policy": config.resolved_warm_start_policy,
             "restart_ranking_weights": {
                 "acquisition": config.resolved_restart_ranking_weights[0],
@@ -639,6 +670,7 @@ def run_optimization(config: OptimizationConfig | None = None):
             "global_restart_selection_strategy": (
                 config.global_restart_selection_strategy
             ),
+            "ellipse_feature_mode": config.ellipse_feature_mode,
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -750,17 +782,28 @@ def run_optimization(config: OptimizationConfig | None = None):
                 ),
                 inherit_likelihood=config.observation_noise_variance is None,
             )
+            prescribed_raw_noise_variance = None
             try:
                 with warnings.catch_warnings(record=True) as fit_warnings:
                     warnings.simplefilter("always")
+                    if config.observation_noise_variance is not None:
+                        prescribed_raw_noise_variance = (
+                            standardized_to_raw_noise_variance(
+                                config.observation_noise_variance,
+                                compliance_to_gp_response(y_train),
+                            )
+                        )
                     model = Pred_Objective_Multi_Task(
                         x_train,
                         y_train,
                         config.nholes,
                         previous_model=fit_previous_model,
                         observation_noise_variance=(
-                            config.observation_noise_variance
+                            prescribed_raw_noise_variance
                         ),
+                        ellipse_feature_mode=config.ellipse_feature_mode,
+                        xsize=config.xsize,
+                        ysize=config.ysize,
                     )
             except Exception as error:
                 recorder.record_fit(
@@ -778,7 +821,13 @@ def run_optimization(config: OptimizationConfig | None = None):
                         else "prescribed"
                     ),
                     prescribed_observation_noise_variance=(
+                        prescribed_raw_noise_variance
+                    ),
+                    prescribed_observation_noise_variance_standardized=(
                         config.observation_noise_variance
+                    ),
+                    prescribed_observation_noise_variance_raw_response=(
+                        prescribed_raw_noise_variance
                     ),
                     failure={"type": type(error).__name__, "message": str(error)},
                 )
@@ -798,7 +847,13 @@ def run_optimization(config: OptimizationConfig | None = None):
                 initialization_metadata=initialization_metadata,
                 noise_mode=model.noise_mode,
                 prescribed_observation_noise_variance=(
+                    prescribed_raw_noise_variance
+                ),
+                prescribed_observation_noise_variance_standardized=(
                     config.observation_noise_variance
+                ),
+                prescribed_observation_noise_variance_raw_response=(
+                    prescribed_raw_noise_variance
                 ),
             )
             previous_model = model
@@ -850,6 +905,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                 global_selection_strategy=(
                     config.global_restart_selection_strategy
                 ),
+                ellipse_feature_mode=config.ellipse_feature_mode,
             )
             ranking_runtime_seconds += time.perf_counter() - ranking_started
             raw_global, raw_local = len(global_conditions), len(local_conditions)
@@ -885,6 +941,7 @@ def run_optimization(config: OptimizationConfig | None = None):
                         global_selection_strategy=(
                             config.global_restart_selection_strategy
                         ),
+                        ellipse_feature_mode=config.ellipse_feature_mode,
                     )
                     ranking_runtime_seconds += (
                         time.perf_counter() - ranking_started

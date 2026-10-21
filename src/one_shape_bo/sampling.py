@@ -6,6 +6,7 @@ from collections.abc import Iterable, Sequence
 
 import torch
 
+from .ellipse_features import RAW_ELLIPSE_FEATURES, design_features
 from .physical import geometry_signature, rasterized_volume_feasibility
 from .runtime import DEVICE, TENSOR_KWARGS
 from .shapes import (
@@ -390,8 +391,12 @@ def _model_kernel_distance_matrix(model, points):
     gp = getattr(model, "gp", model)
     if not hasattr(gp, "covar_module"):
         raise ValueError("The model does not expose a covariance module.")
+    input_transform = getattr(gp, "input_transform", None)
+    kernel_points = (
+        points if input_transform is None else input_transform.transform(points)
+    )
     with torch.no_grad():
-        covariance = gp.covar_module(points).to_dense().reshape(count, count)
+        covariance = gp.covar_module(kernel_points).to_dense().reshape(count, count)
     diagonal = covariance.diagonal().clamp_min(1e-12)
     denominator = torch.sqrt(diagonal[:, None] * diagonal[None, :])
     correlation = (covariance / denominator).clamp(-1.0, 1.0)
@@ -591,6 +596,7 @@ def rank_initial_condition_pool(
     novelty_weight: float = 0.45,
     number_global: int | None = None,
     global_selection_strategy: str = "greedy_dynamic_novelty",
+    ellipse_feature_mode: str = RAW_ELLIPSE_FEATURES,
 ):
     """Rank valid starts by acquisition and source-appropriate coverage."""
     if global_selection_strategy not in (
@@ -646,16 +652,29 @@ def rank_initial_condition_pool(
 
     lower, upper = constraints.box_bounds
     scale = (upper - lower).clamp_min(1e-12)
+
+    def distance_features(points):
+        if ellipse_feature_mode == RAW_ELLIPSE_FEATURES:
+            return (points - lower) / scale
+        return design_features(
+            points,
+            constraints.nholes,
+            constraints.xsize,
+            constraints.ysize,
+            mode=ellipse_feature_mode,
+        )
+
     attempted_normalized = [
-        (point.detach().reshape(-1) - lower) / scale for point in attempted_starts
+        distance_features(point.detach().reshape(1, -1)).reshape(-1)
+        for point in attempted_starts
     ]
     observed_normalized = []
     if observed_points is not None:
         observed_normalized = [
-            (point.detach().reshape(-1) - lower) / scale
+            distance_features(point.detach().reshape(1, -1)).reshape(-1)
             for point in observed_points
         ]
-    normalized = (conditions - lower) / scale
+    normalized = distance_features(conditions)
     if observed_normalized:
         observed_distance = torch.cdist(
             normalized, torch.stack(observed_normalized)
@@ -772,6 +791,8 @@ def rank_initial_condition_pool(
                 "reserve_start": selection_step > global_target,
                 "signature": signatures[index],
             }
+            if ellipse_feature_mode != RAW_ELLIPSE_FEATURES:
+                entry["distance_feature"] = normalized[index].detach()
             entry.update(metadata[index])
             global_entries.append(entry)
             selected_global.append(normalized[index])
@@ -814,6 +835,8 @@ def rank_initial_condition_pool(
                 "global_selection_strategy": global_selection_strategy,
                 "signature": signatures[index],
             }
+            if ellipse_feature_mode != RAW_ELLIPSE_FEATURES:
+                entry["distance_feature"] = normalized[index].detach()
             entry.update(metadata[index])
             local_entries.append(entry)
         return global_entries + local_entries
@@ -868,6 +891,8 @@ def rank_initial_condition_pool(
             "global_selection_strategy": global_selection_strategy,
             "signature": signature,
         }
+        if ellipse_feature_mode != RAW_ELLIPSE_FEATURES:
+            entry["distance_feature"] = normalized[index].detach()
         entry.update(metadata[index])
         ranked.append(entry)
         accepted_start_signatures.add(signature)
@@ -946,8 +971,9 @@ def take_restart_batch(
     def distance(entry):
         if not selected_points:
             return float("inf")
+        feature = entry.get("distance_feature", entry["point"])
         return min(
-            float(torch.linalg.vector_norm(entry["point"] - point).item())
+            float(torch.linalg.vector_norm(feature - point).item())
             for point in selected_points
         )
 
@@ -984,7 +1010,7 @@ def take_restart_batch(
             chosen = available[0]
         entry = ranked_pool[chosen]
         selected_indices.append(chosen)
-        selected_points.append(entry["point"])
+        selected_points.append(entry.get("distance_feature", entry["point"]))
         key = entry.get("shape_tuple") or tuple(
             int(entry["point"][7 * hole].item()) for hole in range(nholes)
         )

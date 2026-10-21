@@ -210,6 +210,13 @@ def _restore_frozen_gp(
         raise ValueError(f"Seed {run.seed} frozen GP refers to a different archive.")
     if int(state.get("archive_stop_exclusive", -1)) != snapshot["stop"]:
         raise ValueError(f"Seed {run.seed} frozen GP training prefix is misaligned.")
+    ellipse_feature_mode = run.configuration.get("ellipse_feature_mode", "raw")
+    state_feature_mode = state.get("ellipse_feature_mode", "raw")
+    if state_feature_mode != ellipse_feature_mode:
+        raise ValueError(
+            f"Seed {run.seed} frozen GP ellipse feature mode "
+            f"{state_feature_mode!r} does not match {ellipse_feature_mode!r}."
+        )
     train_x = snapshot["x"].to(device=DEVICE, dtype=torch.double)
     train_y = snapshot["compliance"].to(device=DEVICE, dtype=torch.double)
     raw_noise = standardized_to_raw_noise_variance(
@@ -221,6 +228,9 @@ def _restore_frozen_gp(
         train_y,
         run.nholes,
         observation_noise_variance=raw_noise,
+        ellipse_feature_mode=ellipse_feature_mode,
+        xsize=run.configuration.get("xsize"),
+        ysize=run.configuration.get("ysize"),
     )
     gp.load_state_dict(state["model_state_dict"])
     gp.eval()
@@ -303,6 +313,9 @@ def _ordered_starts(
         novelty_weight=novelty_weight,
         number_global=max_global,
         global_selection_strategy="greedy_dynamic_novelty",
+        ellipse_feature_mode=run.configuration.get(
+            "ellipse_feature_mode", "raw"
+        ),
     )
     global_starts = [row for row in ranked if row["source"] == "global"][:max_global]
     local_starts = [row for row in ranked if row["source"] == "local"][:max_local]
@@ -521,6 +534,11 @@ def run_restart_budget_study(
         "global_score_scaling": "roundwise_remaining_eligible_pool",
         "physical_evaluations": False,
     }
+    ellipse_feature_mode = runs[0].configuration.get(
+        "ellipse_feature_mode", "raw"
+    )
+    if ellipse_feature_mode != "raw":
+        config["ellipse_feature_mode"] = ellipse_feature_mode
     config_path = output_directory / "study_config.json"
     if config_path.exists():
         if json.loads(config_path.read_text(encoding="utf-8")) != config:

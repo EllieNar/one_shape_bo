@@ -23,7 +23,11 @@ import warnings
 import torch
 from gpytorch.mlls import ExactMarginalLogLikelihood
 
-from .gaussian import build_objective_gp, fit_objective_gp
+from .gaussian import (
+    build_objective_gp,
+    fit_objective_gp,
+    standardized_to_raw_noise_variance as _standardized_to_raw_noise_variance,
+)
 from .records import (
     _git_metadata,
     atomic_csv_write,
@@ -237,11 +241,18 @@ def validate_archived_runs(runs, *, allow_incompatible_sources=False):
     dimensions = {run.dimension for run in runs}
     if len(dimensions) != 1:
         raise ValueError(f"Archive dimensions differ: {sorted(dimensions)}")
-    modelling_keys = ("nholes", "htype")
+    modelling_keys = ("nholes", "htype", "xsize", "ysize")
     for key in modelling_keys:
         values = {run.configuration.get(key) for run in runs}
         if len(values) != 1:
             raise ValueError(f"Archived run setting {key!r} differs: {values}")
+    feature_modes = {
+        run.configuration.get("ellipse_feature_mode", "raw") for run in runs
+    }
+    if len(feature_modes) != 1:
+        raise ValueError(
+            f"Archived ellipse feature modes differ: {sorted(feature_modes)}"
+        )
     non_control_runs = [
         run.seed
         for run in runs
@@ -318,12 +329,7 @@ def representative_probe_points(runs):
 
 def standardized_to_raw_noise_variance(standardized_variance, train_score):
     """Convert desired standardized variance to pre-transform response units."""
-    sample_variance = torch.var(
-        torch.as_tensor(train_score).reshape(-1).double(), correction=1
-    )
-    if not torch.isfinite(sample_variance) or sample_variance <= 0:
-        raise ValueError("Training GP responses must have positive sample variance.")
-    return float(standardized_variance) * float(sample_variance.item())
+    return _standardized_to_raw_noise_variance(standardized_variance, train_score)
 
 
 def _parameter_items(gp, *, kernel_mean_only=False):
@@ -428,7 +434,13 @@ def _predictive_metrics(gp, probe_x, holdout_x, holdout_score, response_sd):
             torch.log(2 * torch.pi * predictive_var)
             + residual.square() / predictive_var
         )
-        kernel_diagonal = gp.covar_module(probe_x).diagonal(dim1=-2, dim2=-1)
+        input_transform = getattr(gp, "input_transform", None)
+        kernel_probe = (
+            probe_x
+            if input_transform is None
+            else input_transform.transform(probe_x)
+        )
+        kernel_diagonal = gp.covar_module(kernel_probe).diagonal(dim1=-2, dim2=-1)
         signal = float(kernel_diagonal.reshape(-1).median().item())
     return {
         "effective_standardized_noise_variance": standardized_noise,
@@ -473,6 +485,9 @@ def construct_cold_study_model(
     fit_after,
     initialization_id,
     perturbation_scale=0.25,
+    ellipse_feature_mode="raw",
+    xsize=None,
+    ysize=None,
 ):
     """Construct and initialize one independent, unfitted study GP.
 
@@ -484,6 +499,9 @@ def construct_cold_study_model(
         train_y,
         nholes,
         observation_noise_variance=observation_noise_variance,
+        ellipse_feature_mode=ellipse_feature_mode,
+        xsize=xsize,
+        ysize=ysize,
     )
     initialization = apply_controlled_initialization(
         gp,
@@ -589,6 +607,11 @@ def run_numerical_noise_study(
         "allow_partial": bool(allow_partial),
         "allow_incompatible_sources": bool(allow_incompatible_sources),
     }
+    ellipse_feature_mode = runs[0].configuration.get(
+        "ellipse_feature_mode", "raw"
+    )
+    if ellipse_feature_mode != "raw":
+        study_config["ellipse_feature_mode"] = ellipse_feature_mode
     config_path = output_directory / "study_config.json"
     if config_path.exists():
         existing = json.loads(config_path.read_text(encoding="utf-8"))
@@ -725,6 +748,11 @@ def run_numerical_noise_study(
                                 fit_after=snapshot_index,
                                 initialization_id=initialization_id,
                                 perturbation_scale=perturbation_scale,
+                                ellipse_feature_mode=run.configuration.get(
+                                    "ellipse_feature_mode", "raw"
+                                ),
+                                xsize=run.configuration.get("xsize"),
+                                ysize=run.configuration.get("ysize"),
                             )
                         row.update(initialization)
                         fit_objective_gp(gp, max_attempts=1)
@@ -773,6 +801,9 @@ def run_numerical_noise_study(
                                 "archive_stop_exclusive": snapshot[
                                     "archive_stop_exclusive"
                                 ],
+                                "ellipse_feature_mode": run.configuration.get(
+                                    "ellipse_feature_mode", "raw"
+                                ),
                                 "initialization": initialization,
                                 "model_state_dict": gp.state_dict(),
                             },

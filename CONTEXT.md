@@ -843,3 +843,41 @@ the learned homoskedastic model, and the lower-level GP factory retains its raw
 response-unit interface for controlled offline studies. Persistent fit records
 store both the requested standardized value and the converted raw value so the
 conversion can be audited exactly.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      21/10/26 at 10:10 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+WP6 ellipse symmetry-invariant representation
+
+Ellipse designs have exact parameter symmetries: rotating by pi, or swapping
+the semi-axes while rotating by pi/2, describes the same hole; a circle is
+independent of angle. Raw ellipse coordinates expose these equivalent designs
+as different GP inputs and different novelty distances. The approved WP6
+change adds the opt-in `ellipse_feature_mode="shape_matrix"`. It maps each
+ellipse to its normalized physical shape matrix, takes the stable analytic
+2-by-2 matrix logarithm, and uses `[shape, cx, cy, L11, sqrt(2)L12, L22, 0]`
+for GP and restart-distance calculations. The analytic circular limit avoids
+eigendecomposition ambiguity and preserves acquisition gradients near circles.
+
+Raw encoded vectors remain the acquisition variables and the sole inputs to
+geometry, feasibility, rasterisation, clearance and FEM calculations. The
+existing `"raw"` representation remains the default so a paired raw/invariant
+ellipse study can be performed before considering a default change. Triangle
+runs are required to use `"raw"`; they do not construct an input transform and
+retain the previous numerical path. WP7 clearance/feasibility changes were not
+approved and were not included.
+
+Invariant fit records persist the feature schema, domain dimensions and exact
+transformed training tensor. Offline numerical-noise, health, restart-budget
+and global-weight reconstruction now propagate and validate the archived
+feature mode, preventing a saved invariant GP state from being replayed under
+raw coordinates (or vice versa).
+
+Validation completed with 78 repository tests passing. Focused checks cover
+the three ellipse symmetries, finite feature and LogEI gradients at the circle
+limit, invariant novelty distance, fit-state round trips and triangle-path
+isolation. A direct construction check also confirmed that the default triangle
+GP retains identical training inputs, state-dictionary keys and initial state
+values to the pre-WP6 factory definition.

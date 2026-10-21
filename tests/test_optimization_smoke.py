@@ -1,6 +1,7 @@
 import json
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 from one_shape_bo import optimization
@@ -37,8 +38,14 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             self.gp = object()
             self.best_f = torch.tensor(0.0)
             self.train_score = -torch.log(args[1])
-            self.noise_mode = "learned"
-            self.prescribed_observation_noise_variance = None
+            self.prescribed_observation_noise_variance = kwargs.get(
+                "observation_noise_variance"
+            )
+            self.noise_mode = (
+                "learned"
+                if self.prescribed_observation_noise_variance is None
+                else "prescribed"
+            )
 
         def posterior(self, X):
             return SimpleNamespace(
@@ -56,7 +63,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             return {"model_class": "Dummy", "model_state_dict": {}}
 
         def observation_noise_variance_raw_response(self):
-            return 0.001
+            return self.prescribed_observation_noise_variance or 0.001
 
         def health_diagnostics(self, points):
             return GPHealthDiagnostics(
@@ -165,6 +172,7 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
             output_dir=tmp_path,
             acquisition_weight=0.7,
             novelty_weight=0.3,
+            observation_noise_variance=1e-5,
             audit_reference=False,
         )
     )
@@ -207,5 +215,15 @@ def test_one_iteration_writes_compact_source_and_gp_diagnostics(monkeypatch, tmp
     assert (tmp_path / "gp_fits.json").exists()
     assert (tmp_path / "fit_states" / "fit_0001.pt").exists()
     fit_records = json.loads((tmp_path / "gp_fits.json").read_text())
-    assert fit_records[0]["noise_mode"] == "learned"
+    expected_raw_noise = 1e-5 * float(
+        torch.var(-torch.log(torch.tensor([10.0, 12.0], dtype=torch.double))).item()
+    )
+    assert fit_records[0]["noise_mode"] == "prescribed"
+    assert (
+        fit_records[0]["prescribed_observation_noise_variance_standardized"]
+        == 1e-5
+    )
+    assert fit_records[0][
+        "prescribed_observation_noise_variance_raw_response"
+    ] == pytest.approx(expected_raw_noise)
     assert fit_records[0]["health_warning_triggered"] is False

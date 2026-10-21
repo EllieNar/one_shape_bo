@@ -21,7 +21,7 @@ import numpy as np
 import torch
 
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 ARCHIVE_NAME = "evaluation_archive.pt"
 
 
@@ -240,6 +240,8 @@ class RunRecorder:
         "standardization_std",
         "noise_mode",
         "prescribed_observation_noise_variance",
+        "prescribed_observation_noise_variance_standardized",
+        "prescribed_observation_noise_variance_raw_response",
         "signal_variance",
         "observation_noise_variance",
         "signal_to_noise_ratio",
@@ -591,6 +593,8 @@ class RunRecorder:
         initialization_metadata=None,
         noise_mode=None,
         prescribed_observation_noise_variance=None,
+        prescribed_observation_noise_variance_standardized=None,
+        prescribed_observation_noise_variance_raw_response=None,
         failure=None,
     ):
         train_x = torch.as_tensor(train_x).detach().cpu()
@@ -649,6 +653,12 @@ class RunRecorder:
             "prescribed_observation_noise_variance": (
                 prescribed_observation_noise_variance
             ),
+            "prescribed_observation_noise_variance_standardized": (
+                prescribed_observation_noise_variance_standardized
+            ),
+            "prescribed_observation_noise_variance_raw_response": (
+                prescribed_observation_noise_variance_raw_response
+            ),
             "health": None,
             "model_state": model_state,
             "diagnostics": diagnostics,
@@ -678,6 +688,12 @@ class RunRecorder:
             "noise_mode": noise_mode,
             "prescribed_observation_noise_variance": (
                 prescribed_observation_noise_variance
+            ),
+            "prescribed_observation_noise_variance_standardized": (
+                prescribed_observation_noise_variance_standardized
+            ),
+            "prescribed_observation_noise_variance_raw_response": (
+                prescribed_observation_noise_variance_raw_response
             ),
             "signal_variance": None,
             "observation_noise_variance": None,

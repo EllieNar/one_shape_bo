@@ -66,6 +66,27 @@ experimental pending a separately run multi-seed comparison; selecting it does
 not alter the GP, LogEI acquisition policy, or physical model, and does not add
 extra physical evaluations to a successful BO iteration.
 
+Ellipse runs can opt into the WP6 symmetry-invariant surrogate representation:
+
+```python
+config = OptimizationConfig(
+    htype=1,
+    ellipse_feature_mode="shape_matrix",
+)
+```
+
+The default `ellipse_feature_mode="raw"` preserves the existing representation.
+In `"shape_matrix"` mode, each ellipse's centre and domain-normalized logarithmic
+shape matrix are used by the GP and by restart/archive distance calculations.
+This makes the representation identical under a half-turn, under swapping the
+two semi-axes with a quarter-turn, and for different angle encodings of a
+circle. Acquisition optimization, feasibility, rasterisation, FEM evaluation,
+and saved physical design vectors continue to use the raw seven-value blocks.
+The option is ellipse-only: triangle configurations must retain `"raw"` and
+therefore follow the unchanged triangle model path. Invariant fit-state files
+also store the feature definition and the lossless transformed training tensor
+needed for replay.
+
 Unless `output_dir` is supplied, run artifacts are written below a dated,
 time-stamped `outputs/YYMMDD_HHMMSS_<Shape>/` directory. Each run records its
 configuration, a compact output log, per-iteration GP and restart diagnostics in

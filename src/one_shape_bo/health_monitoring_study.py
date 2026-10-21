@@ -252,7 +252,17 @@ def _prediction(model, target_x, target_response, response_sd):
     }
 
 
-def _fit_model(train_x, train_y, nholes, raw_noise, previous_model):
+def _fit_model(
+    train_x,
+    train_y,
+    nholes,
+    raw_noise,
+    previous_model,
+    *,
+    ellipse_feature_mode="raw",
+    xsize=None,
+    ysize=None,
+):
     caught = []
     started = time.monotonic()
     try:
@@ -264,6 +274,9 @@ def _fit_model(train_x, train_y, nholes, raw_noise, previous_model):
                 nholes,
                 previous_model=previous_model,
                 observation_noise_variance=raw_noise,
+                ellipse_feature_mode=ellipse_feature_mode,
+                xsize=xsize,
+                ysize=ysize,
             )
         return model, caught, time.monotonic() - started, None
     except Exception as error:
@@ -310,6 +323,11 @@ def run_health_monitoring_study(
         ),
         "representative_probe": "deduplicated feasible source-archive designs",
     }
+    ellipse_feature_mode = runs[0].configuration.get(
+        "ellipse_feature_mode", "raw"
+    )
+    if ellipse_feature_mode != "raw":
+        study_config["ellipse_feature_mode"] = ellipse_feature_mode
     config_path = output_directory / "study_config.json"
     if config_path.exists():
         existing = json.loads(config_path.read_text(encoding="utf-8"))
@@ -374,13 +392,27 @@ def run_health_monitoring_study(
                 run.nholes,
                 raw_noise,
                 previous_model,
+                ellipse_feature_mode=run.configuration.get(
+                    "ellipse_feature_mode", "raw"
+                ),
+                xsize=run.configuration.get("xsize"),
+                ysize=run.configuration.get("ysize"),
             )
             cold_model = model if previous_model is None else None
             cold_warnings = fit_warnings if previous_model is None else []
             cold_failure = failure if previous_model is None else None
             if previous_model is not None:
                 cold_model, cold_warnings, _, cold_failure = _fit_model(
-                    train_x, train_y, run.nholes, raw_noise, None
+                    train_x,
+                    train_y,
+                    run.nholes,
+                    raw_noise,
+                    None,
+                    ellipse_feature_mode=run.configuration.get(
+                        "ellipse_feature_mode", "raw"
+                    ),
+                    xsize=run.configuration.get("xsize"),
+                    ysize=run.configuration.get("ysize"),
                 )
             row = {
                 "seed": run.seed,

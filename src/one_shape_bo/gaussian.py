@@ -8,18 +8,60 @@ import torch
 from botorch.fit import fit_gpytorch_mll
 from botorch.models import MixedSingleTaskGP
 from botorch.models.transforms import Standardize
+from botorch.models.transforms.input import InputTransform
 from gpytorch.constraints import Interval
 from gpytorch.kernels import MaternKernel
 from gpytorch.mlls import ExactMarginalLogLikelihood
 from gpytorch.priors import GammaPrior
 
+from .ellipse_features import (
+    RAW_ELLIPSE_FEATURES,
+    SHAPE_MATRIX_ELLIPSE_FEATURES,
+    design_features,
+    ellipse_feature_metadata,
+    tensor_sha256,
+    validate_ellipse_feature_mode,
+)
+
 
 OBJECTIVE_CLAMP_MIN = 1e-12
+
+
+class EllipseShapeMatrixInputTransform(InputTransform):
+    """Apply WP6 ellipse features while retaining raw acquisition variables."""
+
+    def __init__(self, nholes: int, xsize, ysize):
+        super().__init__()
+        self.nholes = int(nholes)
+        self.xsize = float(xsize)
+        self.ysize = float(ysize)
+        self.transform_on_train = True
+        self.transform_on_eval = True
+        self.transform_on_fantasize = True
+
+    def transform(self, X):
+        return design_features(
+            X,
+            self.nholes,
+            self.xsize,
+            self.ysize,
+            mode=SHAPE_MATRIX_ELLIPSE_FEATURES,
+        )
 
 
 def compliance_to_gp_response(compliance):
     """Return the exact response modelled by the GP."""
     return -torch.log(torch.as_tensor(compliance).clamp_min(OBJECTIVE_CLAMP_MIN))
+
+
+def standardized_to_raw_noise_variance(standardized_variance, train_score):
+    """Convert standardized GP-noise variance to response-space units."""
+    sample_variance = torch.var(
+        torch.as_tensor(train_score).reshape(-1).double(), correction=1
+    )
+    if not torch.isfinite(sample_variance) or sample_variance <= 0:
+        raise ValueError("Training GP responses must have positive sample variance.")
+    return float(standardized_variance) * float(sample_variance.item())
 
 
 def matern_factory(batch_shape, ard_num_dims, active_dims):
@@ -38,6 +80,9 @@ def build_objective_gp(
     train_y,
     nholes: int,
     observation_noise_variance: float | None = None,
+    ellipse_feature_mode: str = RAW_ELLIPSE_FEATURES,
+    xsize=None,
+    ysize=None,
 ):
     """Construct an unfitted objective GP with the production model definition.
 
@@ -45,6 +90,14 @@ def build_objective_gp(
     applies its established warm-start policy after construction, whereas
     offline numerical studies can apply independent controlled initial states.
     """
+    validate_ellipse_feature_mode(ellipse_feature_mode)
+    input_transform = None
+    if ellipse_feature_mode == SHAPE_MATRIX_ELLIPSE_FEATURES:
+        if xsize is None or ysize is None:
+            raise ValueError(
+                "xsize and ysize are required for shape-matrix ellipse features."
+            )
+        input_transform = EllipseShapeMatrixInputTransform(nholes, xsize, ysize)
     train_score = compliance_to_gp_response(train_y)
     train_yvar = (
         None
@@ -59,6 +112,7 @@ def build_objective_gp(
         cat_dims=categorical,
         cont_kernel_factory=matern_factory,
         outcome_transform=Standardize(m=1),
+        input_transform=input_transform,
     )
     return gp, train_score
 
@@ -153,12 +207,25 @@ class Pred_Objective_Multi_Task:
         nholes: int,
         previous_model=None,
         observation_noise_variance: float | None = None,
+        ellipse_feature_mode: str = RAW_ELLIPSE_FEATURES,
+        xsize=None,
+        ysize=None,
     ):
+        self.ellipse_feature_mode = validate_ellipse_feature_mode(
+            ellipse_feature_mode
+        )
+        self.nholes = int(nholes)
+        self.xsize = None if xsize is None else float(xsize)
+        self.ysize = None if ysize is None else float(ysize)
+        self.raw_train_x = torch.as_tensor(train_x).detach().clone()
         self.gp, train_score = build_objective_gp(
             train_x,
             train_y,
             nholes,
             observation_noise_variance=observation_noise_variance,
+            ellipse_feature_mode=self.ellipse_feature_mode,
+            xsize=xsize,
+            ysize=ysize,
         )
         self.train_score = train_score.detach().clone()
         self.prescribed_observation_noise_variance = observation_noise_variance
@@ -219,6 +286,9 @@ class Pred_Objective_Multi_Task:
             points = points.unsqueeze(0)
         representative_count = len(points)
         kernel_points = points if representative_count else self.gp.train_inputs[0]
+        input_transform = getattr(self.gp, "input_transform", None)
+        if input_transform is not None:
+            kernel_points = input_transform.transform(kernel_points)
         with torch.no_grad():
             kernel_diagonal = self.gp.covar_module(kernel_points).diagonal(
                 dim1=-2, dim2=-1
@@ -260,18 +330,47 @@ class Pred_Objective_Multi_Task:
         transform = self.gp.outcome_transform
         mean = getattr(transform, "means", None)
         std = getattr(transform, "stdvs", None)
-        return {
+        parameters = {
             "mean": None if mean is None else mean.detach().cpu().reshape(-1).tolist(),
             "std": None if std is None else std.detach().cpu().reshape(-1).tolist(),
             "transform_class": type(transform).__name__,
         }
+        if self.ellipse_feature_mode == SHAPE_MATRIX_ELLIPSE_FEATURES:
+            parameters["input"] = ellipse_feature_metadata(
+                self.ellipse_feature_mode,
+                self.nholes,
+                self.xsize,
+                self.ysize,
+            )
+        return parameters
 
     def persistence_state(self):
         """Return fitted state needed to audit or restore this GP fit."""
-        return {
+        state = {
             "model_class": type(self.gp).__name__,
             "model_state_dict": {
                 name: value.detach().cpu().clone()
                 for name, value in self.gp.state_dict().items()
             },
         }
+        if self.ellipse_feature_mode == SHAPE_MATRIX_ELLIPSE_FEATURES:
+            transformed_train_x = design_features(
+                self.raw_train_x,
+                self.nholes,
+                self.xsize,
+                self.ysize,
+                mode=self.ellipse_feature_mode,
+            ).detach().cpu()
+            state["input_features"] = {
+                **ellipse_feature_metadata(
+                    self.ellipse_feature_mode,
+                    self.nholes,
+                    self.xsize,
+                    self.ysize,
+                ),
+                "transformed_train_x": transformed_train_x,
+                "transformed_train_x_sha256": tensor_sha256(
+                    transformed_train_x
+                ),
+            }
+        return state

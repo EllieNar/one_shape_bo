@@ -278,6 +278,7 @@ def _select_for_fraction(
     budget,
     acquisition_fraction,
     minimum_distance,
+    ellipse_feature_mode="raw",
 ):
     observed_signatures = {
         geometry_signature(point, constraints) for point in train_x
@@ -296,6 +297,7 @@ def _select_for_fraction(
         novelty_weight=_complementary_fraction(acquisition_fraction),
         number_global=budget,
         global_selection_strategy="greedy_dynamic_novelty",
+        ellipse_feature_mode=ellipse_feature_mode,
     )
     elapsed = time.perf_counter() - started
     selected = sorted(
@@ -512,6 +514,11 @@ def run_global_restart_weight_study(
         "source_substitution": False,
         "physical_evaluations": False,
     }
+    ellipse_feature_mode = runs[0].configuration.get(
+        "ellipse_feature_mode", "raw"
+    )
+    if ellipse_feature_mode != "raw":
+        config["ellipse_feature_mode"] = ellipse_feature_mode
     config_path = output_directory / "study_config.json"
     if config_path.exists():
         if json.loads(config_path.read_text(encoding="utf-8")) != config:
@@ -623,6 +630,9 @@ def run_global_restart_weight_study(
                             budget,
                             fraction,
                             minimum_restart_distance,
+                            ellipse_feature_mode=run.configuration.get(
+                                "ellipse_feature_mode", "raw"
+                            ),
                         )
                         stored["selections"][label] = {
                             "acquisition_fraction": fraction,
