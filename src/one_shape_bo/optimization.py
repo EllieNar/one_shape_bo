@@ -79,6 +79,9 @@ class OptimizationConfig:
     emin: float = 1e-9
     e0: float = 1.0
     penal: float = 3.0
+    beam_model: str = "half"
+    support_conditions: tuple[tuple[int, int, str], ...] | None = None
+    load_conditions: tuple[tuple[int, int, str, float], ...] | None = None
     observation_noise_variance: float | None = None
     warm_start_policy: str | None = None
     health_nu_min: float = 0.01
@@ -134,6 +137,15 @@ class OptimizationConfig:
     @property
     def resolved_bx_right(self):
         return self.bx if self.bx_right is None else self.bx_right
+
+    @property
+    def uses_legacy_fem_conditions(self):
+        return (
+            self.beam_model == "half"
+            and self.support_conditions is None
+            and self.load_conditions is None
+        )
+
 
 class StagnationRestartController:
     """Shift a fixed restart budget toward global starts after stagnation."""
@@ -280,6 +292,63 @@ def _validate_geometry_configuration(config):
         raise ValueError("2 * by must be less than ysize.")
     if not 0.0 <= config.solid_max <= 1.0:
         raise ValueError("solid_max must lie in [0, 1].")
+
+
+def _validate_fem_configuration(config):
+    if config.beam_model not in ("half", "full"):
+        raise ValueError("beam_model must be 'half' or 'full'.")
+    if config.beam_model == "full" and config.support_conditions is None:
+        raise ValueError("Full-beam models require explicit support_conditions.")
+    if config.beam_model == "full" and config.load_conditions is None:
+        raise ValueError("Full-beam models require explicit load_conditions.")
+
+    supports = config.support_conditions
+    if supports is not None:
+        if not supports:
+            raise ValueError("support_conditions cannot be empty when supplied.")
+        for condition in supports:
+            if len(condition) != 3:
+                raise ValueError(
+                    "Each support condition must be (x, y, dof)."
+                )
+            x, y, dof = condition
+            if (
+                isinstance(x, bool)
+                or isinstance(y, bool)
+                or not isinstance(x, (int, np.integer))
+                or not isinstance(y, (int, np.integer))
+            ):
+                raise ValueError("Support x and y coordinates must be integers.")
+            if not 0 <= x <= config.xsize or not 0 <= y <= config.ysize:
+                raise ValueError(
+                    "Support coordinates must lie on the FEM node grid."
+                )
+            if dof not in ("u", "v", "both"):
+                raise ValueError("Support dof must be 'u', 'v', or 'both'.")
+
+    loads = config.load_conditions
+    if loads is not None:
+        if not loads:
+            raise ValueError("load_conditions cannot be empty when supplied.")
+        for condition in loads:
+            if len(condition) != 4:
+                raise ValueError(
+                    "Each load condition must be (x, y, direction, magnitude)."
+                )
+            x, y, direction, magnitude = condition
+            if (
+                isinstance(x, bool)
+                or isinstance(y, bool)
+                or not isinstance(x, (int, np.integer))
+                or not isinstance(y, (int, np.integer))
+            ):
+                raise ValueError("Load x and y coordinates must be integers.")
+            if not 0 <= x <= config.xsize or not 0 <= y <= config.ysize:
+                raise ValueError("Load coordinates must lie on the FEM node grid.")
+            if direction not in ("u", "v"):
+                raise ValueError("Load direction must be 'u' or 'v'.")
+            if not math.isfinite(magnitude) or magnitude == 0:
+                raise ValueError("Load magnitude must be finite and non-zero.")
 
 
 def _representative_feasible_points(global_conditions, local_conditions, dimension):
@@ -669,6 +738,7 @@ def run_optimization(config: OptimizationConfig | None = None):
     _validate_restart_ranking_configuration(config)
     _validate_ellipse_feature_configuration(config)
     _validate_geometry_configuration(config)
+    _validate_fem_configuration(config)
     output_dir = _output_directory(config)
     output_dir.mkdir(parents=True, exist_ok=True)
     serializable_config = asdict(config)
@@ -704,6 +774,8 @@ def run_optimization(config: OptimizationConfig | None = None):
             "ellipse_feature_mode": config.ellipse_feature_mode,
             "resolved_bx_left": config.resolved_bx_left,
             "resolved_bx_right": config.resolved_bx_right,
+            "beam_model": config.beam_model,
+            "uses_legacy_fem_conditions": config.uses_legacy_fem_conditions,
             "tensor_device": str(TENSOR_KWARGS["device"]),
             "tensor_dtype": str(TENSOR_KWARGS["dtype"]),
         },
@@ -745,7 +817,8 @@ def run_optimization(config: OptimizationConfig | None = None):
             f"local_radius={local_radius_label} "
             f"noise_mode="
             f"{'learned' if config.observation_noise_variance is None else 'prescribed'} "
-            f"warm_start_policy={config.resolved_warm_start_policy}"
+            f"warm_start_policy={config.resolved_warm_start_policy} "
+            f"beam_model={config.beam_model}"
         )
         x_train, burn_in_sampling = sample_burn_in_feasible(
             config.resolved_burn_in,
@@ -774,6 +847,9 @@ def run_optimization(config: OptimizationConfig | None = None):
             config.penal,
             constraints,
             return_solid_fractions=True,
+            beam_model=config.beam_model,
+            support_conditions=config.support_conditions,
+            load_conditions=config.load_conditions,
         )
         burn_in_signatures = [
             geometry_signature(design, constraints) for design in x_train
@@ -1185,6 +1261,9 @@ def run_optimization(config: OptimizationConfig | None = None):
                 config.penal,
                 constraints,
                 return_solid_fractions=True,
+                beam_model=config.beam_model,
+                support_conditions=config.support_conditions,
+                load_conditions=config.load_conditions,
             )
             gp_response_new = compliance_to_gp_response(y_new)
             new_analytical_feasible = feasible_mask(x_new, constraints)
@@ -1399,7 +1478,12 @@ def run_optimization(config: OptimizationConfig | None = None):
             "outputs/Expected_Output_TRIANGLE/"
             "Three_Hole_Expected_Result_vf05_nx100_ny50_c96_Rasterised.png"
         )
-        if config.audit_reference and config.htype == 0 and reference.exists():
+        if (
+            config.audit_reference
+            and config.htype == 0
+            and config.uses_legacy_fem_conditions
+            and reference.exists()
+        ):
             audit = audit_reference_image(
                 reference,
                 nelx=config.xsize,

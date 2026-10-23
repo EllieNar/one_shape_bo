@@ -15,6 +15,10 @@ from .runtime import DEVICE, TENSOR_KWARGS
 from .shapes import area_ellipse, area_triangle, read_shape
 
 
+VALID_DISPLACEMENT_DIRECTIONS = ("u", "v")
+VALID_SUPPORT_DOFS = ("u", "v", "both")
+
+
 def lk() -> np.ndarray:
     """Element stiffness matrix for a unit-modulus square Q4 element."""
     nu = 0.3
@@ -47,6 +51,26 @@ def element_dofs(nelx: int, nely: int):
     return (edof_vec[:, None] + offsets[None, :]).astype(int), nodenrs
 
 
+def _node_number(x: int, y: int, nely: int) -> int:
+    """Return the column-major node number for integer grid coordinates."""
+    return x * (nely + 1) + y
+
+
+def _normalise_support_conditions(support_conditions):
+    if support_conditions is None:
+        return None
+    return tuple((int(x), int(y), str(dof)) for x, y, dof in support_conditions)
+
+
+def _normalise_load_conditions(load_conditions):
+    if load_conditions is None:
+        return None
+    return tuple(
+        (int(x), int(y), str(direction), float(magnitude))
+        for x, y, direction, magnitude in load_conditions
+    )
+
+
 def default_loads_and_supports(nelx: int, nely: int):
     """Half-MBB load and symmetry/roller supports used by the reference."""
     ndof = 2 * (nelx + 1) * (nely + 1)
@@ -55,23 +79,128 @@ def default_loads_and_supports(nelx: int, nely: int):
     return loads, fixed.astype(int)
 
 
+def configured_loads_and_supports(
+    nelx: int,
+    nely: int,
+    *,
+    beam_model: str = "half",
+    support_conditions=None,
+    load_conditions=None,
+):
+    """Build nodal loads and constrained DOFs from grid-coordinate settings.
+
+    ``u`` and ``v`` denote horizontal and vertical displacement respectively.
+    Half-beam models always apply the legacy symmetry constraint ``u=0`` along
+    the complete left edge. Full-beam models add no automatic constraint.
+    """
+    if beam_model not in ("half", "full"):
+        raise ValueError("beam_model must be 'half' or 'full'.")
+    supports = _normalise_support_conditions(support_conditions)
+    loads = _normalise_load_conditions(load_conditions)
+    if beam_model == "full" and supports is None:
+        raise ValueError("Full-beam models require explicit support_conditions.")
+    if beam_model == "full" and loads is None:
+        raise ValueError("Full-beam models require explicit load_conditions.")
+
+    if beam_model == "half" and supports is None and loads is None:
+        return default_loads_and_supports(nelx, nely)
+
+    fixed = []
+    if beam_model == "half":
+        fixed.extend(2 * _node_number(0, y, nely) for y in range(nely + 1))
+        if supports is None:
+            supports = ((nelx, nely, "v"),)
+        if loads is None:
+            loads = ((0, nely, "v", -1.0),)
+
+    for x, y, dof in supports or ():
+        if not 0 <= x <= nelx or not 0 <= y <= nely:
+            raise ValueError("Support coordinates must lie on the FEM node grid.")
+        if dof not in VALID_SUPPORT_DOFS:
+            raise ValueError("Support dof must be 'u', 'v', or 'both'.")
+        node = _node_number(x, y, nely)
+        if dof in ("u", "both"):
+            fixed.append(2 * node)
+        if dof in ("v", "both"):
+            fixed.append(2 * node + 1)
+
+    nodal_loads = []
+    for x, y, direction, magnitude in loads or ():
+        if not 0 <= x <= nelx or not 0 <= y <= nely:
+            raise ValueError("Load coordinates must lie on the FEM node grid.")
+        if direction not in VALID_DISPLACEMENT_DIRECTIONS:
+            raise ValueError("Load direction must be 'u' or 'v'.")
+        if not np.isfinite(magnitude) or magnitude == 0:
+            raise ValueError("Load magnitude must be finite and non-zero.")
+        node = _node_number(x, y, nely)
+        dof = 2 * node + (direction == "v")
+        nodal_loads.append((node, int(dof % 2), magnitude))
+    return nodal_loads, np.unique(np.asarray(fixed, dtype=int))
+
+
 @lru_cache(maxsize=None)
-def cached_fem(nelx: int, nely: int):
+def _cached_fem(
+    nelx: int,
+    nely: int,
+    beam_model: str,
+    support_conditions,
+    load_conditions,
+):
     stiffness = lk()
     edof_mat, _ = element_dofs(nelx, nely)
     ndof = 2 * (nelx + 1) * (nely + 1)
     ik = np.kron(edof_mat, np.ones((8, 1), dtype=int)).ravel()
     jk = np.kron(edof_mat, np.ones((1, 8), dtype=int)).ravel()
-    loads, fixed = default_loads_and_supports(nelx, nely)
+    loads, fixed = configured_loads_and_supports(
+        nelx,
+        nely,
+        beam_model=beam_model,
+        support_conditions=support_conditions,
+        load_conditions=load_conditions,
+    )
     free = np.setdiff1d(np.arange(ndof), fixed)
     load_vector = np.zeros(ndof)
-    node, dof, value = loads[0]
-    load_vector[2 * node + dof] = value
+    for node, dof, value in loads:
+        load_vector[2 * node + dof] += value
     return stiffness, edof_mat, ndof, ik, jk, free, load_vector
 
 
-def true_objective(x_phys, nelx: int, nely: int, emin: float, e0: float, penal: float):
-    stiffness, edof_mat, ndof, ik, jk, free, load_vector = cached_fem(nelx, nely)
+def cached_fem(
+    nelx: int,
+    nely: int,
+    beam_model: str = "half",
+    support_conditions=None,
+    load_conditions=None,
+):
+    """Return a cached FEM system for hashable normalized boundary settings."""
+    return _cached_fem(
+        nelx,
+        nely,
+        beam_model,
+        _normalise_support_conditions(support_conditions),
+        _normalise_load_conditions(load_conditions),
+    )
+
+
+def true_objective(
+    x_phys,
+    nelx: int,
+    nely: int,
+    emin: float,
+    e0: float,
+    penal: float,
+    *,
+    beam_model: str = "half",
+    support_conditions=None,
+    load_conditions=None,
+):
+    stiffness, edof_mat, ndof, ik, jk, free, load_vector = cached_fem(
+        nelx,
+        nely,
+        beam_model,
+        support_conditions,
+        load_conditions,
+    )
     young = emin + x_phys.ravel(order="F") ** penal * (e0 - emin)
     sk = (stiffness.ravel(order="F")[:, None] * young[None, :]).ravel(order="F")
     matrix = sp.coo_matrix((sk, (ik, jk)), shape=(ndof, ndof)).tocsc()
@@ -236,6 +365,10 @@ def evaluate_designs(
     penal: float,
     constraints,
     return_solid_fractions: bool = False,
+    *,
+    beam_model: str = "half",
+    support_conditions=None,
+    load_conditions=None,
 ):
     designs = torch.as_tensor(X, **TENSOR_KWARGS)
     if designs.ndim == 1:
@@ -255,7 +388,17 @@ def evaluate_designs(
                 "Rasterized design exceeds the upper solid-volume limit: "
                 f"rasterized={fraction:.6f}, permitted={permitted:.6f}."
             )
-        compliance = true_objective(geometry, nelx, nely, emin, e0, penal)
+        compliance = true_objective(
+            geometry,
+            nelx,
+            nely,
+            emin,
+            e0,
+            penal,
+            beam_model=beam_model,
+            support_conditions=support_conditions,
+            load_conditions=load_conditions,
+        )
         compliances.append(compliance if np.isfinite(compliance) else 1e30)
         fractions.append(fraction)
 

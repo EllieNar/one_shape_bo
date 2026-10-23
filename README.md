@@ -85,6 +85,66 @@ Every proposal still passes the common analytical and raster checks. BO global
 restart pools continue to use the existing `sample_stratified_feasible` path;
 the burn-in retry/partition policy is not used during evaluation iterations.
 
+### Supports and nodal loads
+
+The legacy half-beam FEM conditions remain the default. With
+`beam_model="half"`, horizontal displacement (`u`) is constrained at every node
+on the left edge. `support_conditions` adds the remaining support constraints as
+`(x, y, dof)` tuples, where `dof` is `"u"`, `"v"`, or `"both"`. Coordinates are
+integer FEM node-grid coordinates, so valid limits are `0 <= x <= xsize` and
+`0 <= y <= ysize`. If no support is supplied, the legacy vertical support at
+`(xsize, ysize)` is retained.
+
+With `beam_model="full"`, no left-edge symmetry constraints are added and
+explicit supports are required. Supports can differ in both position and DOF:
+
+```python
+config = OptimizationConfig(
+    xsize=1200,
+    ysize=168,
+    beam_model="full",
+    support_conditions=((100, 0, "both"), (1100, 0, "v")),
+    load_conditions=((600, 168, "v", -1.0),),
+)
+```
+
+Each load is `(x, y, direction, magnitude)`, with direction `"u"` or `"v"`.
+Positive magnitudes act in the positive grid direction. Multiple entries may be
+used for multiple point loads or the equivalent nodal forces of a distributed
+load; entries at the same node and direction are summed. For example, on a
+unit-spaced horizontal grid, a vertical UDL of intensity `q` between `x_start`
+and `x_end` can use trapezoidal endpoint forces:
+
+```python
+udl = tuple(
+    (x, y_load, "v", -q * (0.5 if x in (x_start, x_end) else 1.0))
+    for x in range(x_start, x_end + 1)
+)
+config = OptimizationConfig(load_conditions=udl)
+```
+
+For a symmetric three-point-bending beam with full dimensions `1200 x 168`,
+supports 100 grid units from each end, and a central downward unit load, model
+the right half as follows:
+
+```python
+config = OptimizationConfig(
+    xsize=600,
+    ysize=168,
+    beam_model="half",
+    support_conditions=((500, 0, "v"),),
+    load_conditions=((0, 168, "v", -0.5),),
+)
+```
+
+Here local `x=0` is the full beam's mid-span and the automatic `u=0` edge is
+its symmetry plane. The right support is at global `x=1100`, hence local
+`x=500`; the final 100 grid units are the end overhang. The `-0.5` is half of a
+full-beam unit load because the point load lies on the symmetry plane. Use
+`-1.0` instead if the specified magnitude is intended to be the load applied to
+the half model itself. At present `xsize` and `ysize` are also the element
+counts, so this `600 x 168` analysis is substantially larger than the default.
+
 `local_start_strategy="radius"` remains the default. The archive strategy is
 experimental pending a separately run multi-seed comparison; selecting it does
 not alter the GP, LogEI acquisition policy, or physical model, and does not add

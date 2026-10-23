@@ -922,3 +922,30 @@ returned design passed analytical and raster feasibility. The approved rollback
 condition was therefore not triggered. Twenty-six targeted tests and the full
 82-test repository suite passed; the only warning was the existing upstream
 PyTorch `torch.jit.script` deprecation.
+
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                                      23/10/26 at 11:42 BST
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+Configurable half/full-beam supports and nodal loads
+
+The FEM boundary conditions can now be selected independently of the BO and
+geometry model. `beam_model="half"` remains the default and retains the legacy
+horizontal symmetry constraints along the complete left edge. Optional
+`support_conditions` identify additional constrained nodes as `(x, y, dof)`,
+where `dof` is `u`, `v` or `both`. If omitted, the legacy right-top vertical
+support remains. `beam_model="full"` adds no automatic left-edge constraints
+and requires explicit support conditions, allowing left and right supports to
+be asymmetric in position and constrained DOF.
+
+Optional `load_conditions` provide nodal `(x, y, direction, magnitude)` loads;
+multiple entries allow point loads or equivalent nodal forces for distributed
+loads, and coincident entries are summed. An omitted load in the default half
+model retains the legacy downward point load at the top of the symmetry edge;
+full models require explicit loads. Coordinates are integer FEM node-grid
+coordinates and are validated against the inclusive node bounds. These settings
+are passed only to FEM assembly and persisted with the run configuration; they
+do not alter perforation sampling, constraints, GP modelling or acquisition.
+The qualitative triangle reference audit is skipped for custom FEM conditions
+because its stored compliance uses the legacy boundary/load case.

@@ -1,0 +1,48 @@
+{
+  "accepted": 105,
+  "limits": {
+    "clearance_area_lower_bound": 2614.2546277834945,
+    "clearance_available_area_upper_bound": 4850.785398163397,
+    "failures": [],
+    "minimum_void_area_from_amin": 150.0,
+    "minimum_void_area_from_solid_max": 2500.0,
+    "necessary_conditions_passed": true,
+    "required_void_area": 2500.0,
+    "smin": 1.0,
+    "usable_area": 4704.0,
+    "usable_height": 48.0,
+    "usable_width": 98.0
+  },
+  "requested": 105,
+  "sampler": "burn_in_clearance_aware",
+  "strata": [
+    {
+      "accepted": 53,
+      "area_strategy": "near_equal",
+      "candidate_attempts": 53,
+      "rejections": {
+        "analytical": 0,
+        "area": 0,
+        "encoding": 0,
+        "placement": 0,
+        "raster": 0,
+        "shape": 0
+      },
+      "requested": 53
+    },
+    {
+      "accepted": 52,
+      "area_strategy": "broad",
+      "candidate_attempts": 74,
+      "rejections": {
+        "analytical": 0,
+        "area": 0,
+        "encoding": 0,
+        "placement": 19,
+        "raster": 2,
+        "shape": 1
+      },
+      "requested": 52
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "best_compliance": 191.462987739759,
+  "best_evaluation_index": 143,
+  "best_source": "local",
+  "burn_in_sampling": "burn_in_sampling.json",
+  "configuration_file": "run_config.json",
+  "configuration_sha256": "c9fe44f5a988e96c93cb1fa61c1f2b048420d3a15566ca1d0287936e10a50e0b",
+  "created_at_utc": "2026-10-22T10:40:05.278012+00:00",
+  "evaluation_archive": "evaluation_archive.pt",
+  "evaluation_count": 145,
+  "feasible": true,
+  "finished_at_utc": "2026-10-22T11:23:02.566753+00:00",
+  "fit_count": 40,
+  "git": {
+    "commit": null,
+    "dirty": null,
+    "source_sha256": {
+      "src\\one_shape_bo\\__init__.py": "7bdc5e3f522adcf61d20f0557d0880856ddc466ebc021f2fce5691c830140f79",
+      "src\\one_shape_bo\\__main__.py": "294917551667a90055f802faecabd2f7f55afc53940dd56f5a227872be9dac05",
+      "src\\one_shape_bo\\bayesian.py": "231f234686d005415a684e795d60553419cd98c728fdcf6a704a56a82e96fc89",
+      "src\\one_shape_bo\\benchmark.py": "19273b5109ba2b2344b52e3cbf7ea689eb3a12985a2db52ca9189189bb72c78d",
+      "src\\one_shape_bo\\ellipse_features.py": "9eb08e47aa7919f27db3671ce84b4d8f5b0715f9a1ae8c2b66fdb588ee00d9d3",
+      "src\\one_shape_bo\\gaussian.py": "32d9fb25c70ea78fda842f8726a6281d06ae0ac58126ddba80511baafd8f05ef",
+      "src\\one_shape_bo\\global_restart_weight_study.py": "4289e92cbb220fadfd25bc7257d2f44152daa803344d5366f9f04e29f94b950f",
+      "src\\one_shape_bo\\health_monitoring_study.py": "3ed22bd26ea7c0038fe52e39493bb7d980b31ddc9a467ad649f96f3e175cdcc1",
+      "src\\one_shape_bo\\numerical_noise_study.py": "2e23e6a514e78642f7f2987049890f200497a7fdae6881126bbaf12a9b30b4f2",
+      "src\\one_shape_bo\\optimization.py": "20b8faf3a76f1963fc7ee2540e3d47e6bf80b06b2ebf9b5af4d443777e7c5eb7",
+      "src\\one_shape_bo\\physical.py": "1b9a37b95aa194fa627ac5f9e8e6fc4651aff8900ac40904f7f68f6f1af9ad4f",
+      "src\\one_shape_bo\\plot_evaluation.py": "9f65e61e807666c388076ca6f78bd2603907e80d2bcf649194a43fbc41bd45b7",
+      "src\\one_shape_bo\\records.py": "1648348d2f560f920b4eb2f94b2d83cabc8705e87f92c5fcacb7318d0cd2962c",
+      "src\\one_shape_bo\\restart_budget_study.py": "51837e062e9e328443e25549cf093c3005ba496266581e356140b0388cd6a714",
+      "src\\one_shape_bo\\runtime.py": "4d712836f0f9396b1523a10c87caaebd42bc91f35637380b67e9757b4e94d4f2",
+      "src\\one_shape_bo\\sampling.py": "96b68118b4bbae82ec41ecda7797c45afd14c7033a09cf657fe6463d78cc0232",
+      "src\\one_shape_bo\\shapes.py": "2b3346cdea5335780f80e03e69344150c2dc402d6543dd4ab4105052dfb2acbc"
+    },
+    "tracked_status": null
+  },
+  "initial_rng_state": "initial_rng_state.pt",
+  "initial_seed": 104,
+  "resolved_configuration": {
+    "adaptive_restart_allocation": true,
+    "burn_in": 105,
+    "dimension": 21,
+    "ellipse_feature_mode": "shape_matrix",
+    "global_restart_selection_strategy": "greedy_dynamic_novelty",
+    "iterations": 40,
+    "noise_mode": "learned",
+    "observation_noise_variance_scale": null,
+    "resolved_bx_left": 1.0,
+    "resolved_bx_right": 1.0,
+    "restart_ranking_weights": {
+      "acquisition": 0.7,
+      "novelty": 0.3
+    },
+    "stagnation_patience": 105,
+    "tensor_device": "cpu",
+    "tensor_dtype": "torch.float64",
+    "warm_start_policy": "always"
+  },
+  "run_id": "20261022T104005.278012Z-c588022f",
+  "schema_version": 4,
+  "software": {
+    "cuda_available": false,
+    "cuda_version": "13.4",
+    "device_count": 0,
+    "packages": {
+      "botorch": "0.17.2",
+      "gpytorch": "1.15.2",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.4",
+      "scipy": "1.18.1",
+      "torch": "2.14.1"
+    },
+    "platform": "Windows-11-10.0.26200-SP0",
+    "python": "3.12.15 | packaged by conda-forge | (main, Oct  6 2026, 23:39:35) [MSC v.1944 64 bit (AMD64)]"
+  },
+  "status": "completed"
+}

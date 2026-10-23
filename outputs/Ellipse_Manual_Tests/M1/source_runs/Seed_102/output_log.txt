@@ -1,0 +1,48 @@
+Bayesian optimization run
+seed=102 burn_in=105 iterations=40 restart_budget=15 adaptive_restart_allocation=True local_start_strategy=archive global_restart_selection_strategy=greedy_dynamic_novelty local_radius=unused noise_mode=learned warm_start_policy=always
+burn-in sampling complete accepted=105/105 attempts=240
+iter=0001/40 new=213.509416 best=213.509416 solid=0.4986 winner=global restarts=10G/5L move=1.18 acq_gain=4.01 score_std=0.172 noise=0.00604 ls=0.106/0.334/0.893
+iter=0002/40 new=210.173776 best=210.173776 solid=0.4986 winner=local restarts=10G/5L move=0.0583 acq_gain=1.23 score_std=0.139 noise=0.00586 ls=0.11/0.333/0.922
+iter=0003/40 new=215.942362 best=210.173776 solid=0.5000 winner=global restarts=10G/5L move=0.609 acq_gain=4.44 score_std=0.114 noise=0.0057 ls=0.112/0.333/0.937
+iter=0004/40 new=223.802373 best=210.173776 solid=0.4992 winner=global restarts=10G/5L move=0.802 acq_gain=4.46 score_std=0.114 noise=0.00553 ls=0.112/0.333/0.957
+iter=0005/40 new=223.693974 best=210.173776 solid=0.4978 winner=local restarts=10G/5L move=0.254 acq_gain=1.27 score_std=0.11 noise=0.00539 ls=0.112/0.333/0.959
+iter=0006/40 new=240.513320 best=210.173776 solid=0.4998 winner=global restarts=10G/5L move=0.833 acq_gain=4.6 score_std=0.101 noise=0.00524 ls=0.111/0.333/0.957
+iter=0007/40 new=227.802011 best=210.173776 solid=0.4986 winner=local restarts=10G/5L move=0.42 acq_gain=1.69 score_std=0.1 noise=0.00529 ls=0.112/0.333/0.964
+iter=0008/40 new=245.466396 best=210.173776 solid=0.4994 winner=global restarts=10G/5L move=0.484 acq_gain=4.48 score_std=0.096 noise=0.00527 ls=0.112/0.333/0.975
+iter=0009/40 new=227.642373 best=210.173776 solid=0.4996 winner=local restarts=10G/5L move=0.607 acq_gain=1.96 score_std=0.089 noise=0.00545 ls=0.112/0.333/0.981
+iter=0010/40 new=235.513694 best=210.173776 solid=0.4994 winner=local restarts=10G/5L move=0.435 acq_gain=1.51 score_std=0.0979 noise=0.00563 ls=0.112/0.333/0.981
+iter=0011/40 new=247.357294 best=210.173776 solid=0.4978 winner=global restarts=10G/5L move=0.534 acq_gain=4.34 score_std=0.103 noise=0.00575 ls=0.111/0.333/0.979
+iter=0012/40 new=243.351523 best=210.173776 solid=0.4996 winner=local restarts=10G/5L move=0.447 acq_gain=1.99 score_std=0.0885 noise=0.00591 ls=0.11/0.333/0.964
+iter=0013/40 new=251.600075 best=210.173776 solid=0.4920 winner=global restarts=10G/5L move=0.702 acq_gain=4.26 score_std=0.109 noise=0.00658 ls=0.108/0.333/0.929
+iter=0014/40 new=250.004806 best=210.173776 solid=0.4990 winner=global restarts=10G/5L move=0.953 acq_gain=4.28 score_std=0.0851 noise=0.00668 ls=0.107/0.333/0.927
+iter=0015/40 new=216.035992 best=210.173776 solid=0.4980 winner=global restarts=10G/5L move=0.842 acq_gain=4.63 score_std=0.0801 noise=0.00786 ls=0.104/0.333/0.912
+iter=0016/40 new=227.902323 best=210.173776 solid=0.4994 winner=local restarts=10G/5L move=0.148 acq_gain=1.74 score_std=0.0937 noise=0.00784 ls=0.105/0.333/0.919
+iter=0017/40 new=233.179043 best=210.173776 solid=0.5004 winner=global restarts=10G/5L move=0.455 acq_gain=4.21 score_std=0.0892 noise=0.00758 ls=0.106/0.333/0.938
+iter=0018/40 new=280.983521 best=210.173776 solid=0.4980 winner=local restarts=10G/5L move=0.188 acq_gain=2.5 score_std=0.0879 noise=0.00766 ls=0.106/0.333/0.944
+iter=0019/40 new=206.902745 best=206.902745 solid=0.4986 winner=local restarts=10G/5L move=0.112 acq_gain=1.98 score_std=0.038 noise=0.00812 ls=0.106/0.333/0.935
+iter=0020/40 new=252.883068 best=206.902745 solid=0.4998 winner=global restarts=10G/5L move=0.792 acq_gain=3.95 score_std=0.162 noise=0.00619 ls=0.106/0.333/0.935
+iter=0021/40 new=275.914198 best=206.902745 solid=0.4994 winner=local restarts=10G/5L move=0.574 acq_gain=0.242 score_std=0.0557 noise=0.00614 ls=0.106/0.333/0.941
+iter=0022/40 new=217.089507 best=206.902745 solid=0.4976 winner=local restarts=10G/5L move=0.443 acq_gain=146 score_std=0.0461 noise=0.00497 ls=0.103/0.333/0.906
+iter=0023/40 new=235.660023 best=206.902745 solid=0.4764 winner=global restarts=10G/5L move=0.871 acq_gain=4.41 score_std=0.0647 noise=0.00707 ls=0.104/0.333/0.907
+iter=0024/40 new=203.037333 best=203.037333 solid=0.4994 winner=global restarts=10G/5L move=0.725 acq_gain=3.92 score_std=0.143 noise=0.00785 ls=0.105/0.333/0.889
+iter=0025/40 new=239.238442 best=203.037333 solid=0.4992 winner=global restarts=10G/5L move=0.72 acq_gain=4.84 score_std=0.0958 noise=0.00722 ls=0.109/0.333/0.897
+iter=0026/40 new=204.385583 best=203.037333 solid=0.4998 winner=global restarts=10G/5L move=0.942 acq_gain=5.3 score_std=0.0869 noise=0.00757 ls=0.108/0.333/0.883
+iter=0027/40 new=202.844906 best=202.844906 solid=0.5006 winner=local restarts=10G/5L move=0.0614 acq_gain=1.36 score_std=0.0754 noise=0.00707 ls=0.108/0.333/0.888
+iter=0028/40 new=200.174163 best=200.174163 solid=0.5008 winner=global restarts=10G/5L move=0.848 acq_gain=5.03 score_std=0.075 noise=0.00662 ls=0.108/0.333/0.889
+iter=0029/40 new=200.275711 best=200.174163 solid=0.5004 winner=local restarts=10G/5L move=0.0995 acq_gain=0.66 score_std=0.0834 noise=0.00621 ls=0.108/0.333/0.903
+iter=0030/40 new=210.229385 best=200.174163 solid=0.4982 winner=global restarts=10G/5L move=0.892 acq_gain=5.16 score_std=0.0756 noise=0.00588 ls=0.108/0.333/0.905
+iter=0031/40 new=197.445995 best=197.445995 solid=0.4996 winner=local restarts=10G/5L move=0.66 acq_gain=130 score_std=0.0668 noise=0.00567 ls=0.108/0.333/0.913
+iter=0032/40 new=205.887959 best=197.445995 solid=0.4992 winner=local restarts=10G/5L move=0.0471 acq_gain=0.668 score_std=0.0795 noise=0.00522 ls=0.108/0.333/0.912
+iter=0033/40 new=198.745994 best=197.445995 solid=0.4992 winner=local restarts=10G/5L move=0.723 acq_gain=147 score_std=0.0811 noise=0.00505 ls=0.108/0.333/0.928
+iter=0034/40 new=195.942375 best=195.942375 solid=0.4986 winner=local restarts=10G/5L move=0.0519 acq_gain=0.662 score_std=0.051 noise=0.00489 ls=0.108/0.333/0.927
+iter=0035/40 new=196.278161 best=195.942375 solid=0.4996 winner=local restarts=10G/5L move=0.0463 acq_gain=0.582 score_std=0.058 noise=0.00451 ls=0.108/0.333/0.93
+iter=0036/40 new=196.083770 best=195.942375 solid=0.4980 winner=local restarts=10G/5L move=0.0304 acq_gain=0.541 score_std=0.0604 noise=0.00422 ls=0.109/0.333/0.933
+iter=0037/40 new=194.435820 best=194.435820 solid=0.4986 winner=local restarts=10G/5L move=0.0155 acq_gain=0.473 score_std=0.0198 noise=0.00411 ls=0.11/0.333/0.941
+iter=0038/40 new=197.009682 best=194.435820 solid=0.5008 winner=local restarts=10G/5L move=0.0464 acq_gain=0.411 score_std=0.0608 noise=0.00344 ls=0.11/0.334/0.938
+iter=0039/40 new=243.221641 best=194.435820 solid=0.5000 winner=local restarts=10G/5L move=0.0576 acq_gain=0.583 score_std=0.0628 noise=0.00328 ls=0.11/0.334/0.961
+iter=0040/40 new=196.698595 best=194.435820 solid=0.5006 winner=local restarts=10G/5L move=0.0461 acq_gain=1.27 score_std=0.0381 noise=0.00371 ls=0.111/0.334/0.996
+Final Bayesian optimization report
+best_compliance=194.43582044
+initial_best=232.63987078 improvement=16.422%
+analytical_solid=0.500000 raster_solid=0.498600 feasible=True
+best_source=local evaluations=145 record_improvements=9

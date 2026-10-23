@@ -1,0 +1,2 @@
+Bayesian optimization run
+seed=108 burn_in=105 iterations=40 restart_budget=15 adaptive_restart_allocation=True local_start_strategy=archive global_restart_selection_strategy=greedy_dynamic_novelty local_radius=unused noise_mode=learned warm_start_policy=always

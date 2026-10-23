@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 
+import pytest
 import torch
 
 from one_shape_bo import optimization
@@ -8,6 +9,40 @@ from one_shape_bo.optimization import StagnationRestartController
 
 def test_radius_restart_strategy_remains_default():
     assert optimization.OptimizationConfig().local_start_strategy == "radius"
+
+
+def test_legacy_half_beam_conditions_remain_default():
+    config = optimization.OptimizationConfig()
+
+    assert config.beam_model == "half"
+    assert config.support_conditions is None
+    assert config.load_conditions is None
+    assert config.uses_legacy_fem_conditions
+
+
+def test_full_beam_requires_explicit_supports_and_loads():
+    with pytest.raises(ValueError, match="support_conditions"):
+        optimization._validate_fem_configuration(
+            optimization.OptimizationConfig(beam_model="full")
+        )
+
+    with pytest.raises(ValueError, match="load_conditions"):
+        optimization._validate_fem_configuration(
+            optimization.OptimizationConfig(
+                beam_model="full",
+                support_conditions=((0, 0, "both"),),
+            )
+        )
+
+
+def test_fem_configuration_accepts_asymmetric_full_beam_conditions():
+    config = optimization.OptimizationConfig(
+        beam_model="full",
+        support_conditions=((10, 0, "both"), (80, 4, "v")),
+        load_conditions=((35, 50, "v", -2.0), (70, 20, "u", 0.5)),
+    )
+
+    optimization._validate_fem_configuration(config)
 
 
 def test_stagnation_changes_split_without_changing_budget_and_resets():

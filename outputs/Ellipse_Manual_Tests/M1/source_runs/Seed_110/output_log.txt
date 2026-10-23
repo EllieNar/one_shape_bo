@@ -1,0 +1,15 @@
+Bayesian optimization run
+seed=110 burn_in=105 iterations=40 restart_budget=15 adaptive_restart_allocation=True local_start_strategy=archive global_restart_selection_strategy=greedy_dynamic_novelty local_radius=unused noise_mode=learned warm_start_policy=always
+burn-in sampling complete accepted=105/105 attempts=241
+iter=0001/40 new=203.776107 best=203.776107 solid=0.4984 winner=global restarts=10G/5L move=0.498 acq_gain=4.28 score_std=0.126 noise=0.00539 ls=0.113/0.333/1.07
+iter=0002/40 new=182.534540 best=182.534540 solid=0.4980 winner=global restarts=10G/5L move=0.591 acq_gain=4.03 score_std=0.146 noise=0.00515 ls=0.115/0.333/1.09
+iter=0003/40 new=199.311084 best=182.534540 solid=0.4992 winner=global restarts=10G/5L move=0.549 acq_gain=5.11 score_std=0.108 noise=0.00497 ls=0.122/0.333/1.12
+iter=0004/40 new=184.991120 best=182.534540 solid=0.4988 winner=global restarts=10G/5L move=0.692 acq_gain=5.36 score_std=0.104 noise=0.00481 ls=0.122/0.333/1.13
+iter=0005/40 new=176.320267 best=176.320267 solid=0.4978 winner=local restarts=10G/5L move=0.0434 acq_gain=1.15 score_std=0.0926 noise=0.00449 ls=0.124/0.333/1.17
+iter=0006/40 new=176.404760 best=176.320267 solid=0.4992 winner=local restarts=10G/5L move=0.0513 acq_gain=0.947 score_std=0.0957 noise=0.00428 ls=0.124/0.333/1.18
+iter=0007/40 new=259.735016 best=176.320267 solid=0.4994 winner=local restarts=10G/5L move=0.713 acq_gain=532 score_std=0.0837 noise=0.00404 ls=0.123/0.333/1.18
+iter=0008/40 new=182.276452 best=176.320267 solid=0.4994 winner=local restarts=10G/5L move=0.0569 acq_gain=1.93 score_std=0.0705 noise=0.00423 ls=0.124/0.333/1.16
+iter=0009/40 new=171.733862 best=171.733862 solid=0.4998 winner=local restarts=10G/5L move=0.0482 acq_gain=1.43 score_std=0.0505 noise=0.00425 ls=0.107/0.333/1.15
+iter=0010/40 new=233.458465 best=171.733862 solid=0.4992 winner=global restarts=10G/5L move=0.865 acq_gain=5.85 score_std=0.0718 noise=0.00376 ls=0.109/0.333/1.16
+iter=0011/40 new=184.606694 best=171.733862 solid=0.4986 winner=global restarts=10G/5L move=0.788 acq_gain=7.19 score_std=0.0706 noise=0.00438 ls=0.123/0.333/1.13
+iter=0012/40 new=186.854637 best=171.733862 solid=0.5000 winner=global restarts=10G/5L move=0.486 acq_gain=6.17 score_std=0.0538 noise=0.00546 ls=0.117/0.333/1.13
